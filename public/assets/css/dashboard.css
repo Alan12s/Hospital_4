@@ -1,0 +1,443 @@
+/* dashboard.css - Versión Final Completa y Corregida */
+
+/* ============= VARIABLES ============= */
+:root {
+    /* Tipografía */
+    --font-primary: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    
+    /* Bordes */
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+    --border-color: #dee2e6;
+    
+    /* Sombras */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    
+    /* Transiciones */
+    --transition-fast: 0.15s ease;
+    --transition-normal: 0.3s ease;
+    
+    /* Colores específicos */
+    --stats-number-color: var(--secondary-color);
+    --stats-label-color: var(--light-text);
+    --card-bg-color-darker: color-mix(in srgb, var(--card-bg-color), black 5%);
+    --primary-light: #90caf9;
+    --primary-light-color: #90caf9;
+    --danger-color: #dc3545;
+  }
+  
+  /* ============= BASE ============= */
+  .dashboard-component {
+    font-family: var(--font-primary);
+    color: var(--text-color);
+    transition: background-color var(--transition-normal), 
+                color var(--transition-normal),
+                border-color var(--transition-normal);
+  }
+  
+  /* ============= ESTADÍSTICAS ============= */
+  .stats-card {
+    background-color: var(--card-bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    padding: 1.5rem;
+    text-align: center;
+    transition: all var(--transition-normal);
+  }
+  
+  .stats-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+  }
+  
+  .stats-icon {
+    font-size: 2.2rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    display: inline-block;
+  }
+  
+  .stats-number {
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    color: var(--stats-number-color);
+    font-family: var(--font-monospace);
+  }
+  
+  .stats-label {
+    font-size: 0.95rem;
+    color: var(--stats-label-color);
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  /* ============= TABLAS ============= */
+  .table-container {
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    background-color: var(--card-bg-color);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .table {
+    width: 100%;
+    margin-bottom: 0;
+    color: var(--text-color);
+    background-color: var(--card-bg-color);
+    font-size: 0.95rem;
+    border-color: var(--border-color);
+  }
+  
+  .table th {
+    background-color: var(--table-header-bg);
+    color: var(--table-header-color);
+    font-weight: 600;
+    padding: 1rem;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--primary-color);
+  }
+  
+  .table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+  }
+  
+  .table tr:last-child td {
+    border-bottom: none;
+  }
+  
+  .table-hover tbody tr {
+    transition: background-color var(--transition-fast);
+  }
+  
+  .table-hover tbody tr:hover {
+    background-color: var(--table-row-hover);
+  }
+  /* ============= RECORDATORIOS ============= */
+.reminder-container {
+    background-color: var(--card-bg-color);
+    border-radius: var(--border-radius-md);
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border-color);
+    transition: all var(--transition-fast);
+  }
+  
+  .reminder-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .reminder-item {
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: var(--border-radius-sm);
+    background-color: var(--reminder-bg, var(--card-bg-color));
+    color: var(--text-color);
+    border-left: 3px solid transparent;
+    transition: all var(--transition-fast);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .reminder-item:last-child {
+    margin-bottom: 0;
+  }
+  
+  .reminder-content {
+    flex: 1;
+  }
+  
+  .reminder-date {
+    font-size: 0.85rem;
+    color: var(--light-text);
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+  
+  .reminder-text {
+    font-size: 0.95rem;
+  }
+  
+  .urgent-reminder {
+    border-left-color: var(--danger-color);
+    animation: pulse 2s infinite;
+    background-color: var(--reminder-urgent-bg, rgba(220, 53, 69, 0.1));
+  }
+  
+  .reminder-item:hover {
+    background-color: var(--table-row-hover);
+  }
+  
+
+  /* ============= COMPONENTES ============= */
+  .card {
+    background-color: var(--card-bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-normal);
+  }
+  
+  .card:hover {
+    box-shadow: var(--shadow-md);
+  }
+  
+  .card-header {
+    background-color: var(--card-header-bg, var(--card-bg-color));
+    border-bottom: 1px solid var(--border-color);
+    padding: 1.25rem 1.5rem;
+  }
+  
+  .card-body {
+    padding: 1.5rem;
+  }
+  
+  /* ============= BOTONES ============= */
+  .btn-outline-primary {
+    --bs-btn-color: var(--primary-color);
+    --bs-btn-border-color: var(--primary-color);
+    --bs-btn-hover-bg: var(--primary-color);
+  }
+  
+  .quick-actions {
+    display: grid;
+    gap: 0.75rem;
+  }
+  
+  .quick-actions .btn {
+    padding: 0.75rem 1rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-align: left;
+  }
+  
+  /* ============= MODO OSCURO ============= */
+  [data-theme="dark"] {
+    /* Variables */
+    --stats-number-color: #ffffff;
+    --stats-label-color: rgba(255, 255, 255, 0.85);
+    --table-header-bg: rgba(255, 255, 255, 0.05);
+    --table-header-color: rgba(255, 255, 255, 0.9);
+    --border-color: rgba(255, 255, 255, 0.1);
+    --reminder-bg: rgba(255, 255, 255, 0.05);
+    --reminder-urgent-bg: rgba(220, 53, 69, 0.2);
+  }
+  
+  [data-theme="dark"] .text-muted {
+    color: rgba(255, 255, 255, 0.6) !important;
+  }
+  
+  [data-theme="dark"] .stats-icon {
+    color: var(--primary-light-color);
+    filter: brightness(1.1);
+  }
+  
+  [data-theme="dark"] .table {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  [data-theme="dark"] .card {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  [data-theme="dark"] .btn-outline-primary {
+    --bs-btn-color: var(--primary-light);
+    --bs-btn-border-color: var(--primary-light);
+    --bs-btn-hover-bg: var(--primary-color);
+  }
+  
+[data-theme="dark"] .reminder-container {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  [data-theme="dark"] .reminder-item {
+    color: var(--text-color);
+  }
+  
+  [data-theme="dark"] .reminder-date {
+    color: rgba(255, 255, 255, 0.7);
+  }
+  /* ============= CLASES UTILITARIAS ============= */
+  .turn-status {
+    font-weight: 500;
+    padding: 0.35rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    display: inline-block;
+  }
+  
+  .urgent-turn {
+    position: relative;
+  }
+  
+  .urgent-turn::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background-color: var(--danger-color);
+    border-radius: var(--border-radius-sm);
+  }
+  
+  .reminder-item {
+    padding: 0.75rem 1rem;
+    border-left: 3px solid transparent;
+    transition: all var(--transition-fast);
+  }
+  
+  .reminder-item:hover {
+    background-color: var(--table-row-hover);
+  }
+  
+  .reminder-date {
+    font-size: 0.85rem;
+    color: var(--light-text);
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+  
+  .urgent-reminder {
+    border-left-color: var(--danger-color);
+    animation: pulse 2s infinite;
+  }
+  
+  .badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.35rem 0.75rem;
+    border-radius: 50px;
+    letter-spacing: 0.5px;
+  }
+  
+  /* ============= ANIMACIONES ============= */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes pulse {
+    0% { opacity: 0.9; }
+    50% { opacity: 1; }
+    100% { opacity: 0.9; }
+  }
+  
+  .animate-fade {
+    animation: fadeIn 0.5s ease;
+  }
+  
+  /* tema oscuro switch*/
+  /* Estilos para el interruptor de tema */
+.theme-switch-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.theme-switch-container {
+    position: relative;
+    width: 100%;
+    max-width: 200px;
+}
+
+.theme-switch {
+    display: inline-block;
+    height: 34px;
+    position: relative;
+    width: 60px;
+    margin: 0 auto;
+}
+
+.theme-switch .slider {
+    background-color: #ccc;
+    bottom: 0;
+    cursor: pointer;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.theme-switch .slider:before {
+    background-color: #fff;
+    bottom: 4px;
+    content: "";
+    height: 26px;
+    left: 4px;
+    position: absolute;
+    transition: .4s;
+    width: 26px;
+    border-radius: 50%;
+    z-index: 2;
+}
+
+.theme-switch input:checked + .slider {
+    background-color: var(--primary-color);
+}
+
+.theme-switch input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+.theme-switch .icons {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8px;
+    z-index: 1;
+}
+
+.theme-switch .icons i {
+    color: #fff;
+    font-size: 16px;
+    transition: opacity 0.3s;
+}
+
+.theme-switch .icons .bx-sun {
+    opacity: 1;
+}
+
+.theme-switch .icons .bx-moon {
+    opacity: 0;
+}
+
+.theme-switch input:checked + .slider .bx-sun {
+    opacity: 0;
+}
+
+.theme-switch input:checked + .slider .bx-moon {
+    opacity: 1;
+}
+
+/* Animación adicional */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.theme-switch:hover .slider:before {
+    animation: pulse 1s infinite;
+}
