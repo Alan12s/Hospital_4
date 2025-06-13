@@ -12,11 +12,12 @@ class PacienteModel extends Model
     protected $returnType = 'object';
     protected $useSoftDeletes = false;
     protected $protectFields = true;
-    protected $allowedFields = ['nombre', 'dni', 'telefono', 'direccion', 'email'];
+    protected $allowedFields = ['nombre','fecha_nacimiento','obra_social','historial_medico', 'dni','departamento', 'telefono', 'direccion', 'email'];
 
     // Validación simplificada (quitamos is_unique porque validamos manualmente en controlador)
     protected $validationRules = [
         'nombre'    => 'required|max_length[100]',
+        'historial_medico'  => 'required|max_length[400]',
         'dni'       => 'required|numeric|max_length[20]',
         'telefono'  => 'required|max_length[20]',
         'direccion' => 'required|max_length[255]',

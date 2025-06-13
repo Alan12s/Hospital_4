@@ -15,10 +15,13 @@ class Insumos extends Controller
         $this->insumosModel = new InsumosModel();
         $this->session = \Config\Services::session();
         
-        // Comentado: verificación de login
-        // if (!$this->session->get('logged_in')) {
-        //     return redirect()->to('login');
-        // }
+        // Cargar el helper de formularios
+        helper(['form', 'url']);
+        
+        // Verificación de login
+        if (!$this->session->get('logged_in')) {
+            return redirect()->to('login');
+        }
     }
 
     public function index()
@@ -52,7 +55,8 @@ class Insumos extends Controller
         ]);
 
         if (!$validation->withRequest($this->request)->run()) {
-            return redirect()->back()->withInput()->with('errors', $validation->getErrors());
+            // Si la validación falla, volver a mostrar el formulario con errores
+            return $this->crear();
         }
 
         $data = [
@@ -66,7 +70,7 @@ class Insumos extends Controller
                                  $this->request->getPost('fecha_vencimiento') : null
         ];
 
-        if ($this->insumosModel->insert($data)) {
+        if ($this->insumosModel->addInsumo($data)) {
             $this->session->setFlashdata('success', 'Insumo agregado correctamente');
         } else {
             $this->session->setFlashdata('error', 'Error al agregar el insumo');
@@ -103,7 +107,12 @@ class Insumos extends Controller
         ]);
 
         if (!$validation->withRequest($this->request)->run()) {
-            return redirect()->back()->withInput()->with('errors', $validation->getErrors());
+            // Si la validación falla, volver a mostrar el formulario de edición
+            $data = [
+                'insumo' => $this->insumosModel->getInsumo($id),
+                'title' => 'Editar Insumo'
+            ];
+            return view('insumos/editar', $data);
         }
 
         $data = [
@@ -117,7 +126,7 @@ class Insumos extends Controller
                                  $this->request->getPost('fecha_vencimiento') : null
         ];
 
-        if ($this->insumosModel->update($id, $data)) {
+        if ($this->insumosModel->updateInsumo($id, $data)) {
             $this->session->setFlashdata('success', 'Insumo actualizado correctamente');
         } else {
             $this->session->setFlashdata('error', 'Error al actualizar el insumo');
@@ -126,23 +135,40 @@ class Insumos extends Controller
         return redirect()->to('insumos');
     }
 
+    /**
+     * Método para eliminar insumo
+     */
     public function delete($id)
     {
+        // Verificar que el insumo existe
         $insumo = $this->insumosModel->getInsumo($id);
 
         if (!$insumo) {
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
         }
 
+        // Verificar si el insumo está en uso
         if ($this->insumosModel->estaEnUso($id)) {
             $this->session->setFlashdata('error', 'No se puede eliminar el insumo porque está siendo utilizado en turnos quirúrgicos');
-        } else if ($this->insumosModel->deleteInsumo($id)) {
-            $this->session->setFlashdata('success', 'Insumo eliminado correctamente.');
         } else {
-            $this->session->setFlashdata('error', 'Error al eliminar el insumo.');
+            // Intentar eliminar el insumo
+            if ($this->insumosModel->deleteInsumo($id)) {
+                $this->session->setFlashdata('success', 'Insumo eliminado correctamente.');
+            } else {
+                $this->session->setFlashdata('error', 'Error al eliminar el insumo.');
+            }
         }
 
+        // Redirigir al índice de insumos
         return redirect()->to('insumos');
+    }
+
+    /**
+     * Método alternativo para eliminar (si usas la ruta 'eliminar')
+     */
+    public function eliminar($id)
+    {
+        return $this->delete($id);
     }
 
     public function view($id)

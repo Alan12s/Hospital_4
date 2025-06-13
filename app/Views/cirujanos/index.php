@@ -114,6 +114,23 @@
             box-shadow: var(--shadow-md);
         }
 
+        .btn-success {
+            background-color: var(--success-color);
+            border-color: #16a34a;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-success:hover {
+            background-color: #16a34a;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
         /* ============= GLASSMORPHISM CARDS ============= */
         .glass-card {
             background: rgba(255, 255, 255, 0.95);
@@ -276,6 +293,26 @@
             box-shadow: var(--shadow-sm);
         }
 
+        /* ============= BADGE STYLES ============= */
+        .badge {
+            font-weight: 500;
+            padding: 0.35rem 0.65rem;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+
+        .bg-disponible {
+            background-color: var(--success-color) !important;
+        }
+
+        .bg-en_cirugia {
+            background-color: var(--warning-color) !important;
+        }
+
+        .bg-no_disponible {
+            background-color: var(--danger-color) !important;
+        }
+
         /* ============= RESPONSIVE ============= */
         @media (max-width: 992px) {
             .table td, .table th {
@@ -304,7 +341,7 @@
                 font-size: 1.5rem;
             }
             
-            .btn-primary {
+            .btn-primary, .btn-success {
                 width: 100%;
                 justify-content: center;
             }
@@ -350,11 +387,16 @@
             <!-- Page Header -->
             <div class="dashboard-header animate-fade-in">
                 <h1>
-                    <i class='bx bx-user'></i><?= esc($titulo) ?>
+                    <i class='bx bx-user-md'></i><?= esc($titulo) ?>
                 </h1>
-                <a href="<?= site_url('pacientes/crear') ?>" class="btn btn-primary">
-                    <i class='bx bx-plus'></i> Nuevo Paciente
-                </a>
+                <div class="d-flex gap-2">
+                    <a href="<?= site_url('cirujanos/crear') ?>" class="btn btn-primary">
+                        <i class='bx bx-plus'></i> Nuevo Cirujano
+                    </a>
+                    <a href="<?= site_url('cirujanos/disponibles') ?>" class="btn btn-success">
+                        <i class='bx bx-check-circle'></i> Disponibles
+                    </a>
+                </div>
             </div>
 
             <!-- Flash Messages -->
@@ -378,11 +420,11 @@
                 </div>
             <?php endif; ?>
 
-            <!-- Patients Table -->
+            <!-- Surgeons Table -->
             <div class="glass-card animate-fade-in" style="animation-delay: 0.1s">
                 <div class="card-header">
-                    <h5><i class='bx bx-table me-2'></i>Listado de Pacientes</h5>
-                    <span class="badge bg-primary"><?= count($pacientes) ?> registros</span>
+                    <h5><i class='bx bx-table me-2'></i>Listado de Cirujanos</h5>
+                    <span class="badge bg-primary"><?= count($cirujanos) ?> registros</span>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -391,22 +433,22 @@
                                 <tr>
                                     <th>Nombre Completo</th>
                                     <th>DNI</th>
-                                    <th>Edad</th>
-                                    <th>Obra Social</th>
+                                    <th>Especialidad</th>
+                                    <th>Disponibilidad</th>
                                     <th>Contacto</th>
                                     <th class="text-end">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php if (empty($pacientes)): ?>
+                                <?php if (empty($cirujanos)): ?>
                                     <tr>
                                         <td colspan="6" class="empty-state">
                                             <i class='bx bx-user-x'></i>
-                                            <p>No hay pacientes registrados</p>
+                                            <p>No hay cirujanos registrados</p>
                                         </td>
                                     </tr>
                                 <?php else: ?>
-                                    <?php foreach ($pacientes as $paciente): ?>
+                                    <?php foreach ($cirujanos as $cirujano): ?>
                                         <tr>
                                             <td>
                                                 <div class="d-flex align-items-center">
@@ -414,39 +456,32 @@
                                                         <i class='bx bx-user-circle' style="font-size: 1.25rem; color: var(--primary-color);"></i>
                                                     </div>
                                                     <div>
-                                                        <strong><?= esc($paciente->nombre) ?></strong>
+                                                        <strong><?= esc($cirujano->nombre) ?></strong>
                                                         <div class="text-muted small" style="font-size: 0.75rem;">
-                                                            <?= esc($paciente->email) ?>
+                                                            <?= esc($cirujano->email) ?>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td><?= esc($paciente->dni) ?></td>
+                                            <td><?= esc($cirujano->dni) ?></td>
+                                            <td><?= esc($cirujano->especialidad ?? 'Sin especialidad') ?></td>
                                             <td>
-                                                <?php
-                                                $fechaNacimiento = new \DateTime($paciente->fecha_nacimiento);
-                                                $hoy = new \DateTime();
-                                                $edad = $hoy->diff($fechaNacimiento)->y;
-                                                echo esc($edad) . ' años';
-                                                ?>
-                                            </td>
-                                            <td>
-                                                <span class="badge bg-light text-dark">
-                                                    <?= esc($paciente->obra_social) ?>
+                                                <span class="badge bg-<?= $cirujano->disponibilidad ?>">
+                                                    <?= ucfirst(str_replace('_', ' ', $cirujano->disponibilidad)) ?>
                                                 </span>
                                             </td>
                                             <td>
                                                 <div class="d-flex flex-column">
-                                                    <small><?= esc($paciente->telefono) ?></small>
-                                                    <small class="text-muted"><?= esc($paciente->direccion) ?></small>
+                                                    <small><?= esc($cirujano->telefono) ?></small>
+                                                    <small class="text-muted"><?= esc($cirujano->direccion ?? 'Sin dirección') ?></small>
                                                 </div>
                                             </td>
                                             <td class="text-end">
                                                 <div class="d-flex justify-content-end">
-                                                    <a href="<?= site_url('pacientes/ver/'.$paciente->id) ?>" class="btn-action btn-view" title="Ver detalles">
+                                                    <a href="<?= site_url('cirujanos/ver/'.$cirujano->id) ?>" class="btn-action btn-view" title="Ver detalles">
                                                         <i class='bx bx-show'></i>
                                                     </a>
-                                                    <a href="<?= site_url('pacientes/editar/'.$paciente->id) ?>" class="btn-action btn-edit" title="Editar">
+                                                    <a href="<?= site_url('cirujanos/editar/'.$cirujano->id) ?>" class="btn-action btn-edit" title="Editar">
                                                         <i class='bx bx-edit'></i>
                                                     </a>
                                                     <button type="button"
@@ -454,11 +489,11 @@
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#modalEliminar"
                                                         onclick="configurarModalEliminar({
-                                                            idElemento: '<?= $paciente->id ?>',
-                                                            nombreElemento: '<?= esc($paciente->nombre) ?>',
-                                                            actionUrl: '<?= site_url('pacientes/delete/'.$paciente->id) ?>',
-                                                            titulo: 'Eliminar Paciente',
-                                                            mensajeAdicional: 'Se eliminarán todos los registros médicos asociados.',
+                                                            idElemento: '<?= $cirujano->id ?>',
+                                                            nombreElemento: '<?= esc($cirujano->nombre) ?>',
+                                                            actionUrl: '<?= site_url('cirujanos/delete/'.$cirujano->id) ?>',
+                                                            titulo: 'Eliminar Cirujano',
+                                                            mensajeAdicional: 'Se eliminarán todos los registros asociados.',
                                                             icono: 'bx-user-x'
                                                         })"
                                                         title="Eliminar">

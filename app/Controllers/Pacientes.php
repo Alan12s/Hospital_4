@@ -37,29 +37,74 @@ class Pacientes extends Controller
     public function add()
     {
         $rules = [
-            'nombre'    => 'required|max_length[100]',
-            'dni'       => 'required|is_unique[pacientes.dni]',
-            'email'     => 'required|valid_email|is_unique[pacientes.email]',
-            'telefono'  => 'required|max_length[20]',
-            'direccion' => 'required|max_length[150]'
+            'nombre'            => 'required|max_length[100]|regex_match[/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/]',
+            'historial_medico'  => 'required|max_length[100]',
+            'dni'               => 'required|numeric|is_unique[pacientes.dni]',
+            'email'             => 'required|valid_email|is_unique[pacientes.email]',
+            'telefono'          => 'required|numeric|max_length[20]',
+            'direccion'         => 'required|max_length[150]',
+            'fecha_nacimiento'  => 'required|valid_date',
+            'obra_social'       => 'required',
+            'departamento'     => 'required'
         ];
 
-        if (!$this->validate($rules)) {
+        $messages = [
+            'nombre' => [
+                'required' => 'El nombre es obligatorio',
+                'max_length' => 'El nombre no puede exceder los 100 caracteres',
+                'regex_match' => 'El campo nombre solo puede contener letras y espacios.'
+            ],
+            'dni' => [
+                'required' => 'El DNI es obligatorio',
+                'numeric' => 'El DNI debe contener solo números.',
+                'is_unique' => 'Este DNI ya está registrado'
+            ],
+            'email' => [
+                'required' => 'El email es obligatorio',
+                'valid_email' => 'Ingrese un email válido',
+                'is_unique' => 'Este email ya está registrado'
+            ],
+            'telefono' => [
+                'required' => 'El teléfono es obligatorio',
+                'numeric' => 'El teléfono debe contener solo números.',
+                'max_length' => 'El teléfono no puede exceder los 20 caracteres'
+            ],
+            'direccion' => [
+                'required' => 'La dirección es obligatoria',
+                'max_length' => 'La dirección no puede exceder los 150 caracteres'
+            ],
+            'fecha_nacimiento' => [
+                'required' => 'La fecha de nacimiento es obligatoria',
+                'valid_date' => 'Ingrese una fecha válida'
+            ],
+            'obra_social' => [
+                'required' => 'La obra social es obligatoria'
+            ],
+            'departamento' => [
+                'required' => 'El departamento es obligatorio'
+            ]
+        ];
+
+        if (!$this->validate($rules, $messages)) {
             return redirect()->back()
                              ->withInput()
                              ->with('errors', $this->validator->getErrors());
         }
 
         $data = [
-            'nombre'    => $this->request->getPost('nombre'),
-            'dni'       => $this->request->getPost('dni'),
-            'email'     => $this->request->getPost('email'),
-            'telefono'  => $this->request->getPost('telefono'),
-            'direccion' => $this->request->getPost('direccion')
+            'nombre'            => $this->request->getPost('nombre'),
+            'fecha_nacimiento'  => $this->request->getPost('fecha_nacimiento'),
+            'historial_medico'  => $this->request->getPost('historial_medico'),
+            'obra_social'       => $this->request->getPost('obra_social'),
+            'dni'               => $this->request->getPost('dni'),
+            'email'             => $this->request->getPost('email'),
+            'telefono'          => $this->request->getPost('telefono'),
+            'departamento'      => $this->request->getPost('departamento'),
+            'direccion'         => $this->request->getPost('direccion')
         ];
 
         if ($this->pacienteModel->insert($data)) {
-            $this->session->setFlashdata('success', 'Paciente creado exitosamente');
+            $this->session->setFlashdata('mensaje', 'Paciente creado exitosamente');
             return redirect()->to('pacientes');
         } else {
             $this->session->setFlashdata('error', 'No se pudo crear el paciente');
@@ -86,14 +131,54 @@ class Pacientes extends Controller
     public function update($id)
     {
         $rules = [
-            'nombre'    => 'required|max_length[100]',
-            'dni'       => 'required|numeric|max_length[20]',
-            'email'     => 'required|valid_email',
-            'telefono'  => 'required|max_length[20]',
-            'direccion' => 'required|max_length[150]'
+            'nombre'            => 'required|max_length[100]|regex_match[/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/]',
+            'historial_medico'  => 'required|max_length[400]',
+            'dni'               => 'required|numeric|max_length[20]',
+            'email'             => 'required|valid_email',
+            'telefono'          => 'required|numeric|max_length[20]',
+            'direccion'         => 'required|max_length[150]',
+            'fecha_nacimiento'  => 'required|valid_date',
+            'obra_social'       => 'required',
+            'departamento'      => 'required'
         ];
 
-        if (!$this->validate($rules)) {
+        $messages = [
+            'nombre' => [
+                'required' => 'El nombre es obligatorio',
+                'max_length' => 'El nombre no puede exceder los 100 caracteres',
+                'regex_match' => 'El campo nombre solo puede contener letras y espacios.'
+            ],
+            'dni' => [
+                'required' => 'El DNI es obligatorio',
+                'numeric' => 'El DNI debe contener solo números.',
+                'max_length' => 'El DNI no puede exceder los 20 caracteres'
+            ],
+            'email' => [
+                'required' => 'El email es obligatorio',
+                'valid_email' => 'Ingrese un email válido'
+            ],
+            'telefono' => [
+                'required' => 'El teléfono es obligatorio',
+                'numeric' => 'El teléfono debe contener solo números.',
+                'max_length' => 'El teléfono no puede exceder los 20 caracteres'
+            ],
+            'direccion' => [
+                'required' => 'La dirección es obligatoria',
+                'max_length' => 'La dirección no puede exceder los 150 caracteres'
+            ],
+            'fecha_nacimiento' => [
+                'required' => 'La fecha de nacimiento es obligatoria',
+                'valid_date' => 'Ingrese una fecha válida'
+            ],
+            'obra_social' => [
+                'required' => 'La obra social es obligatoria'
+            ],
+            'departamento' => [
+                'required' => 'El departamento es obligatorio'
+            ]
+        ];
+
+        if (!$this->validate($rules, $messages)) {
             return redirect()->back()
                              ->withInput()
                              ->with('errors', $this->validator->getErrors());
@@ -111,15 +196,19 @@ class Pacientes extends Controller
         }
 
         $data = [
-            'nombre'    => $this->request->getPost('nombre'),
-            'dni'       => $this->request->getPost('dni'),
-            'email'     => $this->request->getPost('email'),
-            'telefono'  => $this->request->getPost('telefono'),
-            'direccion' => $this->request->getPost('direccion')
+            'nombre'            => $this->request->getPost('nombre'),
+            'fecha_nacimiento'  => $this->request->getPost('fecha_nacimiento'),
+            'historial_medico'  => $this->request->getPost('historial_medico'),
+            'obra_social'       => $this->request->getPost('obra_social'),
+            'dni'               => $this->request->getPost('dni'),
+            'email'             => $this->request->getPost('email'),
+            'telefono'          => $this->request->getPost('telefono'),
+            'departamento'      => $this->request->getPost('departamento'),
+            'direccion'         => $this->request->getPost('direccion')
         ];
 
         if ($this->pacienteModel->update($id, $data)) {
-            $this->session->setFlashdata('success', 'Paciente actualizado exitosamente');
+            $this->session->setFlashdata('mensaje', 'Paciente actualizado exitosamente');
             return redirect()->to('pacientes');
         } else {
             $this->session->setFlashdata('error', 'No se pudo actualizar el paciente');
@@ -151,8 +240,8 @@ class Pacientes extends Controller
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
         }
 
-        if ($this->pacienteModel->deletePaciente($id)) {
-            $this->session->setFlashdata('success', 'Paciente eliminado exitosamente');
+        if ($this->pacienteModel->delete($id)) {
+            $this->session->setFlashdata('mensaje', 'Paciente eliminado exitosamente');
         } else {
             $this->session->setFlashdata('error', 'No se pudo eliminar el paciente');
         }

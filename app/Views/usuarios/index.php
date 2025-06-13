@@ -248,6 +248,73 @@
             box-shadow: var(--shadow);
         }
 
+        .btn-toggle {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        .btn-toggle:hover {
+            background-color: rgba(245, 158, 11, 0.2);
+            color: var(--warning-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* ============= STATUS BADGES ============= */
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
+        .status-active {
+            background-color: rgba(34, 197, 94, 0.1);
+            color: var(--success-color);
+        }
+
+        .status-inactive {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+        }
+
+        .role-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .role-administrador {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+        }
+
+        .role-medico {
+            background-color: rgba(34, 197, 94, 0.1);
+            color: var(--success-color);
+        }
+
+        .role-enfermero {
+            background-color: rgba(6, 182, 212, 0.1);
+            color: var(--info-color);
+        }
+
+        .role-supervisor {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: var(--accent-color);
+        }
+
+        .role-usuario {
+            background-color: rgba(100, 116, 139, 0.1);
+            color: var(--gray-600);
+        }
+
         /* ============= EMPTY STATE ============= */
         .empty-state {
             padding: 2rem;
@@ -350,10 +417,10 @@
             <!-- Page Header -->
             <div class="dashboard-header animate-fade-in">
                 <h1>
-                    <i class='bx bx-user'></i><?= esc($titulo) ?>
+                    <i class='bx bx-group'></i><?= esc($titulo) ?>
                 </h1>
-                <a href="<?= site_url('pacientes/crear') ?>" class="btn btn-primary">
-                    <i class='bx bx-plus'></i> Nuevo Paciente
+                <a href="<?= site_url('usuarios/crear') ?>" class="btn btn-primary">
+                    <i class='bx bx-plus'></i> Nuevo Usuario
                 </a>
             </div>
 
@@ -378,35 +445,35 @@
                 </div>
             <?php endif; ?>
 
-            <!-- Patients Table -->
+            <!-- Users Table -->
             <div class="glass-card animate-fade-in" style="animation-delay: 0.1s">
                 <div class="card-header">
-                    <h5><i class='bx bx-table me-2'></i>Listado de Pacientes</h5>
-                    <span class="badge bg-primary"><?= count($pacientes) ?> registros</span>
+                    <h5><i class='bx bx-table me-2'></i>Listado de Usuarios</h5>
+                    <span class="badge bg-primary"><?= count($usuarios) ?> registros</span>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover mb-0">
                             <thead>
                                 <tr>
-                                    <th>Nombre Completo</th>
-                                    <th>DNI</th>
-                                    <th>Edad</th>
-                                    <th>Obra Social</th>
-                                    <th>Contacto</th>
+                                    <th>Usuario</th>
+                                    <th>Información</th>
+                                    <th>Rol</th>
+                                    <th>Estado</th>
+                                    <th>Fecha Registro</th>
                                     <th class="text-end">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php if (empty($pacientes)): ?>
+                                <?php if (empty($usuarios)): ?>
                                     <tr>
                                         <td colspan="6" class="empty-state">
                                             <i class='bx bx-user-x'></i>
-                                            <p>No hay pacientes registrados</p>
+                                            <p>No hay usuarios registrados</p>
                                         </td>
                                     </tr>
                                 <?php else: ?>
-                                    <?php foreach ($pacientes as $paciente): ?>
+                                    <?php foreach ($usuarios as $usuario): ?>
                                         <tr>
                                             <td>
                                                 <div class="d-flex align-items-center">
@@ -414,51 +481,74 @@
                                                         <i class='bx bx-user-circle' style="font-size: 1.25rem; color: var(--primary-color);"></i>
                                                     </div>
                                                     <div>
-                                                        <strong><?= esc($paciente->nombre) ?></strong>
+                                                        <strong><?= esc($usuario->nombre . ' ' . $usuario->apellidos) ?></strong>
                                                         <div class="text-muted small" style="font-size: 0.75rem;">
-                                                            <?= esc($paciente->email) ?>
+                                                            @<?= esc($usuario->username) ?>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td><?= esc($paciente->dni) ?></td>
                                             <td>
-                                                <?php
-                                                $fechaNacimiento = new \DateTime($paciente->fecha_nacimiento);
-                                                $hoy = new \DateTime();
-                                                $edad = $hoy->diff($fechaNacimiento)->y;
-                                                echo esc($edad) . ' años';
-                                                ?>
+                                                <div class="d-flex flex-column">
+                                                    <span class="text-muted small"><?= esc($usuario->email) ?></span>
+                                                </div>
                                             </td>
                                             <td>
-                                                <span class="badge bg-light text-dark">
-                                                    <?= esc($paciente->obra_social) ?>
+                                                <span class="role-badge role-<?= strtolower($usuario->rol) ?>">
+                                                    <?= ucfirst(esc($usuario->rol)) ?>
                                                 </span>
                                             </td>
                                             <td>
+                                                <?php if ($usuario->estado == 1): ?>
+                                                    <span class="status-badge status-active">
+                                                        <i class='bx bx-check-circle'></i>
+                                                        Activo
+                                                    </span>
+                                                <?php else: ?>
+                                                    <span class="status-badge status-inactive">
+                                                        <i class='bx bx-x-circle'></i>
+                                                        Inactivo
+                                                    </span>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td>
                                                 <div class="d-flex flex-column">
-                                                    <small><?= esc($paciente->telefono) ?></small>
-                                                    <small class="text-muted"><?= esc($paciente->direccion) ?></small>
+                                                    <span class="small"><?= date('d/m/Y', strtotime($usuario->fecha_registro)) ?></span>
+                                                    <span class="text-muted small"><?= date('H:i', strtotime($usuario->fecha_registro)) ?></span>
                                                 </div>
                                             </td>
                                             <td class="text-end">
                                                 <div class="d-flex justify-content-end">
-                                                    <a href="<?= site_url('pacientes/ver/'.$paciente->id) ?>" class="btn-action btn-view" title="Ver detalles">
+                                                    <a href="<?= site_url('usuarios/view/'.$usuario->id) ?>" class="btn-action btn-view" title="Ver detalles">
                                                         <i class='bx bx-show'></i>
                                                     </a>
-                                                    <a href="<?= site_url('pacientes/editar/'.$paciente->id) ?>" class="btn-action btn-edit" title="Editar">
+                                                    <a href="<?= site_url('usuarios/edit/'.$usuario->id) ?>" class="btn-action btn-edit" title="Editar">
                                                         <i class='bx bx-edit'></i>
                                                     </a>
+                                                    <button type="button"
+                                                        class="btn-action btn-toggle"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#modalEstado"
+                                                        onclick="configurarModalEstado({
+                                                            idElemento: '<?= $usuario->id ?>',
+                                                            nombreElemento: '<?= esc($usuario->nombre . ' ' . $usuario->apellidos) ?>',
+                                                            actionUrl: '<?= site_url('usuarios/toggle_status/'.$usuario->id) ?>',
+                                                            estadoActual: <?= $usuario->estado ?>,
+                                                            titulo: '<?= $usuario->estado == 1 ? 'Desactivar Usuario' : 'Activar Usuario' ?>'
+                                                        })"
+                                                        title="<?= $usuario->estado == 1 ? 'Desactivar' : 'Activar' ?>">
+                                                        <i class='bx <?= $usuario->estado == 1 ? 'bx-toggle-right' : 'bx-toggle-left' ?>'></i>
+                                                    </button>
                                                     <button type="button"
                                                         class="btn-action btn-delete"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#modalEliminar"
                                                         onclick="configurarModalEliminar({
-                                                            idElemento: '<?= $paciente->id ?>',
-                                                            nombreElemento: '<?= esc($paciente->nombre) ?>',
-                                                            actionUrl: '<?= site_url('pacientes/delete/'.$paciente->id) ?>',
-                                                            titulo: 'Eliminar Paciente',
-                                                            mensajeAdicional: 'Se eliminarán todos los registros médicos asociados.',
+                                                            idElemento: '<?= $usuario->id ?>',
+                                                            nombreElemento: '<?= esc($usuario->nombre . ' ' . $usuario->apellidos) ?>',
+                                                            actionUrl: '<?= site_url('usuarios/delete/'.$usuario->id) ?>',
+                                                            titulo: 'Eliminar Usuario',
+                                                            mensajeAdicional: 'Se eliminarán todos los registros asociados a este usuario.',
                                                             icono: 'bx-user-x'
                                                         })"
                                                         title="Eliminar">
@@ -477,8 +567,9 @@
         </div>
     </div>
 
-    <!-- Incluir modal de eliminación reutilizable -->
+    <!-- Incluir modales -->
     <?= $this->include('includes/modal_eliminar') ?>
+    <?= $this->include('includes/modal_estado') ?>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

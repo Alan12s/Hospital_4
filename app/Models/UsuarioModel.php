@@ -9,113 +9,111 @@ class UsuarioModel extends Model
     protected $table = 'usuarios';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true;
-    protected $returnType = 'array';
+    protected $returnType = 'object';
     protected $useSoftDeletes = false;
     protected $protectFields = true;
-    
-    protected $allowedFields = [
-        'nombre',
-        'apellidos',
-        'email',
-        'username',
-        'password',
-        'rol',
-        'estado',
-        'ultimo_acceso',
-        'remember_token',
-        'reset_token',
-        'reset_expires'
-    ];
+    protected $allowedFields = ['nombre', 'apellidos', 'email', 'username', 'rol', 'estado', 'password', 'ultimo_acceso'];
 
-    protected $useTimestamps = false;
-    protected $dateFormat = 'datetime';
-    protected $createdField = 'fecha_registro';
-    protected $updatedField = '';
-    protected $deletedField = '';
-    
-    // Validaciones
     protected $validationRules = [
-        'nombre' => 'required|min_length[2]|max_length[50]',
-        'apellidos' => 'required|min_length[2]|max_length[100]',
-        'email' => 'required|valid_email|is_unique[usuarios.email,id,{id}]',
-        'username' => 'required|min_length[3]|max_length[50]|is_unique[usuarios.username,id,{id}]',
-        'password' => 'required|min_length[6]',
-        'rol' => 'required|in_list[administrador,medico,enfermero,supervisor]'
+        'nombre'     => 'required|max_length[50]|regex_match[/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/]',
+        'apellidos'  => 'required|max_length[100]|regex_match[/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/]',
+        'email'      => 'required|valid_email|max_length[50]',
+        'username'   => 'required|max_length[50]|alpha_dash',
+        'rol'        => 'required|in_list[administrador,medico,enfermero,supervisor,usuario]',
+        'estado'     => 'required|in_list[0,1]'
     ];
 
     protected $validationMessages = [
         'nombre' => [
-            'required' => 'El nombre es obligatorio',
-            'min_length' => 'El nombre debe tener al menos 2 caracteres',
-            'max_length' => 'El nombre no puede tener más de 50 caracteres'
+            'required'     => 'El nombre es obligatorio',
+            'max_length'   => 'El nombre no puede exceder los 50 caracteres',
+            'regex_match'  => 'El nombre solo puede contener letras y espacios'
         ],
         'apellidos' => [
-            'required' => 'Los apellidos son obligatorios',
-            'min_length' => 'Los apellidos deben tener al menos 2 caracteres',
-            'max_length' => 'Los apellidos no pueden tener más de 100 caracteres'
+            'required'     => 'Los apellidos son obligatorios',
+            'max_length'   => 'Los apellidos no pueden exceder los 100 caracteres',
+            'regex_match'  => 'Los apellidos solo pueden contener letras y espacios'
         ],
         'email' => [
-            'required' => 'El email es obligatorio',
-            'valid_email' => 'Debe ingresar un email válido',
-            'is_unique' => 'Este email ya está registrado'
+            'required'     => 'El email es obligatorio',
+            'valid_email'  => 'Ingrese un email válido',
+            'max_length'   => 'El email no puede exceder los 50 caracteres'
         ],
         'username' => [
-            'required' => 'El nombre de usuario es obligatorio',
-            'min_length' => 'El nombre de usuario debe tener al menos 3 caracteres',
-            'max_length' => 'El nombre de usuario no puede tener más de 50 caracteres',
-            'is_unique' => 'Este nombre de usuario ya existe'
-        ],
-        'password' => [
-            'required' => 'La contraseña es obligatoria',
-            'min_length' => 'La contraseña debe tener al menos 6 caracteres'
+            'required'     => 'El nombre de usuario es obligatorio',
+            'max_length'   => 'El nombre de usuario no puede exceder los 50 caracteres',
+            'alpha_dash'   => 'El nombre de usuario solo puede contener letras, números, guiones y guiones bajos'
         ],
         'rol' => [
-            'required' => 'El rol es obligatorio',
-            'in_list' => 'Debe seleccionar un rol válido'
+            'required'     => 'El rol es obligatorio',
+            'in_list'      => 'Seleccione un rol válido'
+        ],
+        'estado' => [
+            'required'     => 'El estado es obligatorio',
+            'in_list'      => 'Seleccione un estado válido'
         ]
     ];
 
     protected $skipValidation = false;
     protected $cleanValidationRules = true;
 
-    // Métodos personalizados
-    public function getUserByUsername($username)
+    // Dates
+    protected $useTimestamps = false;
+    protected $dateFormat = 'datetime';
+    protected $createdField = 'fecha_registro';
+    protected $updatedField = '';
+    protected $deletedField = '';
+
+    public function getAllUsuarios()
     {
-        return $this->where('username', $username)
-                    ->where('estado', 1)
-                    ->first();
+        return $this->orderBy('nombre', 'ASC')->findAll();
     }
 
-    public function getUserByEmail($email)
+    public function getUsuario($id)
     {
-        return $this->where('email', $email)
-                    ->where('estado', 1)
-                    ->first();
+        return $this->find($id);
     }
 
-    public function updateLastAccess($userId)
+    public function getUsuarioByEmail($email)
     {
-        return $this->update($userId, [
-            'ultimo_acceso' => date('Y-m-d H:i:s')
-        ]);
+        return $this->where('email', $email)->first();
     }
 
-    public function getRoleUsers($role)
+    public function getUsuarioByUsername($username)
     {
-        return $this->where('rol', $role)
-                    ->where('estado', 1)
-                    ->findAll();
+        return $this->where('username', $username)->first();
     }
 
-    // Callback para encriptar contraseña antes de insertar/actualizar
-    protected function hashPassword(array $data)
+    public function emailExists($email, $excludeId = null)
     {
-        if (isset($data['data']['password'])) {
-            $data['data']['password'] = password_hash($data['data']['password'], PASSWORD_DEFAULT);
+        $builder = $this->where('email', $email);
+        if ($excludeId !== null) {
+            $builder->where('id !=', $excludeId);
         }
-        return $data;
+        return $builder->countAllResults() > 0;
     }
 
-    protected $beforeInsert = ['hashPassword'];
-    protected $beforeUpdate = ['hashPassword'];
+    public function usernameExists($username, $excludeId = null)
+    {
+        $builder = $this->where('username', $username);
+        if ($excludeId !== null) {
+            $builder->where('id !=', $excludeId);
+        }
+        return $builder->countAllResults() > 0;
+    }
+
+    public function updateLastAccess($id)
+    {
+        return $this->update($id, ['ultimo_acceso' => date('Y-m-d H:i:s')]);
+    }
+
+    public function getUsuariosByRol($rol)
+    {
+        return $this->where('rol', $rol)->orderBy('nombre', 'ASC')->findAll();
+    }
+
+    public function getActiveUsuarios()
+    {
+        return $this->where('estado', 1)->orderBy('nombre', 'ASC')->findAll();
+    }
 }

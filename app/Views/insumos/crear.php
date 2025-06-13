@@ -5,13 +5,12 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
+    <link rel="stylesheet" href="<?php echo base_url('assets/css/styles.css'); ?>">
+
 <div class="app-container">
     <!-- Sidebar -->
-    <?php 
-    // COMENTADO: Include del sidebar - En CI4 esto se maneja típicamente 
-    // a través del layout principal o se puede incluir así:
-    // echo view('includes/sidebar'); 
-    ?>
+            <?= view('includes/sidebar') ?>
+
 
     <div class="main-content">
         <div class="main-wrapper">

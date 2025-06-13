@@ -1,4 +1,3 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -12,7 +11,7 @@
 <body>
     <div class="app-container">
         <!-- Sidebar -->
-        <?php $this->load->view('includes/sidebar'); ?>
+        <?= view('includes/sidebar') ?>
         
         <div class="main-content">
             <div class="main-wrapper">
@@ -62,7 +61,7 @@
                         <?php endif; ?>
 
                         <div class="d-flex justify-content-end mt-4">
-                            <a href="<?= site_url('insumos/edit/'.$insumo['id_insumo']) ?>" class="btn btn-primary me-2">
+                            <a href="<?= site_url('insumos/editar/'.$insumo['id_insumo']) ?>" class="btn btn-primary me-2">
                                 <i class="bi bi-pencil"></i> Editar
                             </a>
                             <button type="button"

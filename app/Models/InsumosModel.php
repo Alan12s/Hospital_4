@@ -61,8 +61,6 @@ class InsumosModel extends Model
 
     // Callbacks
     protected $allowCallbacks = true;
-    protected $beforeInsert = ['generateCode'];
-    protected $afterInsert = ['updateLote'];
 
     /**
      * Obtener todos los insumos ordenados por nombre
@@ -78,6 +76,38 @@ class InsumosModel extends Model
     public function getInsumo($id)
     {
         return $this->find($id);
+    }
+
+    /**
+     * Agregar un nuevo insumo
+     */
+    public function addInsumo($data)
+    {
+        // Generar código automático si no se provee
+        if (empty($data['codigo'])) {
+            $data['codigo'] = 'INS-' . strtoupper(substr(md5(uniqid()), 0, 6));
+        }
+        
+        // Generar lote temporal
+        $data['lote'] = 'LOTE-' . date('Ymd');
+        
+        $id = $this->insert($data);
+        
+        if ($id) {
+            // Actualizar el lote con el ID generado
+            $lote = 'LOTE-' . date('Ymd') . '-' . str_pad($id, 4, '0', STR_PAD_LEFT);
+            $this->update($id, ['lote' => $lote]);
+        }
+        
+        return $id;
+    }
+
+    /**
+     * Actualizar un insumo
+     */
+    public function updateInsumo($id, $data)
+    {
+        return $this->update($id, $data);
     }
 
     /**
@@ -97,7 +127,7 @@ class InsumosModel extends Model
     public function deleteInsumo($id)
     {
         if ($this->estaEnUso($id)) {
-            return false; // No se puede borrar
+            return false;
         }
         return $this->delete($id);
     }
@@ -111,7 +141,7 @@ class InsumosModel extends Model
     }
 
     /**
-     * Obtener insumos con stock bajo
+     * Obtener insumos con stock bajo (umbral normal)
      */
     public function getLowStockInsumos($minQuantity = 10)
     {
@@ -119,29 +149,26 @@ class InsumosModel extends Model
     }
 
     /**
-     * Generar código automático antes de insertar
+     * Contar insumos con stock bajo (umbral normal)
      */
-    protected function generateCode(array $data)
+    public function countBajoStock($minQuantity = 10)
     {
-        if (empty($data['data']['codigo'])) {
-            $data['data']['codigo'] = 'INS-' . strtoupper(substr(md5(uniqid()), 0, 6));
-        }
-        
-        // Generar lote temporal
-        $data['data']['lote'] = 'LOTE-' . date('Ymd');
-        
-        return $data;
+        return $this->where('cantidad <', $minQuantity)->countAllResults();
     }
 
     /**
-     * Actualizar lote después de insertar
+     * Obtener insumos con stock crítico (umbral más bajo)
      */
-    protected function updateLote(array $data)
+    public function getBajoStockCritico($criticalQuantity = 5)
     {
-        if (isset($data['id'])) {
-            $lote = 'LOTE-' . date('Ymd') . '-' . str_pad($data['id'], 4, '0', STR_PAD_LEFT);
-            $this->update($data['id'], ['lote' => $lote]);
-        }
-        return $data;
+        return $this->where('cantidad <', $criticalQuantity)->findAll();
+    }
+
+    /**
+     * Contar insumos con stock crítico (umbral más bajo)
+     */
+    public function countBajoStockCritico($criticalQuantity = 5)
+    {
+        return $this->where('cantidad <', $criticalQuantity)->countAllResults();
     }
 }
