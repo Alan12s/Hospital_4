@@ -104,4 +104,9 @@ class CirujanoModel extends Model
         }
         return []; // Si la tabla no existe, retorna array vacío
     }
+    public function countCirujanos()
+{
+    return $this->countAll();
+}
+
 }

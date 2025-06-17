@@ -60,6 +60,7 @@
                                         <div class="invalid-feedback"><?= session()->getFlashdata('errors')['nombre'] ?></div>
                                     <?php endif; ?>
                                 </div>
+                                
                                 <div class="col-md-6">
                                     <label for="tipo" class="form-label">Tipo <span class="text-danger">*</span></label>
                                     <select class="form-select <?= session()->getFlashdata('errors')['tipo'] ?? false ? 'is-invalid' : '' ?>" 
@@ -81,17 +82,36 @@
 
                             <div class="row mb-3">
                                 <div class="col-md-6">
+                                    <label for="categoria" class="form-label">Categoría <span class="text-danger">*</span></label>
+                                    <select class="form-select <?= session()->getFlashdata('errors')['categoria'] ?? false ? 'is-invalid' : '' ?>" 
+                                            id="categoria" 
+                                            name="categoria" 
+                                            required>
+                                        <option value="">Seleccionar Categoría</option>
+                                        <option value="descartable" <?= old('categoria') === 'descartable' ? 'selected' : '' ?>>Descartable</option>
+                                        <option value="instrumental" <?= old('categoria') === 'instrumental' ? 'selected' : '' ?>>Instrumental</option>
+                                    </select>
+                                    <?php if (isset(session()->getFlashdata('errors')['categoria'])): ?>
+                                        <div class="invalid-feedback"><?= session()->getFlashdata('errors')['categoria'] ?></div>
+                                    <?php endif; ?>
+                                </div>
+                                
+                                <div class="col-md-6">
                                     <label for="cantidad" class="form-label">Cantidad <span class="text-danger">*</span></label>
                                     <input type="number" 
                                            class="form-control <?= session()->getFlashdata('errors')['cantidad'] ?? false ? 'is-invalid' : '' ?>" 
                                            id="cantidad" 
                                            name="cantidad" 
                                            value="<?= old('cantidad') ?>" 
+                                           min="0"
                                            required>
                                     <?php if (isset(session()->getFlashdata('errors')['cantidad'])): ?>
                                         <div class="invalid-feedback"><?= session()->getFlashdata('errors')['cantidad'] ?></div>
                                     <?php endif; ?>
                                 </div>
+                            </div>
+
+                            <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label for="ubicacion" class="form-label">Ubicación <span class="text-danger">*</span></label>
                                     <input type="text" 
@@ -99,10 +119,22 @@
                                            id="ubicacion" 
                                            name="ubicacion" 
                                            value="<?= old('ubicacion') ?>" 
+                                           placeholder="Ej: Quirófano 1 - Armario A"
                                            required>
                                     <?php if (isset(session()->getFlashdata('errors')['ubicacion'])): ?>
                                         <div class="invalid-feedback"><?= session()->getFlashdata('errors')['ubicacion'] ?></div>
                                     <?php endif; ?>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="lote" class="form-label">Lote (Opcional)</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="lote" 
+                                           name="lote" 
+                                           value="<?= old('lote') ?>" 
+                                           placeholder="Se generará automáticamente si no se especifica">
+                                    <small class="form-text text-muted">Si no se especifica, se generará automáticamente</small>
                                 </div>
                             </div>
 
@@ -126,13 +158,18 @@
                                            class="form-control" 
                                            id="fecha_vencimiento" 
                                            name="fecha_vencimiento" 
-                                           value="<?= old('fecha_vencimiento') ?>">
+                                           value="<?= old('fecha_vencimiento') ?>"
+                                           min="<?= date('Y-m-d') ?>">
                                 </div>
                             </div>
 
                             <div class="d-flex justify-content-end">
-                                <a href="<?= base_url('insumos') ?>" class="btn btn-secondary me-2">Cancelar</a>
-                                <button type="submit" class="btn btn-primary">Guardar Insumo</button>
+                                <a href="<?= base_url('insumos') ?>" class="btn btn-secondary me-2">
+                                    <i class="bi bi-x-circle me-1"></i> Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle me-1"></i> Guardar Insumo
+                                </button>
                             </div>
                         <?= form_close() ?>
                     </div>
@@ -146,15 +183,24 @@
 document.addEventListener('DOMContentLoaded', function() {
     const tieneVencimientoCheckbox = document.getElementById('tiene_vencimiento');
     const fechaVencimientoContainer = document.getElementById('fecha_vencimiento_container');
+    const fechaVencimientoInput = document.getElementById('fecha_vencimiento');
 
     // Mostrar/ocultar campo de fecha según checkbox
     tieneVencimientoCheckbox.addEventListener('change', function() {
-        fechaVencimientoContainer.style.display = this.checked ? 'block' : 'none';
+        if (this.checked) {
+            fechaVencimientoContainer.style.display = 'block';
+            fechaVencimientoInput.required = true;
+        } else {
+            fechaVencimientoContainer.style.display = 'none';
+            fechaVencimientoInput.required = false;
+            fechaVencimientoInput.value = '';
+        }
     });
 
     // Mostrar campo si ya estaba marcado al recargar por validación
     if(tieneVencimientoCheckbox.checked) {
         fechaVencimientoContainer.style.display = 'block';
+        fechaVencimientoInput.required = true;
     }
 });
 </script>

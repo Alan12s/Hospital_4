@@ -41,12 +41,15 @@
         .btn-group .btn {
             margin: 0 2px;
         }
+        .badge-categoria {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+        }
     </style>
 </head>
 <body>
     
     <div class="app-container">
-        <!-- Comentado: Sidebar -->
         <!-- Sidebar -->
         <?= view('includes/sidebar') ?>
         
@@ -75,6 +78,16 @@
                 </div>
                 <?php endif; ?>
 
+                <!-- DEBUG: Mostrar información de debug temporalmente -->
+                <?php if(!empty($insumos) && isset($_GET['debug'])): ?>
+                <div class="alert alert-info">
+                    <strong>DEBUG:</strong><br>
+                    Total insumos: <?= count($insumos) ?><br>
+                    Campos del primer insumo: <?= implode(', ', array_keys($insumos[0])) ?><br>
+                    Categoría del primer insumo: <?= $insumos[0]['categoria'] ?? 'NO DEFINIDA' ?>
+                </div>
+                <?php endif; ?>
+
                 <div class="data-card">
                     <div class="data-card-header">
                         <h5 class="mb-0">Listado de Insumos</h5>
@@ -86,6 +99,7 @@
                                     <tr>
                                         <th>Nombre</th>
                                         <th>Tipo</th>
+                                        <th>Categoría</th>
                                         <th>Cantidad</th>
                                         <th>Ubicación</th>
                                         <th>Vencimiento</th>
@@ -95,28 +109,42 @@
                                 <tbody>
                                     <?php if(empty($insumos)): ?>
                                     <tr>
-                                        <td colspan="6" class="text-center">No hay insumos registrados</td>
+                                        <td colspan="7" class="text-center">No hay insumos registrados</td>
                                     </tr>
                                     <?php else: ?>
                                         <?php foreach($insumos as $insumo): ?>
                                         <tr>
-                                            <td><?= esc($insumo['nombre']) ?></td>
-                                            <td><?= esc($insumo['tipo']) ?></td>
-                                            <td><?= esc($insumo['cantidad']) ?></td>
-                                            <td><?= esc($insumo['ubicacion']) ?></td>
+                                            <td><?= esc($insumo['nombre'] ?? 'Sin nombre') ?></td>
+                                            <td><?= esc($insumo['tipo'] ?? 'Sin tipo') ?></td>
                                             <td>
-                                                <?= $insumo['tiene_vencimiento'] ? esc($insumo['fecha_vencimiento']) : 'No aplica' ?>
+                                                <?php 
+                                                $categoria = $insumo['categoria'] ?? 'descartable';
+                                                $badgeClass = $categoria == 'descartable' ? 'bg-warning text-dark' : 'bg-info text-white';
+                                                ?>
+                                                <span class="badge <?= $badgeClass ?> badge-categoria">
+                                                    <?= ucfirst(esc($categoria)) ?>
+                                                </span>
+                                            </td>
+                                            <td><?= esc($insumo['cantidad'] ?? '0') ?></td>
+                                            <td><?= esc($insumo['ubicacion'] ?? 'Sin ubicación') ?></td>
+                                            <td>
+                                                <?php 
+                                                $tieneVencimiento = isset($insumo['tiene_vencimiento']) ? $insumo['tiene_vencimiento'] : 0;
+                                                $fechaVencimiento = isset($insumo['fecha_vencimiento']) ? $insumo['fecha_vencimiento'] : null;
+                                                ?>
+                                                <?= $tieneVencimiento && $fechaVencimiento ? esc($fechaVencimiento) : 'No aplica' ?>
                                             </td>
                                             <td class="text-end">
                                                 <div class="btn-group">
-                                                    <a href="<?= base_url('insumos/view/'.$insumo['id_insumo']) ?>" class="btn btn-sm btn-secondary">
+                                                    <a href="<?= base_url('insumos/view/'.$insumo['id_insumo']) ?>" class="btn btn-sm btn-secondary" title="Ver">
                                                         <i class="bi bi-eye"></i>
                                                     </a>
-                                                    <a href="<?= base_url('insumos/editar/'.$insumo['id_insumo']) ?>" class="btn btn-sm btn-primary">
+                                                    <a href="<?= base_url('insumos/editar/'.$insumo['id_insumo']) ?>" class="btn btn-sm btn-primary" title="Editar">
                                                         <i class="bi bi-pencil"></i>
                                                     </a>
                                                     <button type="button" 
                                                        class="btn btn-sm btn-danger" 
+                                                       title="Eliminar"
                                                        data-bs-toggle="modal"
                                                        data-bs-target="#modalEliminarInsumo"
                                                        data-id="<?= $insumo['id_insumo'] ?>"
@@ -166,7 +194,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Solo el código necesario para el modal de eliminación
+        // Modal de eliminación
         const modalEliminar = document.getElementById('modalEliminarInsumo');
         
         if (modalEliminar) {
@@ -184,7 +212,7 @@
         const alertas = document.querySelectorAll('.alert');
         alertas.forEach(function(alerta) {
             setTimeout(function() {
-                if (alerta) {
+                if (alerta && !alerta.classList.contains('alert-info')) { // No ocultar alertas de debug
                     alerta.style.opacity = '0';
                     setTimeout(function() {
                         if (alerta.parentNode) {

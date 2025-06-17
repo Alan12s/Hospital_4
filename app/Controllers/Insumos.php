@@ -50,6 +50,7 @@ class Insumos extends Controller
         $validation->setRules([
             'nombre' => 'required|max_length[70]',
             'tipo' => 'required|max_length[50]',
+            'categoria' => 'required|in_list[descartable,instrumental]',
             'cantidad' => 'required|numeric',
             'ubicacion' => 'required|max_length[100]'
         ]);
@@ -62,6 +63,7 @@ class Insumos extends Controller
         $data = [
             'nombre' => $this->request->getPost('nombre'),
             'tipo' => $this->request->getPost('tipo'),
+            'categoria' => $this->request->getPost('categoria'),
             'cantidad' => $this->request->getPost('cantidad'),
             'ubicacion' => $this->request->getPost('ubicacion'),
             'lote' => $this->request->getPost('lote'),
@@ -102,6 +104,7 @@ class Insumos extends Controller
         $validation->setRules([
             'nombre' => 'required|max_length[70]',
             'tipo' => 'required|max_length[50]',
+            'categoria' => 'required|in_list[descartable,instrumental]',
             'cantidad' => 'required|numeric',
             'ubicacion' => 'required|max_length[100]'
         ]);
@@ -118,6 +121,7 @@ class Insumos extends Controller
         $data = [
             'nombre' => $this->request->getPost('nombre'),
             'tipo' => $this->request->getPost('tipo'),
+            'categoria' => $this->request->getPost('categoria'),
             'cantidad' => $this->request->getPost('cantidad'),
             'ubicacion' => $this->request->getPost('ubicacion'),
             'lote' => $this->request->getPost('lote'),

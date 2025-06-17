@@ -42,14 +42,49 @@
                                         <?php endif; ?>
                                     </div>
                                     <div class="col-md-6">
+                                        <label for="categoria" class="form-label">Categoría <span class="text-danger">*</span></label>
+                                        <select class="form-select <?php echo (session()->getFlashdata('errors')['categoria'] ?? false) ? 'is-invalid' : ''; ?>" id="categoria" name="categoria" required>
+                                            <option value="">Seleccionar Categoría</option>
+                                            <option value="descartable" <?php echo (old('categoria', $insumo['categoria']) == 'descartable') ? 'selected' : ''; ?>>Descartable</option>
+                                            <option value="instrumental" <?php echo (old('categoria', $insumo['categoria']) == 'instrumental') ? 'selected' : ''; ?>>Instrumental</option>
+                                        </select>
+                                        <?php if(session()->getFlashdata('errors')['categoria'] ?? false): ?>
+                                            <div class="invalid-feedback"><?php echo session()->getFlashdata('errors')['categoria']; ?></div>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
                                         <label for="tipo" class="form-label">Tipo <span class="text-danger">*</span></label>
                                         <select class="form-select <?php echo (session()->getFlashdata('errors')['tipo'] ?? false) ? 'is-invalid' : ''; ?>" id="tipo" name="tipo" required>
                                             <option value="">Seleccionar Tipo</option>
-                                            <option value="Consumible" <?php echo (old('tipo', $insumo['tipo']) == 'Consumible') ? 'selected' : ''; ?>>Consumible</option>
-                                            <option value="Material quirúrgico" <?php echo (old('tipo', $insumo['tipo']) == 'Material quirúrgico') ? 'selected' : ''; ?>>Material quirúrgico</option>
-                                            <option value="Protección personal" <?php echo (old('tipo', $insumo['tipo']) == 'Protección personal') ? 'selected' : ''; ?>>Protección personal</option>
-                                            <option value="Instrumental" <?php echo (old('tipo', $insumo['tipo']) == 'Instrumental') ? 'selected' : ''; ?>>Instrumental</option>
-                                            <option value="Medicamento" <?php echo (old('tipo', $insumo['tipo']) == 'Medicamento') ? 'selected' : ''; ?>>Medicamento</option>
+                                            <!-- Opciones para Descartables -->
+                                            <optgroup label="Descartables" id="descartables-group" style="display: none;">
+                                                <option value="Guantes">Guantes</option>
+                                                <option value="Jeringas">Jeringas</option>
+                                                <option value="Gasas">Gasas</option>
+                                                <option value="Compresas">Compresas</option>
+                                                <option value="Mascarillas">Mascarillas</option>
+                                                <option value="Batas">Batas</option>
+                                                <option value="Gorros">Gorros</option>
+                                                <option value="Cubrezapatos">Cubrezapatos</option>
+                                                <option value="Campos quirúrgicos">Campos quirúrgicos</option>
+                                                <option value="Suturas">Suturas</option>
+                                            </optgroup>
+                                            <!-- Opciones para Instrumentales -->
+                                            <optgroup label="Instrumentales" id="instrumentales-group" style="display: none;">
+                                                <option value="Bisturí">Bisturí</option>
+                                                <option value="Tijeras">Tijeras</option>
+                                                <option value="Pinzas">Pinzas</option>
+                                                <option value="Hemostatos">Hemostatos</option>
+                                                <option value="Retractores">Retractores</option>
+                                                <option value="Separadores">Separadores</option>
+                                                <option value="Sondas">Sondas</option>
+                                                <option value="Especulums">Especulums</option>
+                                                <option value="Fórceps">Fórceps</option>
+                                                <option value="Instrumental de medición">Instrumental de medición</option>
+                                            </optgroup>
                                         </select>
                                         <?php if(session()->getFlashdata('errors')['tipo'] ?? false): ?>
                                             <div class="invalid-feedback"><?php echo session()->getFlashdata('errors')['tipo']; ?></div>
@@ -113,11 +148,85 @@
     document.addEventListener('DOMContentLoaded', function() {
         const tieneVencimientoCheckbox = document.getElementById('tiene_vencimiento');
         const fechaVencimientoContainer = document.getElementById('fecha_vencimiento_container');
+        const categoriaSelect = document.getElementById('categoria');
+        const tipoSelect = document.getElementById('tipo');
+        const descartablesGroup = document.getElementById('descartables-group');
+        const instrumentalesGroup = document.getElementById('instrumentales-group');
 
         // Mostrar/ocultar campo de fecha según checkbox
         tieneVencimientoCheckbox.addEventListener('change', function() {
             fechaVencimientoContainer.style.display = this.checked ? 'block' : 'none';
         });
+
+        // Función para mostrar opciones de tipo según categoría
+        function updateTipoOptions() {
+            const categoria = categoriaSelect.value;
+            const tipoActual = tipoSelect.value;
+            
+            // Ocultar todos los grupos
+            descartablesGroup.style.display = 'none';
+            instrumentalesGroup.style.display = 'none';
+            
+            // Limpiar selección si no coincide con la nueva categoría
+            let mantenerSeleccion = false;
+            
+            if (categoria === 'descartable') {
+                descartablesGroup.style.display = 'block';
+                // Verificar si el tipo actual pertenece a descartables
+                const opcionesDescartables = descartablesGroup.querySelectorAll('option');
+                for (let option of opcionesDescartables) {
+                    if (option.value === tipoActual) {
+                        mantenerSeleccion = true;
+                        break;
+                    }
+                }
+            } else if (categoria === 'instrumental') {
+                instrumentalesGroup.style.display = 'block';
+                // Verificar si el tipo actual pertenece a instrumentales
+                const opcionesInstrumentales = instrumentalesGroup.querySelectorAll('option');
+                for (let option of opcionesInstrumentales) {
+                    if (option.value === tipoActual) {
+                        mantenerSeleccion = true;
+                        break;
+                    }
+                }
+            }
+            
+            // Si el tipo actual no pertenece a la nueva categoría, limpiar selección
+            if (!mantenerSeleccion) {
+                tipoSelect.value = '';
+            }
+        }
+
+        // Configurar el tipo inicial basado en la categoría actual
+        const tipoActual = '<?php echo old('tipo', $insumo['tipo']); ?>';
+        if (tipoActual) {
+            // Crear una opción temporal para el valor actual si no existe
+            let optionExists = false;
+            const allOptions = tipoSelect.querySelectorAll('option');
+            for (let option of allOptions) {
+                if (option.value === tipoActual) {
+                    optionExists = true;
+                    option.selected = true;
+                    break;
+                }
+            }
+            
+            if (!optionExists) {
+                // Agregar opción temporal para el valor actual
+                const tempOption = document.createElement('option');
+                tempOption.value = tipoActual;
+                tempOption.textContent = tipoActual;
+                tempOption.selected = true;
+                tipoSelect.appendChild(tempOption);
+            }
+        }
+
+        // Mostrar opciones iniciales
+        updateTipoOptions();
+
+        // Escuchar cambios en categoría
+        categoriaSelect.addEventListener('change', updateTipoOptions);
     });
     </script>
 </body>

@@ -82,4 +82,9 @@ class PacienteModel extends Model
     {
         return $this->delete($id);
     }
+    public function countPacientes()
+{
+    return $this->countAll();
+}
+
 }

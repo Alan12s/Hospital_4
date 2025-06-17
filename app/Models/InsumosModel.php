@@ -15,6 +15,7 @@ class InsumosModel extends Model
     protected $allowedFields = [
         'nombre', 
         'tipo', 
+        'categoria',
         'cantidad', 
         'ubicacion', 
         'lote', 
@@ -24,7 +25,7 @@ class InsumosModel extends Model
     ];
 
     // Dates
-    protected $useTimestamps = true;
+    protected $useTimestamps = false; // Cambiado a false ya que la tabla no tiene timestamps
     protected $dateFormat = 'datetime';
     protected $createdField = 'created_at';
     protected $updatedField = 'updated_at';
@@ -33,6 +34,7 @@ class InsumosModel extends Model
     protected $validationRules = [
         'nombre' => 'required|max_length[70]',
         'tipo' => 'required|max_length[50]',
+        'categoria' => 'required|in_list[descartable,instrumental]',
         'cantidad' => 'required|numeric',
         'ubicacion' => 'required|max_length[100]'
     ];
@@ -45,6 +47,10 @@ class InsumosModel extends Model
         'tipo' => [
             'required' => 'El tipo es obligatorio',
             'max_length' => 'El tipo no puede exceder los 50 caracteres'
+        ],
+        'categoria' => [
+            'required' => 'La categoría es obligatoria',
+            'in_list' => 'La categoría debe ser descartable o instrumental'
         ],
         'cantidad' => [
             'required' => 'La cantidad es obligatoria',
@@ -137,7 +143,10 @@ class InsumosModel extends Model
      */
     public function searchInsumos($term)
     {
-        return $this->like('nombre', $term)->findAll();
+        return $this->like('nombre', $term)
+                    ->orLike('tipo', $term)
+                    ->orLike('categoria', $term)
+                    ->findAll();
     }
 
     /**
@@ -170,5 +179,23 @@ class InsumosModel extends Model
     public function countBajoStockCritico($criticalQuantity = 5)
     {
         return $this->where('cantidad <', $criticalQuantity)->countAllResults();
+    }
+
+    /**
+     * Obtener insumos por categoría
+     */
+    public function getInsumosPorCategoria($categoria)
+    {
+        return $this->where('categoria', $categoria)->findAll();
+    }
+
+    /**
+     * Obtener estadísticas por categoría
+     */
+    public function getEstadisticasPorCategoria()
+    {
+        return $this->select('categoria, COUNT(*) as total, SUM(cantidad) as cantidad_total')
+                    ->groupBy('categoria')
+                    ->findAll();
     }
 }
