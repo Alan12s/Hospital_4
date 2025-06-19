@@ -184,6 +184,15 @@
             color: var(--gray-700);
             margin-bottom: 0.5rem;
             font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-label.required-field:after {
+            content: '*';
+            color: var(--danger-color);
+            margin-left: 0.25rem;
         }
 
         .form-control, .form-select {
@@ -193,6 +202,7 @@
             font-size: 0.9rem;
             transition: all 0.3s ease;
             background-color: var(--white);
+            color: var(--gray-800);
         }
 
         .form-control:focus, .form-select:focus {
@@ -208,6 +218,7 @@
         .invalid-feedback {
             font-size: 0.8rem;
             margin-top: 0.25rem;
+            color: var(--danger-color);
         }
 
         /* ============= ALERT STYLES ============= */
@@ -220,12 +231,19 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
+            padding: 1rem 1.25rem;
         }
 
         .alert-danger {
             background-color: rgba(239, 68, 68, 0.1);
             color: var(--danger-color);
             border-left: 4px solid var(--danger-color);
+        }
+
+        .alert-success {
+            background-color: rgba(34, 197, 94, 0.1);
+            color: var(--success-color);
+            border-left: 4px solid var(--success-color);
         }
 
         .alert-danger ul {
@@ -243,6 +261,53 @@
             border-top: 1px solid var(--gray-200);
         }
 
+        /* ============= DETAIL VIEW STYLES ============= */
+        .detail-row {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+
+        .detail-value {
+            color: var(--gray-800);
+        }
+
+        .badge {
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.5rem 0.75rem;
+            border-radius: var(--border-radius-sm);
+        }
+
+        /* ============= TABLE STYLES ============= */
+        .table-responsive {
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            border-bottom: none;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(106, 27, 154, 0.05);
+        }
+
         /* ============= ANIMATIONS ============= */
         @keyframes fadeIn {
             from {
@@ -257,6 +322,7 @@
 
         .animate-fade-in {
             animation: fadeIn 0.6s ease-out forwards;
+            opacity: 0;
         }
 
         /* ============= RESPONSIVE ============= */
@@ -293,6 +359,15 @@
             .card-body {
                 padding: 1.5rem;
             }
+            
+            .detail-row {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .detail-label, .detail-value {
+                width: 100%;
+            }
         }
 
         @media (max-width: 576px) {
@@ -309,6 +384,10 @@
             
             .card-body {
                 padding: 1rem;
+            }
+            
+            .table-responsive {
+                border-radius: 0;
             }
         }
     </style>

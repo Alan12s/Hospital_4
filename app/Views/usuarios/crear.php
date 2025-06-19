@@ -168,6 +168,14 @@
             box-shadow: 0 0 0 0.2rem rgba(106, 27, 154, 0.25);
         }
 
+        .form-control:invalid {
+            border-color: var(--danger-color);
+        }
+
+        .form-control:valid {
+            border-color: var(--success-color);
+        }
+
         .form-label {
             font-weight: 600;
             color: var(--gray-700);
@@ -189,16 +197,12 @@
             box-shadow: 0 0 0 0.2rem rgba(106, 27, 154, 0.25);
         }
 
-        .invalid-feedback {
-            display: block;
-            font-size: 0.85rem;
-            color: var(--danger-color);
-            margin-top: 0.25rem;
+        .form-select:invalid {
+            border-color: var(--danger-color);
         }
 
-        .form-control.is-invalid {
-            border-color: var(--danger-color);
-            box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25);
+        .form-select:valid {
+            border-color: var(--success-color);
         }
 
         /* ============= BUTTON STYLES ============= */
@@ -227,6 +231,32 @@
             font-size: 0.9rem;
             border: none;
             box-shadow: var(--shadow-sm);
+        }
+
+        /* ============= VALIDATION STYLES ============= */
+        .requirements {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            margin-top: 0.25rem;
+        }
+
+        .requirements.show {
+            display: block;
+        }
+
+        .requirement {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin: 0.1rem 0;
+        }
+
+        .requirement.valid {
+            color: var(--success-color);
+        }
+
+        .requirement.invalid {
+            color: var(--danger-color);
         }
 
         /* ============= RESPONSIVE ============= */
@@ -288,33 +318,7 @@
                 </a>
             </div>
 
-            <!-- Flash Messages -->
-            <?php if (session()->get('errors')): ?>
-                <div class="alert alert-danger alert-dismissible fade show glass-card">
-                    <div class="d-flex align-items-start">
-                        <i class='bx bx-error-circle me-2 mt-1'></i>
-                        <div>
-                            <strong>Errores de validación:</strong>
-                            <ul class="mb-0 mt-2">
-                                <?php foreach (session()->get('errors') as $error): ?>
-                                    <li><?= esc($error) ?></li>
-                                <?php endforeach; ?>
-                            </ul>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            <?php endif; ?>
-
-            <?php if (session()->getFlashdata('error')): ?>
-                <div class="alert alert-danger alert-dismissible fade show glass-card">
-                    <div class="d-flex align-items-center">
-                        <i class='bx bx-error-circle me-2'></i>
-                        <?= esc(session()->getFlashdata('error')) ?>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            <?php endif; ?>
+            <!-- Flash Messages... -->
 
             <!-- Form Card -->
             <div class="glass-card animate-fade-in" style="animation-delay: 0.1s">
@@ -322,7 +326,8 @@
                     <h5><i class='bx bx-user-plus'></i>Información del Usuario</h5>
                 </div>
                 <div class="card-body p-4">
-                    <?= form_open('usuarios/add', ['class' => 'needs-validation', 'novalidate' => '']) ?>
+                    <form action="<?= site_url('usuarios/crear') ?>" method="post" id="formCrearUsuario" novalidate>
+                        <?= csrf_field() ?>
                         <div class="row">
                             <!-- Información Personal -->
                             <div class="col-md-6">
@@ -331,15 +336,18 @@
                                         <i class='bx bx-user me-1'></i>Nombre *
                                     </label>
                                     <input type="text" 
-                                           class="form-control <?= session()->get('errors.nombre') ? 'is-invalid' : '' ?>" 
+                                           class="form-control <?= (session()->getFlashdata('errors') && isset(session()->getFlashdata('errors')['nombre'])) ? 'is-invalid' : '' ?>" 
                                            id="nombre" 
                                            name="nombre" 
                                            value="<?= old('nombre') ?>" 
                                            required
+                                           maxlength="50"
+                                           pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"
+                                           title="El nombre solo puede contener letras y espacios"
                                            placeholder="Ingrese el nombre">
-                                    <?php if (session()->get('errors.nombre')): ?>
+                                    <?php if (session()->getFlashdata('errors') && isset(session()->getFlashdata('errors')['nombre'])): ?>
                                         <div class="invalid-feedback">
-                                            <?= esc(session()->get('errors.nombre')) ?>
+                                            <?= esc(session()->getFlashdata('errors')['nombre']) ?>
                                         </div>
                                     <?php endif; ?>
                                 </div>
@@ -351,15 +359,18 @@
                                         <i class='bx bx-user me-1'></i>Apellidos *
                                     </label>
                                     <input type="text" 
-                                           class="form-control <?= session()->get('errors.apellidos') ? 'is-invalid' : '' ?>" 
+                                           class="form-control <?= (session()->getFlashdata('errors') && isset(session()->getFlashdata('errors')['apellidos'])) ? 'is-invalid' : '' ?>" 
                                            id="apellidos" 
                                            name="apellidos" 
                                            value="<?= old('apellidos') ?>" 
                                            required
+                                           maxlength="100"
+                                           pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"
+                                           title="Los apellidos solo pueden contener letras y espacios"
                                            placeholder="Ingrese los apellidos">
-                                    <?php if (session()->get('errors.apellidos')): ?>
+                                    <?php if (session()->getFlashdata('errors') && isset(session()->getFlashdata('errors')['apellidos'])): ?>
                                         <div class="invalid-feedback">
-                                            <?= esc(session()->get('errors.apellidos')) ?>
+                                            <?= esc(session()->getFlashdata('errors')['apellidos']) ?>
                                         </div>
                                     <?php endif; ?>
                                 </div>
@@ -371,15 +382,17 @@
                                         <i class='bx bx-envelope me-1'></i>Email *
                                     </label>
                                     <input type="email" 
-                                           class="form-control <?= session()->get('errors.email') ? 'is-invalid' : '' ?>" 
+                                           class="form-control <?= (session()->getFlashdata('errors') && isset(session()->getFlashdata('errors')['email'])) ? 'is-invalid' : '' ?>" 
                                            id="email" 
                                            name="email" 
                                            value="<?= old('email') ?>" 
                                            required
+                                           maxlength="50"
+                                           title="Ingrese un email válido"
                                            placeholder="ejemplo@correo.com">
-                                    <?php if (session()->get('errors.email')): ?>
+                                    <?php if (session()->getFlashdata('errors') && isset(session()->getFlashdata('errors')['email'])): ?>
                                         <div class="invalid-feedback">
-                                            <?= esc(session()->get('errors.email')) ?>
+                                            <?= esc(session()->getFlashdata('errors')['email']) ?>
                                         </div>
                                     <?php endif; ?>
                                 </div>
@@ -391,15 +404,18 @@
                                         <i class='bx bx-at me-1'></i>Nombre de Usuario *
                                     </label>
                                     <input type="text" 
-                                           class="form-control <?= session()->get('errors.username') ? 'is-invalid' : '' ?>" 
+                                           class="form-control <?= (session()->getFlashdata('errors') && isset(session()->getFlashdata('errors')['username'])) ? 'is-invalid' : '' ?>" 
                                            id="username" 
                                            name="username" 
                                            value="<?= old('username') ?>" 
                                            required
+                                           maxlength="50"
+                                           pattern="^[a-zA-Z0-9_-]+$"
+                                           title="El nombre de usuario solo puede contener letras, números, guiones y guiones bajos"
                                            placeholder="nombre_usuario">
-                                    <?php if (session()->get('errors.username')): ?>
+                                    <?php if (session()->getFlashdata('errors') && isset(session()->getFlashdata('errors')['username'])): ?>
                                         <div class="invalid-feedback">
-                                            <?= esc(session()->get('errors.username')) ?>
+                                            <?= esc(session()->getFlashdata('errors')['username']) ?>
                                         </div>
                                     <?php endif; ?>
                                 </div>
@@ -412,14 +428,21 @@
                                         <i class='bx bx-lock me-1'></i>Contraseña *
                                     </label>
                                     <input type="password" 
-                                           class="form-control <?= session()->get('errors.password') ? 'is-invalid' : '' ?>" 
+                                           class="form-control <?= (session()->getFlashdata('errors') && isset(session()->getFlashdata('errors')['password'])) ? 'is-invalid' : '' ?>" 
                                            id="password" 
                                            name="password" 
                                            required
+                                           minlength="6"
+                                           title="La contraseña debe tener al menos 6 caracteres"
                                            placeholder="Mínimo 6 caracteres">
-                                    <?php if (session()->get('errors.password')): ?>
+                                    <div class="requirements" style="display: none;">
+                                        <div class="requirement" id="length-req">
+                                            <i class='bx bx-x'></i> Mínimo 6 caracteres
+                                        </div>
+                                    </div>
+                                    <?php if (session()->getFlashdata('errors') && isset(session()->getFlashdata('errors')['password'])): ?>
                                         <div class="invalid-feedback">
-                                            <?= esc(session()->get('errors.password')) ?>
+                                            <?= esc(session()->getFlashdata('errors')['password']) ?>
                                         </div>
                                     <?php endif; ?>
                                 </div>
@@ -431,14 +454,20 @@
                                         <i class='bx bx-lock-alt me-1'></i>Confirmar Contraseña *
                                     </label>
                                     <input type="password" 
-                                           class="form-control <?= session()->get('errors.password_confirm') ? 'is-invalid' : '' ?>" 
+                                           class="form-control <?= (session()->getFlashdata('errors') && isset(session()->getFlashdata('errors')['password_confirm'])) ? 'is-invalid' : '' ?>" 
                                            id="password_confirm" 
                                            name="password_confirm" 
                                            required
+                                           title="Las contraseñas deben coincidir"
                                            placeholder="Repita la contraseña">
-                                    <?php if (session()->get('errors.password_confirm')): ?>
+                                    <div class="requirements" style="display: none;">
+                                        <div class="requirement" id="match-req">
+                                            <i class='bx bx-x'></i> Las contraseñas coinciden
+                                        </div>
+                                    </div>
+                                    <?php if (session()->getFlashdata('errors') && isset(session()->getFlashdata('errors')['password_confirm'])): ?>
                                         <div class="invalid-feedback">
-                                            <?= esc(session()->get('errors.password_confirm')) ?>
+                                            <?= esc(session()->getFlashdata('errors')['password_confirm']) ?>
                                         </div>
                                     <?php endif; ?>
                                 </div>
@@ -450,20 +479,20 @@
                                     <label for="rol" class="form-label">
                                         <i class='bx bx-shield me-1'></i>Rol *
                                     </label>
-                                    <select class="form-select <?= session()->get('errors.rol') ? 'is-invalid' : '' ?>" 
+                                    <select class="form-select <?= (session()->getFlashdata('errors') && isset(session()->getFlashdata('errors')['rol'])) ? 'is-invalid' : '' ?>" 
                                             id="rol" 
                                             name="rol" 
                                             required>
                                         <option value="">Seleccione un rol</option>
                                         <option value="administrador" <?= old('rol') == 'administrador' ? 'selected' : '' ?>>Administrador</option>
-                                        <option value="medico" <?= old('rol') == 'medico' ? 'selected' : '' ?>>Médico</option>
+                                        <option value="cirujano" <?= old('rol') == 'cirujano' ? 'selected' : '' ?>>Cirujano</option>
                                         <option value="enfermero" <?= old('rol') == 'enfermero' ? 'selected' : '' ?>>Enfermero</option>
                                         <option value="supervisor" <?= old('rol') == 'supervisor' ? 'selected' : '' ?>>Supervisor</option>
                                         <option value="usuario" <?= old('rol') == 'usuario' ? 'selected' : '' ?>>Usuario</option>
                                     </select>
-                                    <?php if (session()->get('errors.rol')): ?>
+                                    <?php if (session()->getFlashdata('errors') && isset(session()->getFlashdata('errors')['rol'])): ?>
                                         <div class="invalid-feedback">
-                                            <?= esc(session()->get('errors.rol')) ?>
+                                            <?= esc(session()->getFlashdata('errors')['rol']) ?>
                                         </div>
                                     <?php endif; ?>
                                 </div>
@@ -474,7 +503,7 @@
                                     <label for="estado" class="form-label">
                                         <i class='bx bx-check-circle me-1'></i>Estado *
                                     </label>
-                                    <select class="form-select <?= session()->get('errors.estado') ? 'is-invalid' : '' ?>" 
+                                    <select class="form-select <?= (session()->getFlashdata('errors') && isset(session()->getFlashdata('errors')['estado'])) ? 'is-invalid' : '' ?>" 
                                             id="estado" 
                                             name="estado" 
                                             required>
@@ -482,9 +511,9 @@
                                         <option value="1" <?= old('estado') == '1' ? 'selected' : '' ?>>Activo</option>
                                         <option value="0" <?= old('estado') == '0' ? 'selected' : '' ?>>Inactivo</option>
                                     </select>
-                                    <?php if (session()->get('errors.estado')): ?>
+                                    <?php if (session()->getFlashdata('errors') && isset(session()->getFlashdata('errors')['estado'])): ?>
                                         <div class="invalid-feedback">
-                                            <?= esc(session()->get('errors.estado')) ?>
+                                            <?= esc(session()->getFlashdata('errors')['estado']) ?>
                                         </div>
                                     <?php endif; ?>
                                 </div>
@@ -499,7 +528,7 @@
                                 <i class='bx bx-save'></i> Crear Usuario
                             </button>
                         </div>
-                    <?= form_close() ?>
+                    </form>
                 </div>
             </div>
         </div>
@@ -518,20 +547,78 @@
                 }, 5000);
             });
 
-            // Validación de confirmación de contraseña
+            // Elementos del formulario
             const password = document.getElementById('password');
             const passwordConfirm = document.getElementById('password_confirm');
+            const form = document.getElementById('formCrearUsuario');
 
-            function validatePassword() {
-                if (password.value !== passwordConfirm.value) {
-                    passwordConfirm.setCustomValidity('Las contraseñas no coinciden');
+            // Elementos de validación visual
+            const lengthReq = document.getElementById('length-req');
+            const matchReq = document.getElementById('match-req');
+
+            // Mostrar/ocultar requisitos de contraseña
+            password.addEventListener('focus', function() {
+                document.querySelector('#password + .requirements').style.display = 'block';
+            });
+
+            passwordConfirm.addEventListener('focus', function() {
+                document.querySelector('#password_confirm + .requirements').style.display = 'block';
+            });
+
+            // Validación en tiempo real de la contraseña
+            password.addEventListener('input', function() {
+                const value = this.value;
+                
+                // Validar longitud
+                if (value.length >= 6) {
+                    lengthReq.classList.remove('invalid');
+                    lengthReq.classList.add('valid');
+                    lengthReq.querySelector('i').className = 'bx bx-check';
                 } else {
+                    lengthReq.classList.remove('valid');
+                    lengthReq.classList.add('invalid');
+                    lengthReq.querySelector('i').className = 'bx bx-x';
+                }
+
+                // Validar coincidencia si ya hay algo en confirmar
+                if (passwordConfirm.value) {
+                    validatePasswordMatch();
+                }
+            });
+
+            // Validación de coincidencia de contraseñas
+            function validatePasswordMatch() {
+                if (password.value === passwordConfirm.value && passwordConfirm.value !== '') {
+                    matchReq.classList.remove('invalid');
+                    matchReq.classList.add('valid');
+                    matchReq.querySelector('i').className = 'bx bx-check';
                     passwordConfirm.setCustomValidity('');
+                } else {
+                    matchReq.classList.remove('valid');
+                    matchReq.classList.add('invalid');
+                    matchReq.querySelector('i').className = 'bx bx-x';
+                    if (passwordConfirm.value !== '') {
+                        passwordConfirm.setCustomValidity('Las contraseñas no coinciden');
+                    }
                 }
             }
 
-            password.addEventListener('change', validatePassword);
-            passwordConfirm.addEventListener('keyup', validatePassword);
+            passwordConfirm.addEventListener('input', validatePasswordMatch);
+
+            // Validación del formulario antes de enviar
+            form.addEventListener('submit', function(e) {
+                // Validación personalizada adicional
+                if (password.value !== passwordConfirm.value) {
+                    e.preventDefault();
+                    passwordConfirm.setCustomValidity('Las contraseñas no coinciden');
+                    passwordConfirm.reportValidity();
+                    return false;
+                }
+
+                // Si todo está bien, limpiar validaciones personalizadas
+                password.setCustomValidity('');
+                passwordConfirm.setCustomValidity('');
+            });
 
             // Aplicar animaciones escalonadas
             const elementosAnimados = document.querySelectorAll('.animate-fade-in');

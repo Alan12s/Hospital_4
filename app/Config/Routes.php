@@ -17,41 +17,15 @@ $routes->get('inicio', 'InicioController::index');
 $routes->get('dashboard', 'InicioController::index'); // Alias para inicio
 $routes->get('home', 'AuthController::home'); // Tu método home del AuthController
 
-// Ruta AJAX para obtener estadísticas del dashboard
-$routes->get('inicio/getStats', 'InicioController::getStats');
-
-// Grupo de rutas para turnos quirúrgicos - NUEVO
-$routes->group('turnos', function($routes) {
-    $routes->get('/', 'Turnos::index');                             // Listado de turnos
-    $routes->get('crear', 'Turnos::crear');                         // Formulario para crear turno
-    $routes->post('crear', 'Turnos::crear');                        // Procesar creación de turno
-    $routes->get('editar/(:num)', 'Turnos::editar/$1');            // Formulario para editar turno
-    $routes->post('editar/(:num)', 'Turnos::editar/$1');           // Procesar edición de turno
-    $routes->get('ver/(:num)', 'Turnos::ver/$1');                  // Ver detalles del turno
-    $routes->get('eliminar/(:num)', 'Turnos::eliminar/$1');        // Cancelar turno (cambiar estado)
-    $routes->get('eliminarDefinitivo/(:num)', 'Turnos::eliminarDefinitivo/$1'); // Eliminar definitivamente
-    
-    // Rutas AJAX
-    $routes->post('cambiarEstado', 'Turnos::cambiarEstado');        // Cambiar estado del turno (AJAX)
-    $routes->get('getProcedimientos/(:num)', 'Turnos::getProcedimientos/$1'); // Obtener procedimientos por especialidad
-    $routes->post('buscarInsumos', 'Turnos::buscarInsumos');        // Buscar insumos (AJAX)
+$routes->group('inicio', function($routes) {
+    $routes->get('getStats', 'InicioController::getStats');
+    $routes->get('getWeeklyStats', 'InicioController::getWeeklyStats');
+    $routes->get('getSpecialtyStats', 'InicioController::getSpecialtyStats');
+    $routes->get('getNotifications', 'InicioController::getNotifications');
 });
 
-// Grupo de rutas para insumos
-$routes->group('insumos', function($routes) {
-    $routes->get('/', 'Insumos::index');                    // Listado de insumos
-    $routes->get('crear', 'Insumos::crear');                // Formulario para crear insumo
-    $routes->post('add', 'Insumos::add');                   // Acción para agregar insumo
-    $routes->get('editar/(:num)', 'Insumos::edit/$1');      // Formulario para editar insumo
-    $routes->post('update/(:num)', 'Insumos::update/$1');   // Acción para actualizar insumo
-    $routes->get('delete/(:num)', 'Insumos::delete/$1');    // Acción para eliminar insumo (CAMBIADO)
-    $routes->get('eliminar/(:num)', 'Insumos::eliminar/$1'); // Método alternativo
-    $routes->get('view/(:num)', 'Insumos::view/$1');         // Ver detalles del insumo
-    $routes->get('search', 'Insumos::search');              // Búsqueda de insumos
-});
-
-// Pacientes
-$routes->group('pacientes', function($routes) {
+    //Pacientes
+   $routes->group('pacientes', function($routes) {
     $routes->get('/', 'Pacientes::index');                  // Listado de pacientes
     $routes->get('crear', 'Pacientes::crear');              // Formulario para crear paciente
     $routes->post('add', 'Pacientes::add');                 // Acción para agregar paciente
@@ -62,7 +36,7 @@ $routes->group('pacientes', function($routes) {
     $routes->get('ver/(:num)', 'Pacientes::view/$1');       // Ver detalles paciente (en español)
 });
 
-// Cirujanos
+/// Cirujanos
 $routes->group('cirujanos', function($routes) {
     $routes->get('/', 'Cirujanos::index');
     $routes->get('disponibles', 'Cirujanos::disponibles');
@@ -71,73 +45,82 @@ $routes->group('cirujanos', function($routes) {
     $routes->get('editar/(:num)', 'Cirujanos::editar/$1');
     $routes->post('editar/(:num)', 'Cirujanos::editar/$1');
     $routes->get('ver/(:num)', 'Cirujanos::ver/$1');
-    $routes->get('eliminar/(:num)', 'Cirujanos::eliminar/$1');
+    
+    // Rutas para eliminación - Ambas apuntan al mismo método
+    $routes->post('delete/(:num)', 'Cirujanos::delete/$1');          // Para el modal (POST)
+    $routes->post('eliminar/(:num)', 'Cirujanos::eliminar/$1');      // Para compatibilidad (POST)
+    $routes->get('eliminar/(:num)', 'Cirujanos::eliminar/$1');       // Para compatibilidad con GET (si es necesario)
 });
 
-// Instrumentista
-$routes->group('instrumentista', function($routes) {
-    $routes->get('/', 'Instrumentista::index');                      // Listado de instrumentistas
-    $routes->get('crear', 'Instrumentista::crear');                  // Formulario para crear instrumentista
-    $routes->post('guardar', 'Instrumentista::guardar');             // Acción para guardar instrumentista
-    $routes->get('editar/(:num)', 'Instrumentista::editar/$1');      // Formulario para editar instrumentista
-    $routes->post('actualizar/(:num)', 'Instrumentista::actualizar/$1'); // Acción para actualizar instrumentista
-    $routes->get('eliminar/(:num)', 'Instrumentista::eliminar/$1');  // Acción para eliminar instrumentista
-    $routes->get('ver/(:num)', 'Instrumentista::ver/$1');            // Ver detalles del instrumentista (opcional)
+// Instrumentista - CORREGIDO
+$routes->group('instrumentistas', function($routes) {
+    $routes->get('/', 'Instrumentistas::index');
+    $routes->get('crear', 'Instrumentistas::crear');
+    $routes->post('add', 'Instrumentistas::add');
+    $routes->get('editar/(:num)', 'Instrumentistas::editar/$1');
+    $routes->post('update/(:num)', 'Instrumentistas::update/$1');
+    $routes->get('ver/(:num)', 'Instrumentistas::ver/$1');
+    $routes->get('disponibles', 'Instrumentistas::disponibles');
+    $routes->post('eliminar/(:num)', 'Instrumentistas::eliminar/$1');
+    $routes->get('search', 'Instrumentistas::search');
+    $routes->get('api/disponibles', 'Instrumentistas::getDisponibles');
 });
 
-// Usuarios
 $routes->group('usuarios', function($routes) {
-    $routes->get('/', 'Usuarios::index');                    // Listar usuarios
-    $routes->get('crear', 'Usuarios::crear');                // Mostrar formulario crear
-    $routes->post('add', 'Usuarios::add');                   // Procesar creación
-    $routes->get('edit/(:num)', 'Usuarios::edit/$1');        // Mostrar formulario editar
-    $routes->post('update/(:num)', 'Usuarios::update/$1');   // Procesar actualización
-    $routes->get('view/(:num)', 'Usuarios::view/$1');        // Ver detalles
-    $routes->get('delete/(:num)', 'Usuarios::delete/$1');    // Eliminar usuario
-    $routes->get('toggle/(:num)', 'Usuarios::toggle_status/$1'); // Activar/Desactivar
+    $routes->get('/', 'Usuarios::index');
+    $routes->match(['get', 'post'], 'crear', 'Usuarios::crear');
+    $routes->match(['get', 'post'], 'editar/(:num)', 'Usuarios::editar/$1');
+    $routes->get('ver/(:num)', 'Usuarios::ver/$1');
+     $routes->post('cambiarEstado/(:num)', 'Usuarios::cambiarEstado/$1');
+    $routes->post('eliminar/(:num)', 'Usuarios::eliminar/$1');
 });
-
-// Grupo de rutas para turnos con autenticación
-$routes->group('turnos', ['filter' => 'auth'], static function ($routes) {
-    // Ruta principal - lista de turnos
+$routes->group('enfermeros', function($routes) {
+    $routes->get('/', 'Enfermeros::index');
+    $routes->get('crear', 'Enfermeros::crear');
+    $routes->post('add', 'Enfermeros::add');
+    $routes->get('editar/(:num)', 'Enfermeros::editar/$1');
+    $routes->post('update/(:num)', 'Enfermeros::update/$1');
+    $routes->get('ver/(:num)', 'Enfermeros::ver/$1');
+    $routes->get('disponibles', 'Enfermeros::disponibles');
+    $routes->post('eliminar/(:num)', 'Enfermeros::eliminar/$1');
+    $routes->get('search', 'Enfermeros::search');
+    $routes->get('api/disponibles', 'Enfermeros::getDisponibles');
+});
+$routes->group('anestesistas', function($routes) {
+    $routes->get('/', 'Anestesistas::index');
+    $routes->get('crear', 'Anestesistas::crear');
+    $routes->post('add', 'Anestesistas::add');
+    $routes->get('editar/(:num)', 'Anestesistas::editar/$1');
+    $routes->post('update/(:num)', 'Anestesistas::update/$1');
+    $routes->get('ver/(:num)', 'Anestesistas::ver/$1');
+    $routes->get('disponibles', 'Anestesistas::disponibles');
+    $routes->post('eliminar/(:num)', 'Anestesistas::eliminar/$1');
+    $routes->get('search', 'Anestesistas::search');
+    $routes->get('api/disponibles', 'Anestesistas::getDisponibles');
+});
+$routes->group('turnos', function($routes) {
     $routes->get('/', 'Turnos::index');
-    
-    // Rutas para crear turno
     $routes->get('crear', 'Turnos::crear');
-    $routes->post('crear', 'Turnos::crear');
-    
-    // Rutas para editar turno
+    $routes->post('guardar', 'Turnos::guardar');
     $routes->get('editar/(:num)', 'Turnos::editar/$1');
-    $routes->post('editar/(:num)', 'Turnos::editar/$1');
-    
-    // Ruta para ver detalles del turno
+    $routes->post('actualizar/(:num)', 'Turnos::actualizar/$1');
     $routes->get('ver/(:num)', 'Turnos::ver/$1');
-    
-    // Rutas para eliminar
+    $routes->get('cancelar/(:num)', 'Turnos::cancelar/$1');
     $routes->get('eliminar/(:num)', 'Turnos::eliminar/$1');
-    $routes->post('eliminar/(:num)', 'Turnos::eliminar/$1');
-    $routes->delete('eliminar-definitivo/(:num)', 'Turnos::eliminarDefinitivo/$1');
-    
-    // Rutas AJAX
+    $routes->get('hoy', 'Turnos::turnosHoy');
+    $routes->get('proximos', 'Turnos::proximosTurnos');
     $routes->post('cambiar-estado', 'Turnos::cambiarEstado');
     $routes->get('get-procedimientos/(:num)', 'Turnos::getProcedimientos/$1');
     $routes->post('buscar-insumos', 'Turnos::buscarInsumos');
-    $routes->post('verificar-disponibilidad', 'Turnos::verificarDisponibilidad'); // Esta ruta falta en tu controlador
-    
-    // Rutas para manejo de cirugías
-    $routes->post('iniciar-cirugia/(:num)', 'Turnos::iniciarCirugia/$1');
-    $routes->post('finalizar-cirugia/(:num)', 'Turnos::finalizarCirugia/$1');
-    
-    // Rutas adicionales
-    $routes->get('calendario', 'Turnos::calendario');
-    $routes->get('reportes', 'Turnos::reportes');
 });
-
-// Rutas existentes para reportes
-$routes->group('reportes', ['filter' => 'auth'], static function ($routes) {
-    $routes->get('/', 'Reportes::index');
-    $routes->get('turnos', 'Reportes::turnos');
-    $routes->get('insumos', 'Reportes::insumos');
-    $routes->get('estadisticas', 'Reportes::estadisticas');
-    $routes->get('crear', 'Reportes::crear');
+$routes->group('insumos', function($routes) {
+    $routes->get('/', 'Insumos::index');                    // Listado de insumos
+    $routes->get('crear', 'Insumos::crear');                // Formulario para crear insumo
+    $routes->post('add', 'Insumos::add');                   // Acción para agregar insumo
+    $routes->get('editar/(:num)', 'Insumos::edit/$1');      // Formulario para editar insumo
+    $routes->post('update/(:num)', 'Insumos::update/$1');   // Acción para actualizar insumo
+    $routes->get('delete/(:num)', 'Insumos::delete/$1');    // Acción para eliminar insumo (CAMBIADO)
+    $routes->get('eliminar/(:num)', 'Insumos::eliminar/$1'); // Método alternativo
+    $routes->get('view/(:num)', 'Insumos::view/$1');         // Ver detalles del insumo
+    $routes->get('search', 'Insumos::search');              // Búsqueda de insumos
 });

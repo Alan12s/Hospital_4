@@ -42,6 +42,17 @@
                                         <?php endif; ?>
                                     </div>
                                     <div class="col-md-6">
+<<<<<<< HEAD
+                                        <label for="tipo" class="form-label">Tipo <span class="text-danger">*</span></label>
+                                        <select class="form-select <?php echo (session()->getFlashdata('errors')['tipo'] ?? false) ? 'is-invalid' : ''; ?>" id="tipo" name="tipo" required>
+                                            <option value="">Seleccionar Tipo</option>
+                                            <option value="Consumible" <?php echo (old('tipo', $insumo['tipo']) == 'Consumible') ? 'selected' : ''; ?>>Consumible</option>
+                                            <option value="Material quirúrgico" <?php echo (old('tipo', $insumo['tipo']) == 'Material quirúrgico') ? 'selected' : ''; ?>>Material quirúrgico</option>
+                                            <option value="Protección personal" <?php echo (old('tipo', $insumo['tipo']) == 'Protección personal') ? 'selected' : ''; ?>>Protección personal</option>
+                                            <option value="Instrumental" <?php echo (old('tipo', $insumo['tipo']) == 'Instrumental') ? 'selected' : ''; ?>>Instrumental</option>
+                                            <option value="Medicamento" <?php echo (old('tipo', $insumo['tipo']) == 'Medicamento') ? 'selected' : ''; ?>>Medicamento</option>
+                                        </select>
+=======
                                         <label for="categoria" class="form-label">Categoría <span class="text-danger">*</span></label>
                                         <select class="form-select <?php echo (session()->getFlashdata('errors')['categoria'] ?? false) ? 'is-invalid' : ''; ?>" id="categoria" name="categoria" required>
                                             <option value="">Seleccionar Categoría</option>
@@ -86,6 +97,7 @@
                                                 <option value="Instrumental de medición">Instrumental de medición</option>
                                             </optgroup>
                                         </select>
+>>>>>>> 733de39b8424adf4032156dc94a40b6ef5062118
                                         <?php if(session()->getFlashdata('errors')['tipo'] ?? false): ?>
                                             <div class="invalid-feedback"><?php echo session()->getFlashdata('errors')['tipo']; ?></div>
                                         <?php endif; ?>

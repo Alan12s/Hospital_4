@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($titulo) ?> - Sistema Quirúrgico</title>
+    <title><?= esc($title) ?> - Sistema Quirúrgico</title>
     
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -13,7 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* Estilos iguales a los de editar.php */
+        /* ============= VARIABLES CSS ============= */
         :root {
             --primary-color: #6a1b9a;
             --primary-light: #9c4dcc;
@@ -97,6 +97,25 @@
             color: var(--accent-color);
         }
 
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-dark);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            border-radius: var(--border-radius-sm);
+            padding: 0.75rem 1.5rem;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
         .btn-secondary {
             background-color: var(--gray-600);
             border-color: var(--gray-700);
@@ -112,6 +131,25 @@
 
         .btn-secondary:hover {
             background-color: var(--gray-700);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            border-radius: var(--border-radius-sm);
+            padding: 0.75rem 1.5rem;
+        }
+
+        .btn-danger:hover {
+            background-color: #dc3545;
             transform: translateY(-2px);
             box-shadow: var(--shadow-md);
         }
@@ -159,32 +197,29 @@
             padding: 2rem;
         }
 
-        /* ============= TABLE STYLES ============= */
-        .table-responsive {
-            border-radius: var(--border-radius);
-            overflow: hidden;
+        /* ============= DETAIL VIEW STYLES ============= */
+        .detail-row {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
         }
 
-        .table {
-            margin-bottom: 0;
-        }
-
-        .table thead th {
-            background-color: var(--primary-color);
-            color: white;
-            font-weight: 600;
+        .detail-row:last-child {
             border-bottom: none;
         }
 
-        .table-hover tbody tr:hover {
-            background-color: rgba(106, 27, 154, 0.05);
+        .detail-label {
+            font-weight: 600;
+            color: var(--gray-700);
+            width: 30%;
         }
 
-        .table td, .table th {
-            vertical-align: middle;
-            padding: 1rem;
+        .detail-value {
+            color: var(--gray-800);
+            width: 70%;
         }
 
+        /* ============= BADGE STYLES ============= */
         .badge {
             font-size: 0.8rem;
             font-weight: 600;
@@ -192,9 +227,51 @@
             border-radius: var(--border-radius-sm);
         }
 
-        .btn-sm {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.875rem;
+        .bg-disponible {
+            background-color: var(--success-color) !important;
+        }
+
+        .bg-en_cirugia {
+            background-color: var(--warning-color) !important;
+        }
+
+        .bg-no_disponible {
+            background-color: var(--danger-color) !important;
+        }
+
+        /* ============= ALERT STYLES ============= */
+        .alert {
+            border-radius: var(--border-radius-sm);
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            border: none;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.25rem;
+        }
+
+        .alert-success {
+            background-color: rgba(34, 197, 94, 0.1);
+            color: var(--success-color);
+            border-left: 4px solid var(--success-color);
+        }
+
+        .alert-danger {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+            border-left: 4px solid var(--danger-color);
+        }
+
+        /* ============= BUTTON GROUPS ============= */
+        .button-group {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--gray-200);
         }
 
         /* ============= ANIMATIONS ============= */
@@ -236,45 +313,26 @@
                 font-size: 1.5rem;
             }
             
-            .table-responsive {
-                border-radius: 0;
-            }
-            
-            .table thead {
-                display: none;
-            }
-            
-            .table, .table tbody, .table tr, .table td {
-                display: block;
+            .btn-primary, .btn-secondary, .btn-danger {
                 width: 100%;
+                justify-content: center;
             }
             
-            .table tr {
-                margin-bottom: 1rem;
-                border: 1px solid var(--gray-200);
-                border-radius: var(--border-radius-sm);
-                padding: 1rem;
+            .button-group {
+                flex-direction: column;
             }
             
-            .table td {
-                padding: 0.5rem;
-                border-bottom: 1px solid var(--gray-200);
+            .card-body {
+                padding: 1.5rem;
             }
             
-            .table td:last-child {
-                border-bottom: none;
+            .detail-row {
+                flex-direction: column;
+                gap: 0.5rem;
             }
             
-            .table td::before {
-                content: attr(data-label);
-                font-weight: 600;
-                display: inline-block;
-                width: 120px;
-                color: var(--gray-700);
-            }
-            
-            .btn-group {
-                justify-content: flex-end;
+            .detail-label, .detail-value {
+                width: 100%;
             }
         }
 
@@ -306,19 +364,19 @@
             <!-- Page Header -->
             <div class="dashboard-header animate-fade-in">
                 <h1>
-                    <i class='bx bx-check-circle'></i><?= esc($titulo) ?>
+                    <i class='bx bx-user-detail'></i><?= esc($title) ?>
                 </h1>
-                <a href="<?= site_url('cirujanos') ?>" class="btn btn-secondary">
-                    <i class='bx bx-arrow-left'></i> Volver a Cirujanos
+                <a href="<?= site_url('enfermeros') ?>" class="btn btn-secondary">
+                    <i class='bx bx-arrow-left'></i> Volver a Enfermeros
                 </a>
             </div>
 
             <!-- Flash Messages -->
-            <?php if (session()->getFlashdata('mensaje')): ?>
+            <?php if (session()->getFlashdata('success')): ?>
                 <div class="alert alert-success alert-dismissible fade show glass-card animate-fade-in">
                     <i class='bx bx-check-circle'></i>
                     <div>
-                        <?= esc(session()->getFlashdata('mensaje')) ?>
+                        <?= esc(session()->getFlashdata('success')) ?>
                     </div>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
                 </div>
@@ -334,70 +392,89 @@
                 </div>
             <?php endif; ?>
 
-            <!-- List Card -->
+            <!-- Nurse Details Card -->
             <div class="glass-card animate-fade-in" style="animation-delay: 0.1s">
                 <div class="card-header">
-                    <h5><i class='bx bx-list-check me-2'></i>Cirujanos Disponibles</h5>
+                    <h5><i class='bx bx-id-card me-2'></i>Detalles del Enfermero</h5>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Nombre</th>
-                                    <th>DNI</th>
-                                    <th>Teléfono</th>
-                                    <th>Email</th>
-                                    <th>Especialidad</th>
-                                    <th>Estado</th>
-                                    <th class="text-end">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (!empty($cirujanos)): ?>
-                                    <?php foreach($cirujanos as $cirujano): ?>
-                                    <tr>
-                                        <td data-label="Nombre"><?= esc($cirujano->nombre) ?></td>
-                                        <td data-label="DNI"><?= esc($cirujano->dni) ?></td>
-                                        <td data-label="Teléfono"><?= esc($cirujano->telefono) ?></td>
-                                        <td data-label="Email"><?= esc($cirujano->email) ?></td>
-                                        <td data-label="Especialidad"><?= esc($cirujano->especialidad ?? 'Sin especialidad') ?></td>
-                                        <td data-label="Estado">
-                                            <?php
-                                                switch ($cirujano->disponibilidad) {
-                                                    case 'disponible':
-                                                        echo '<span class="badge bg-success">Disponible</span>';
-                                                        break;
-                                                    case 'no_disponible':
-                                                        echo '<span class="badge bg-secondary">No disponible</span>';
-                                                        break;
-                                                    case 'en_cirugia':
-                                                        echo '<span class="badge bg-warning text-dark">En cirugía</span>';
-                                                        break;
-                                                    default:
-                                                        echo '<span class="badge bg-light text-dark">Desconocido</span>';
-                                                }
-                                            ?>
-                                        </td>
-                                        <td class="text-end">
-                                            <div class="btn-group btn-group-sm">
-                                                <a href="<?= site_url('cirujanos/ver/'.$cirujano->id) ?>" class="btn btn-secondary" title="Ver">
-                                                    <i class='bx bx-show'></i>
-                                                </a>
-                                                <a href="<?= site_url('cirujanos/editar/'.$cirujano->id) ?>" class="btn btn-primary" title="Editar">
-                                                    <i class='bx bx-edit'></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <tr>
-                                        <td colspan="7" class="text-center text-muted">No hay cirujanos disponibles.</td>
-                                    </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
+                    <div class="detail-row">
+                        <div class="detail-label">ID:</div>
+                        <div class="detail-value"><?= esc($enfermero['id']) ?></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Nombre Completo:</div>
+                        <div class="detail-value"><?= esc($enfermero['nombre']) ?></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">DNI:</div>
+                        <div class="detail-value"><?= esc($enfermero['dni']) ?></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Especialidad:</div>
+                        <div class="detail-value"><?= esc($enfermero['especialidad']) ?></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Disponibilidad:</div>
+                        <div class="detail-value">
+                            <span class="badge bg-<?= $enfermero['disponibilidad'] ?>">
+                                <?= ucfirst(str_replace('_', ' ', $enfermero['disponibilidad'])) ?>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Teléfono:</div>
+                        <div class="detail-value"><?= esc($enfermero['telefono']) ?></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Email:</div>
+                        <div class="detail-value"><?= esc($enfermero['email']) ?></div>
+                    </div>
+                    <?php if (isset($enfermero['fecha_ingreso']) && $enfermero['fecha_ingreso']): ?>
+                    <div class="detail-row">
+                        <div class="detail-label">Fecha de Ingreso:</div>
+                        <div class="detail-value"><?= date('d/m/Y', strtotime($enfermero['fecha_ingreso'])) ?></div>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <div class="button-group">
+                        <a href="<?= site_url('enfermeros/editar/' . $enfermero['id']) ?>" class="btn btn-primary">
+                            <i class='bx bx-edit'></i> Editar Enfermero
+                        </a>
+                        <button type="button"
+                            class="btn btn-danger"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalEliminarEnfermero"
+                            data-id="<?= esc($enfermero['id']) ?>"
+                            data-nombre="<?= esc($enfermero['nombre']) ?>">
+                            <i class='bx bx-trash'></i> Eliminar Enfermero
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Eliminar Enfermero -->
+            <div class="modal fade" id="modalEliminarEnfermero" tabindex="-1" aria-labelledby="modalEliminarEnfermeroLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalEliminarEnfermeroLabel">
+                                <i class='bx bx-error-circle me-2'></i>Confirmar Eliminación
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>¿Está seguro que desea eliminar al enfermero <strong><span id="nombreEnfermeroModal"></span></strong>?</p>
+                            <p class="fw-bold text-danger">Esta acción no se puede deshacer.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                <i class='bx bx-x me-1'></i> Cancelar
+                            </button>
+                            <a href="#" id="btnConfirmarEliminar" class="btn btn-danger">
+                                <i class='bx bx-trash me-1'></i> Eliminar
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -436,14 +513,17 @@
                 });
             });
 
-            // Adaptar tabla para móviles
-            if (window.innerWidth <= 768) {
-                const tableCells = document.querySelectorAll('.table td');
-                const headers = Array.from(document.querySelectorAll('.table thead th')).map(th => th.textContent);
-                
-                tableCells.forEach((cell, index) => {
-                    const headerIndex = index % headers.length;
-                    cell.setAttribute('data-label', headers[headerIndex]);
+            // Modal de eliminación
+            const modalEliminar = document.getElementById('modalEliminarEnfermero');
+            if (modalEliminar) {
+                modalEliminar.addEventListener('show.bs.modal', function(event) {
+                    const button = event.relatedTarget;
+                    const id = button.getAttribute('data-id') || button.getAttribute('data-bs-id');
+                    const nombre = button.getAttribute('data-nombre') || button.getAttribute('data-bs-nombre');
+                    
+                    document.getElementById('nombreEnfermeroModal').textContent = nombre;
+                    const btnEliminar = document.getElementById('btnConfirmarEliminar');
+                    btnEliminar.href = '<?= site_url("enfermeros/eliminar") ?>/' + id;
                 });
             }
         });

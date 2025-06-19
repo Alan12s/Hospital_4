@@ -50,6 +50,10 @@
 <body>
     
     <div class="app-container">
+<<<<<<< HEAD
+        <!-- Comentado: Sidebar -->
+=======
+>>>>>>> 733de39b8424adf4032156dc94a40b6ef5062118
         <!-- Sidebar -->
         <?= view('includes/sidebar') ?>
         
@@ -139,7 +143,11 @@
                                                     <a href="<?= base_url('insumos/view/'.$insumo['id_insumo']) ?>" class="btn btn-sm btn-secondary" title="Ver">
                                                         <i class="bi bi-eye"></i>
                                                     </a>
+<<<<<<< HEAD
+                                                    <a href="<?= base_url('insumos/editar/'.$insumo['id_insumo']) ?>" class="btn btn-sm btn-primary">
+=======
                                                     <a href="<?= base_url('insumos/editar/'.$insumo['id_insumo']) ?>" class="btn btn-sm btn-primary" title="Editar">
+>>>>>>> 733de39b8424adf4032156dc94a40b6ef5062118
                                                         <i class="bi bi-pencil"></i>
                                                     </a>
                                                     <button type="button" 

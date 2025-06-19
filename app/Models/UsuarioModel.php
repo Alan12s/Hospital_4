@@ -19,7 +19,8 @@ class UsuarioModel extends Model
         'apellidos'  => 'required|max_length[100]|regex_match[/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/]',
         'email'      => 'required|valid_email|max_length[50]',
         'username'   => 'required|max_length[50]|alpha_dash',
-        'rol'        => 'required|in_list[administrador,medico,enfermero,supervisor,usuario]',
+        'password'   => 'permit_empty|min_length[6]',
+        'rol'        => 'required|in_list[administrador,cirujano,enfermero,supervisor,usuario]',
         'estado'     => 'required|in_list[0,1]'
     ];
 
@@ -44,6 +45,9 @@ class UsuarioModel extends Model
             'max_length'   => 'El nombre de usuario no puede exceder los 50 caracteres',
             'alpha_dash'   => 'El nombre de usuario solo puede contener letras, números, guiones y guiones bajos'
         ],
+        'password' => [
+            'min_length'   => 'La contraseña debe tener al menos 6 caracteres'
+        ],
         'rol' => [
             'required'     => 'El rol es obligatorio',
             'in_list'      => 'Seleccione un rol válido'
@@ -58,62 +62,32 @@ class UsuarioModel extends Model
     protected $cleanValidationRules = true;
 
     // Dates
-    protected $useTimestamps = false;
+    protected $useTimestamps = true;
     protected $dateFormat = 'datetime';
     protected $createdField = 'fecha_registro';
-    protected $updatedField = '';
-    protected $deletedField = '';
+    protected $updatedField = 'fecha_actualizacion';
 
-    public function getAllUsuarios()
+    public function listarUsuarios()
     {
         return $this->orderBy('nombre', 'ASC')->findAll();
     }
 
-    public function getUsuario($id)
+    public function getErrorsAsString()
     {
-        return $this->find($id);
-    }
-
-    public function getUsuarioByEmail($email)
-    {
-        return $this->where('email', $email)->first();
-    }
-
-    public function getUsuarioByUsername($username)
-    {
-        return $this->where('username', $username)->first();
-    }
-
-    public function emailExists($email, $excludeId = null)
-    {
-        $builder = $this->where('email', $email);
-        if ($excludeId !== null) {
-            $builder->where('id !=', $excludeId);
+        $errors = $this->errors();
+        if (is_array($errors)) {
+            return implode(', ', $errors);
         }
-        return $builder->countAllResults() > 0;
+        return $errors;
     }
 
-    public function usernameExists($username, $excludeId = null)
+    public function isUniqueEmail($email, $id)
     {
-        $builder = $this->where('username', $username);
-        if ($excludeId !== null) {
-            $builder->where('id !=', $excludeId);
-        }
-        return $builder->countAllResults() > 0;
+        return $this->where('email', $email)->where('id !=', $id)->countAllResults() === 0;
     }
 
-    public function updateLastAccess($id)
+    public function isUniqueUsername($username, $id)
     {
-        return $this->update($id, ['ultimo_acceso' => date('Y-m-d H:i:s')]);
-    }
-
-    public function getUsuariosByRol($rol)
-    {
-        return $this->where('rol', $rol)->orderBy('nombre', 'ASC')->findAll();
-    }
-
-    public function getActiveUsuarios()
-    {
-        return $this->where('estado', 1)->orderBy('nombre', 'ASC')->findAll();
+        return $this->where('username', $username)->where('id !=', $id)->countAllResults() === 0;
     }
 }

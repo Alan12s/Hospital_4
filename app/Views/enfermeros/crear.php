@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title ?? 'Editar Paciente') ?> - Sistema Quirúrgico</title>
+    <title><?= esc($title) ?> - Sistema Quirúrgico</title>
     
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -189,12 +189,6 @@
             gap: 0.5rem;
         }
 
-        .form-label.required-field:after {
-            content: '*';
-            color: var(--danger-color);
-            margin-left: 0.25rem;
-        }
-
         .form-control, .form-select {
             border: 2px solid var(--gray-200);
             border-radius: var(--border-radius-sm);
@@ -305,24 +299,14 @@
             <!-- Page Header -->
             <div class="dashboard-header animate-fade-in">
                 <h1>
-                    <i class='bx bx-user-plus'></i><?= esc($title ?? 'Editar Paciente') ?>
+                    <i class='bx bx-user-plus'></i><?= esc($title) ?>
                 </h1>
-                <a href="<?= site_url('pacientes') ?>" class="btn btn-secondary">
-                    <i class='bx bx-arrow-back'></i> Volver a Pacientes
+                <a href="<?= site_url('enfermeros') ?>" class="btn btn-secondary">
+                    <i class='bx bx-arrow-back'></i> Volver a Enfermeros
                 </a>
             </div>
 
             <!-- Flash Messages -->
-            <?php if (session()->getFlashdata('success')): ?>
-                <div class="alert alert-success alert-dismissible fade show glass-card">
-                    <div class="d-flex align-items-center">
-                        <i class='bx bx-check-circle me-2'></i>
-                        <?= esc(session()->getFlashdata('success')) ?>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            <?php endif; ?>
-
             <?php if (session()->getFlashdata('error')): ?>
                 <div class="alert alert-danger alert-dismissible fade show glass-card">
                     <div class="d-flex align-items-center">
@@ -336,190 +320,162 @@
             <!-- Form Card -->
             <div class="glass-card animate-fade-in" style="animation-delay: 0.1s">
                 <div class="card-header">
-                    <h5><i class='bx bx-edit me-2'></i>Formulario de Edición</h5>
+                    <h5><i class='bx bx-user-plus me-2'></i>Nuevo Enfermero</h5>
                 </div>
                 <div class="card-body">
-                    <?php if (session()->getFlashdata('errors')): ?>
+                    <!-- Mostrar todos los errores de validación -->
+                    <?php if (isset($validation) && $validation->getErrors()): ?>
                         <div class="alert alert-danger">
                             <div class="d-flex align-items-center mb-2">
                                 <i class='bx bx-error-circle me-2'></i>
                                 <strong>Por favor, corrija los siguientes errores:</strong>
                             </div>
                             <ul class="mb-0">
-                                <?php foreach (session()->getFlashdata('errors') as $error): ?>
+                                <?php foreach ($validation->getErrors() as $error): ?>
                                     <li><?= esc($error) ?></li>
                                 <?php endforeach; ?>
                             </ul>
                         </div>
                     <?php endif; ?>
 
-                    <?= form_open("pacientes/update/{$paciente->id}") ?>
+                    <?= form_open('enfermeros/add') ?>
                         <?= csrf_field() ?>
 
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="nombre" class="form-label required-field">
+                                <label for="nombre" class="form-label">
                                     <i class='bx bx-user me-1'></i>Nombre Completo
                                 </label>
                                 <input type="text" 
-                                       class="form-control <?= session()->getFlashdata('errors')['nombre'] ?? false ? 'is-invalid' : '' ?>" 
+                                       class="form-control <?= (isset($validation) && $validation->hasError('nombre')) ? 'is-invalid' : '' ?>" 
                                        id="nombre" 
                                        name="nombre" 
-                                       value="<?= old('nombre', $paciente->nombre) ?>" 
+                                       value="<?= old('nombre') ?>" 
                                        placeholder="Ingrese el nombre completo"
                                        required>
-                                <?php if (session()->getFlashdata('errors')['nombre'] ?? false): ?>
-                                    <div class="invalid-feedback"><?= esc(session()->getFlashdata('errors')['nombre']) ?></div>
+                                <?php if (isset($validation) && $validation->hasError('nombre')): ?>
+                                    <div class="invalid-feedback"><?= esc($validation->getError('nombre')) ?></div>
                                 <?php endif; ?>
                             </div>
 
                             <div class="col-md-6">
-                                <label for="dni" class="form-label required-field">
+                                <label for="dni" class="form-label">
                                     <i class='bx bx-id-card me-1'></i>DNI
                                 </label>
                                 <input type="text" 
-                                       class="form-control <?= session()->getFlashdata('errors')['dni'] ?? false ? 'is-invalid' : '' ?>" 
+                                       class="form-control <?= (isset($validation) && $validation->hasError('dni')) ? 'is-invalid' : '' ?>" 
                                        id="dni" 
                                        name="dni" 
-                                       value="<?= old('dni', $paciente->dni) ?>" 
+                                       value="<?= old('dni') ?>" 
                                        placeholder="Ej: 12345678"
                                        required>
-                                <?php if (session()->getFlashdata('errors')['dni'] ?? false): ?>
-                                    <div class="invalid-feedback"><?= esc(session()->getFlashdata('errors')['dni']) ?></div>
+                                <?php if (isset($validation) && $validation->hasError('dni')): ?>
+                                    <div class="invalid-feedback"><?= esc($validation->getError('dni')) ?></div>
                                 <?php endif; ?>
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="email" class="form-label required-field">
-                                    <i class='bx bx-envelope me-1'></i>Email
+                                <label for="especialidad" class="form-label">
+                                    <i class='bx bx-briefcase-alt me-1'></i>Especialidad
                                 </label>
-                                <input type="email" 
-                                       class="form-control <?= session()->getFlashdata('errors')['email'] ?? false ? 'is-invalid' : '' ?>" 
-                                       id="email" 
-                                       name="email" 
-                                       value="<?= old('email', $paciente->email) ?>" 
-                                       placeholder="paciente@ejemplo.com"
-                                       required>
-                                <?php if (session()->getFlashdata('errors')['email'] ?? false): ?>
-                                    <div class="invalid-feedback"><?= esc(session()->getFlashdata('errors')['email']) ?></div>
+                                <select class="form-select <?= (isset($validation) && $validation->hasError('especialidad')) ? 'is-invalid' : '' ?>" 
+                                        id="especialidad" 
+                                        name="especialidad" 
+                                        required>
+                                    <option value="">Seleccionar especialidad</option>
+                                    <?php foreach ($especialidades as $key => $especialidad): ?>
+                                        <option value="<?= esc($especialidad) ?>" 
+                                                <?= (old('especialidad') == $especialidad) ? 'selected' : '' ?>>
+                                            <?= esc($especialidad) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <?php if (isset($validation) && $validation->hasError('especialidad')): ?>
+                                    <div class="invalid-feedback"><?= esc($validation->getError('especialidad')) ?></div>
                                 <?php endif; ?>
                             </div>
 
                             <div class="col-md-6">
-                                <label for="telefono" class="form-label required-field">
+                                <label for="telefono" class="form-label">
                                     <i class='bx bx-phone me-1'></i>Teléfono
                                 </label>
                                 <input type="text" 
-                                       class="form-control <?= session()->getFlashdata('errors')['telefono'] ?? false ? 'is-invalid' : '' ?>" 
+                                       class="form-control <?= (isset($validation) && $validation->hasError('telefono')) ? 'is-invalid' : '' ?>" 
                                        id="telefono" 
                                        name="telefono" 
-                                       value="<?= old('telefono', $paciente->telefono) ?>" 
-                                       placeholder="Ej: 1122334455"
+                                       value="<?= old('telefono') ?>" 
+                                       placeholder="Ej: +54 9 11 1234-5678"
                                        required>
-                                <?php if (session()->getFlashdata('errors')['telefono'] ?? false): ?>
-                                    <div class="invalid-feedback"><?= esc(session()->getFlashdata('errors')['telefono']) ?></div>
+                                <?php if (isset($validation) && $validation->hasError('telefono')): ?>
+                                    <div class="invalid-feedback"><?= esc($validation->getError('telefono')) ?></div>
                                 <?php endif; ?>
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="fecha_nacimiento" class="form-label required-field">
-                                    <i class='bx bx-calendar me-1'></i>Fecha de Nacimiento
+                                <label for="email" class="form-label">
+                                    <i class='bx bx-envelope me-1'></i>Email
+                                </label>
+                                <input type="email" 
+                                       class="form-control <?= (isset($validation) && $validation->hasError('email')) ? 'is-invalid' : '' ?>" 
+                                       id="email" 
+                                       name="email" 
+                                       value="<?= old('email') ?>" 
+                                       placeholder="enfermero@hospital.com"
+                                       required>
+                                <?php if (isset($validation) && $validation->hasError('email')): ?>
+                                    <div class="invalid-feedback"><?= esc($validation->getError('email')) ?></div>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="fecha_ingreso" class="form-label">
+                                    <i class='bx bx-calendar me-1'></i>Fecha de Ingreso
                                 </label>
                                 <input type="date" 
-                                       class="form-control <?= session()->getFlashdata('errors')['fecha_nacimiento'] ?? false ? 'is-invalid' : '' ?>" 
-                                       id="fecha_nacimiento" 
-                                       name="fecha_nacimiento" 
-                                       value="<?= old('fecha_nacimiento', $paciente->fecha_nacimiento) ?>" 
-                                       required>
-                                <?php if (session()->getFlashdata('errors')['fecha_nacimiento'] ?? false): ?>
-                                    <div class="invalid-feedback"><?= esc(session()->getFlashdata('errors')['fecha_nacimiento']) ?></div>
-                                <?php endif; ?>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="obra_social" class="form-label required-field">
-                                    <i class='bx bx-health me-1'></i>Obra Social
-                                </label>
-                                <input type="text" 
-                                       class="form-control <?= session()->getFlashdata('errors')['obra_social'] ?? false ? 'is-invalid' : '' ?>" 
-                                       id="obra_social" 
-                                       name="obra_social" 
-                                       value="<?= old('obra_social', $paciente->obra_social) ?>" 
-                                       placeholder="Nombre de la obra social"
-                                       required>
-                                <?php if (session()->getFlashdata('errors')['obra_social'] ?? false): ?>
-                                    <div class="invalid-feedback"><?= esc(session()->getFlashdata('errors')['obra_social']) ?></div>
+                                       class="form-control <?= (isset($validation) && $validation->hasError('fecha_ingreso')) ? 'is-invalid' : '' ?>" 
+                                       id="fecha_ingreso" 
+                                       name="fecha_ingreso" 
+                                       value="<?= old('fecha_ingreso') ?>">
+                                <?php if (isset($validation) && $validation->hasError('fecha_ingreso')): ?>
+                                    <div class="invalid-feedback"><?= esc($validation->getError('fecha_ingreso')) ?></div>
                                 <?php endif; ?>
                             </div>
                         </div>
 
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="departamento" class="form-label required-field">
-                                    <i class='bx bx-building me-1'></i>Departamento
-                                </label>
-                                <select class="form-select <?= session()->getFlashdata('errors')['departamento'] ?? false ? 'is-invalid' : '' ?>" 
-                                        id="departamento" 
-                                        name="departamento" 
-                                        required>
-                                    <option value="">Seleccione un departamento</option>
-                                    <option value="caucete" <?= old('departamento', $paciente->departamento) == 'caucete' ? 'selected' : '' ?>>Caucete</option>
-                                    <option value="25 de mayo" <?= old('departamento', $paciente->departamento) == '25 de mayo' ? 'selected' : '' ?>>25 de Mayo</option>
-                                    <option value="santa rosa" <?= old('departamento', $paciente->departamento) == 'santa rosa' ? 'selected' : '' ?>>Santa Rosa</option>
-                                    <option value="sarmiento" <?= old('departamento', $paciente->departamento) == 'sarmiento' ? 'selected' : '' ?>>Sarmiento</option>
-                                    <option value="san martin" <?= old('departamento', $paciente->departamento) == 'san martin' ? 'selected' : '' ?>>San Martín</option>
-                                    <option value="santa lucia" <?= old('departamento', $paciente->departamento) == 'santa lucia' ? 'selected' : '' ?>>Santa Lucía</option>
-                                    <option value="capital" <?= old('departamento', $paciente->departamento) == 'capital' ? 'selected' : '' ?>>Capital</option>
-                                </select>
-                                <?php if (session()->getFlashdata('errors')['departamento'] ?? false): ?>
-                                    <div class="invalid-feedback"><?= esc(session()->getFlashdata('errors')['departamento']) ?></div>
-                                <?php endif; ?>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="direccion" class="form-label required-field">
-                                    <i class='bx bx-map me-1'></i>Dirección
-                                </label>
-                                <input type="text" 
-                                       class="form-control <?= session()->getFlashdata('errors')['direccion'] ?? false ? 'is-invalid' : '' ?>" 
-                                       id="direccion" 
-                                       name="direccion" 
-                                       value="<?= old('direccion', $paciente->direccion) ?>" 
-                                       placeholder="Dirección completa"
-                                       required>
-                                <?php if (session()->getFlashdata('errors')['direccion'] ?? false): ?>
-                                    <div class="invalid-feedback"><?= esc(session()->getFlashdata('errors')['direccion']) ?></div>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <label for="historial_medico" class="form-label required-field">
-                                    <i class='bx bx-clipboard me-1'></i>Historial Médico
-                                </label>
-                                <textarea class="form-control <?= session()->getFlashdata('errors')['historial_medico'] ?? false ? 'is-invalid' : '' ?>" 
-                                          id="historial_medico" 
-                                          name="historial_medico" 
-                                          rows="3" 
-                                          placeholder="Información relevante del historial médico"
-                                          required><?= old('historial_medico', $paciente->historial_medico) ?></textarea>
-                                <?php if (session()->getFlashdata('errors')['historial_medico'] ?? false): ?>
-                                    <div class="invalid-feedback"><?= esc(session()->getFlashdata('errors')['historial_medico']) ?></div>
-                                <?php endif; ?>
-                            </div>
+                        <div class="mb-3">
+                            <label for="disponibilidad" class="form-label">
+                                <i class='bx bx-check-circle me-1'></i>Disponibilidad
+                            </label>
+                            <select class="form-select <?= (isset($validation) && $validation->hasError('disponibilidad')) ? 'is-invalid' : '' ?>" 
+                                    id="disponibilidad" 
+                                    name="disponibilidad" 
+                                    required>
+                                <option value="">Seleccionar estado</option>
+                                <option value="disponible" <?= (old('disponibilidad') == 'disponible') ? 'selected' : '' ?>>
+                                    Disponible
+                                </option>
+                                <option value="no_disponible" <?= (old('disponibilidad') == 'no_disponible') ? 'selected' : '' ?>>
+                                    No disponible
+                                </option>
+                                <option value="en_cirugia" <?= (old('disponibilidad') == 'en_cirugia') ? 'selected' : '' ?>>
+                                    En cirugía
+                                </option>
+                            </select>
+                            <?php if (isset($validation) && $validation->hasError('disponibilidad')): ?>
+                                <div class="invalid-feedback"><?= esc($validation->getError('disponibilidad')) ?></div>
+                            <?php endif; ?>
                         </div>
 
                         <div class="d-flex justify-content-end gap-2 mt-4">
-                            <a href="<?= site_url('pacientes') ?>" class="btn btn-secondary">
+                            <a href="<?= site_url('enfermeros') ?>" class="btn btn-secondary">
                                 <i class='bx bx-x me-1'></i>Cancelar
                             </a>
                             <button type="submit" class="btn btn-primary">
-                                <i class='bx bx-save me-1'></i>Actualizar Paciente
+                                <i class='bx bx-save me-1'></i>Crear Enfermero
                             </button>
                         </div>
                     <?= form_close() ?>
@@ -546,22 +502,20 @@
             elementosAnimados.forEach((elemento, index) => {
                 elemento.style.animationDelay = `${index * 0.1}s`;
             });
+        });
 
-            // Validación DNI solo números
-            const dniInput = document.getElementById('dni');
-            if (dniInput) {
-                dniInput.addEventListener('input', function() {
-                    this.value = this.value.replace(/[^0-9]/g, '');
-                });
-            }
-
-            // Validación teléfono solo números
-            const telefonoInput = document.getElementById('telefono');
-            if (telefonoInput) {
-                telefonoInput.addEventListener('input', function() {
-                    this.value = this.value.replace(/[^0-9]/g, '');
-                });
-            }
+        // Función para animaciones de hover en las cards
+        const cards = document.querySelectorAll('.glass-card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+                this.style.boxShadow = '0 15px 30px -5px rgba(0,0,0,0.15)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = 'var(--shadow-xl)';
+            });
         });
     </script>
     <?= $this->include('includes/footer') ?>

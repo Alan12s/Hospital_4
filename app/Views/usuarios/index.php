@@ -114,6 +114,23 @@
             box-shadow: var(--shadow-md);
         }
 
+        .btn-success {
+            background-color: var(--success-color);
+            border-color: #16a34a;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-success:hover {
+            background-color: #16a34a;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
         /* ============= GLASSMORPHISM CARDS ============= */
         .glass-card {
             background: rgba(255, 255, 255, 0.95);
@@ -248,71 +265,16 @@
             box-shadow: var(--shadow);
         }
 
-        .btn-toggle {
-            background-color: rgba(245, 158, 11, 0.1);
-            color: var(--warning-color);
-        }
-
-        .btn-toggle:hover {
-            background-color: rgba(245, 158, 11, 0.2);
-            color: var(--warning-color);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-
-        /* ============= STATUS BADGES ============= */
-        .status-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.375rem;
-        }
-
-        .status-active {
-            background-color: rgba(34, 197, 94, 0.1);
-            color: var(--success-color);
-        }
-
-        .status-inactive {
-            background-color: rgba(239, 68, 68, 0.1);
-            color: var(--danger-color);
-        }
-
-        .role-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 6px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .role-administrador {
-            background-color: rgba(239, 68, 68, 0.1);
-            color: var(--danger-color);
-        }
-
-        .role-medico {
-            background-color: rgba(34, 197, 94, 0.1);
-            color: var(--success-color);
-        }
-
-        .role-enfermero {
-            background-color: rgba(6, 182, 212, 0.1);
-            color: var(--info-color);
-        }
-
-        .role-supervisor {
+        .btn-status {
             background-color: rgba(245, 158, 11, 0.1);
             color: var(--accent-color);
         }
 
-        .role-usuario {
-            background-color: rgba(100, 116, 139, 0.1);
-            color: var(--gray-600);
+        .btn-status:hover {
+            background-color: rgba(245, 158, 11, 0.2);
+            color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
         }
 
         /* ============= EMPTY STATE ============= */
@@ -343,6 +305,225 @@
             box-shadow: var(--shadow-sm);
         }
 
+        /* ============= BADGE STYLES ============= */
+        .badge {
+            font-weight: 500;
+            padding: 0.35rem 0.65rem;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+
+        .bg-disponible {
+            background-color: var(--success-color) !important;
+        }
+
+        .bg-en_cirugia {
+            background-color: var(--warning-color) !important;
+        }
+
+        .bg-no_disponible {
+            background-color: var(--danger-color) !important;
+        }
+
+        /* ============= MODAL ESTADO STYLES ============= */
+        .status-modal {
+            animation: modalSlideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            box-shadow: 0 20px 50px rgba(245, 158, 11, 0.3), 0 0 100px rgba(245, 158, 11, 0.1);
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d251b 100%);
+            color: white;
+            border: 1px solid #f59e0b;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .status-icon-bg {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            z-index: 1;
+            opacity: 0.1;
+            animation: iconPulse 3s ease-in-out infinite;
+        }
+
+        .status-icon-bg i {
+            font-size: 180px;
+            color: #f59e0b;
+            transform: rotate(-15deg);
+        }
+
+        .status-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .status-particles .particle {
+            position: absolute;
+            background: #f59e0b;
+            border-radius: 50%;
+            animation: particleFloat 4s ease-in-out infinite;
+        }
+
+        .status-particles .particle:nth-child(1) {
+            width: 4px;
+            height: 4px;
+            top: 20%;
+            left: 20%;
+            animation-delay: 0s;
+        }
+
+        .status-particles .particle:nth-child(2) {
+            width: 3px;
+            height: 3px;
+            top: 40%;
+            left: 80%;
+            animation-delay: 1s;
+        }
+
+        .status-particles .particle:nth-child(3) {
+            width: 5px;
+            height: 5px;
+            top: 70%;
+            left: 30%;
+            animation-delay: 2s;
+        }
+
+        .status-particles .particle:nth-child(4) {
+            width: 2px;
+            height: 2px;
+            top: 30%;
+            left: 60%;
+            animation-delay: 3s;
+        }
+
+        .status-particles .particle:nth-child(5) {
+            width: 4px;
+            height: 4px;
+            top: 80%;
+            left: 70%;
+            animation-delay: 1.5s;
+        }
+
+        .status-title {
+            animation: statusTitleGlow 2s ease-in-out infinite alternate;
+            position: relative;
+            z-index: 3;
+        }
+
+        .status-icon-header {
+            animation: iconBounce 1s ease-in-out infinite;
+        }
+
+        .status-content {
+            position: relative;
+            z-index: 3;
+        }
+
+        .status-icon-main {
+            animation: statusIconPulse 1.5s ease-in-out infinite;
+        }
+
+        .status-icon-main i {
+            font-size: 4rem;
+            color: #f59e0b;
+            filter: drop-shadow(0 5px 15px rgba(245, 158, 11, 0.3));
+        }
+
+        .status-btn-cancel, .status-btn-confirm {
+            position: relative;
+            z-index: 3;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            font-weight: 500;
+            border-radius: 25px;
+            padding: 10px 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .status-btn-cancel:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1) !important;
+        }
+
+        .status-btn-confirm:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.4);
+            background: linear-gradient(45deg, #f59e0b, #f97316) !important;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes iconPulse {
+            0%, 100% {
+                transform: scale(1) rotate(-15deg);
+            }
+            50% {
+                transform: scale(1.05) rotate(-15deg);
+            }
+        }
+
+        @keyframes particleFloat {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+            }
+            50% {
+                transform: translateY(-20px) translateX(10px);
+            }
+        }
+
+        @keyframes statusTitleGlow {
+            0% {
+                text-shadow: 0 0 5px rgba(245, 158, 11, 0.5);
+            }
+            100% {
+                text-shadow: 0 0 20px rgba(245, 158, 11, 0.8), 0 0 30px rgba(245, 158, 11, 0.4);
+            }
+        }
+
+        @keyframes iconBounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        @keyframes statusIconPulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes confirmPulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(0.95);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
         /* ============= RESPONSIVE ============= */
         @media (max-width: 992px) {
             .table td, .table th {
@@ -371,7 +552,7 @@
                 font-size: 1.5rem;
             }
             
-            .btn-primary {
+            .btn-primary, .btn-success {
                 width: 100%;
                 justify-content: center;
             }
@@ -379,6 +560,14 @@
             .table-responsive {
                 overflow-x: auto;
                 -webkit-overflow-scrolling: touch;
+            }
+
+            .status-icon-bg i {
+                font-size: 120px;
+            }
+            
+            .status-icon-main i {
+                font-size: 3rem;
             }
         }
 
@@ -417,7 +606,7 @@
             <!-- Page Header -->
             <div class="dashboard-header animate-fade-in">
                 <h1>
-                    <i class='bx bx-group'></i><?= esc($titulo) ?>
+                    <i class='bx bx-user'></i><?= esc($titulo) ?>
                 </h1>
                 <a href="<?= site_url('usuarios/crear') ?>" class="btn btn-primary">
                     <i class='bx bx-plus'></i> Nuevo Usuario
@@ -456,11 +645,11 @@
                         <table class="table table-hover mb-0">
                             <thead>
                                 <tr>
+                                    <th>Nombre Completo</th>
+                                    <th>Email</th>
                                     <th>Usuario</th>
-                                    <th>Información</th>
                                     <th>Rol</th>
                                     <th>Estado</th>
-                                    <th>Fecha Registro</th>
                                     <th class="text-end">Acciones</th>
                                 </tr>
                             </thead>
@@ -481,63 +670,39 @@
                                                         <i class='bx bx-user-circle' style="font-size: 1.25rem; color: var(--primary-color);"></i>
                                                     </div>
                                                     <div>
-                                                        <strong><?= esc($usuario->nombre . ' ' . $usuario->apellidos) ?></strong>
-                                                        <div class="text-muted small" style="font-size: 0.75rem;">
-                                                            @<?= esc($usuario->username) ?>
-                                                        </div>
+                                                        <strong><?= esc($usuario->nombre) ?> <?= esc($usuario->apellidos) ?></strong>
                                                     </div>
                                                 </div>
                                             </td>
+                                            <td><?= esc($usuario->email) ?></td>
+                                            <td><?= esc($usuario->username) ?></td>
+                                            <td><?= ucfirst(esc($usuario->rol)) ?></td>
                                             <td>
-                                                <div class="d-flex flex-column">
-                                                    <span class="text-muted small"><?= esc($usuario->email) ?></span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span class="role-badge role-<?= strtolower($usuario->rol) ?>">
-                                                    <?= ucfirst(esc($usuario->rol)) ?>
+                                                <span class="badge <?= $usuario->estado == 1 ? 'bg-success' : 'bg-danger' ?>">
+                                                    <?= $usuario->estado == 1 ? 'Activo' : 'Inactivo' ?>
                                                 </span>
-                                            </td>
-                                            <td>
-                                                <?php if ($usuario->estado == 1): ?>
-                                                    <span class="status-badge status-active">
-                                                        <i class='bx bx-check-circle'></i>
-                                                        Activo
-                                                    </span>
-                                                <?php else: ?>
-                                                    <span class="status-badge status-inactive">
-                                                        <i class='bx bx-x-circle'></i>
-                                                        Inactivo
-                                                    </span>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td>
-                                                <div class="d-flex flex-column">
-                                                    <span class="small"><?= date('d/m/Y', strtotime($usuario->fecha_registro)) ?></span>
-                                                    <span class="text-muted small"><?= date('H:i', strtotime($usuario->fecha_registro)) ?></span>
-                                                </div>
                                             </td>
                                             <td class="text-end">
                                                 <div class="d-flex justify-content-end">
-                                                    <a href="<?= site_url('usuarios/view/'.$usuario->id) ?>" class="btn-action btn-view" title="Ver detalles">
+                                                    <a href="<?= site_url('usuarios/ver/'.$usuario->id) ?>" class="btn-action btn-view" title="Ver detalles">
                                                         <i class='bx bx-show'></i>
                                                     </a>
-                                                    <a href="<?= site_url('usuarios/edit/'.$usuario->id) ?>" class="btn-action btn-edit" title="Editar">
+                                                    <a href="<?= site_url('usuarios/editar/'.$usuario->id) ?>" class="btn-action btn-edit" title="Editar">
                                                         <i class='bx bx-edit'></i>
                                                     </a>
                                                     <button type="button"
-                                                        class="btn-action btn-toggle"
+                                                        class="btn-action btn-status"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#modalEstado"
                                                         onclick="configurarModalEstado({
                                                             idElemento: '<?= $usuario->id ?>',
-                                                            nombreElemento: '<?= esc($usuario->nombre . ' ' . $usuario->apellidos) ?>',
-                                                            actionUrl: '<?= site_url('usuarios/toggle_status/'.$usuario->id) ?>',
+                                                            nombreElemento: '<?= esc($usuario->nombre) ?> <?= esc($usuario->apellidos) ?>',
+                                                            actionUrl: '<?= site_url('usuarios/cambiarEstado/'.$usuario->id) ?>',
                                                             estadoActual: <?= $usuario->estado ?>,
-                                                            titulo: '<?= $usuario->estado == 1 ? 'Desactivar Usuario' : 'Activar Usuario' ?>'
+                                                            titulo: 'Cambiar Estado de Usuario'
                                                         })"
-                                                        title="<?= $usuario->estado == 1 ? 'Desactivar' : 'Activar' ?>">
-                                                        <i class='bx <?= $usuario->estado == 1 ? 'bx-toggle-right' : 'bx-toggle-left' ?>'></i>
+                                                        title="Cambiar estado">
+                                                        <i class='bx bx-toggle-<?= $usuario->estado == 1 ? 'left' : 'right' ?>'></i>
                                                     </button>
                                                     <button type="button"
                                                         class="btn-action btn-delete"
@@ -545,10 +710,10 @@
                                                         data-bs-target="#modalEliminar"
                                                         onclick="configurarModalEliminar({
                                                             idElemento: '<?= $usuario->id ?>',
-                                                            nombreElemento: '<?= esc($usuario->nombre . ' ' . $usuario->apellidos) ?>',
-                                                            actionUrl: '<?= site_url('usuarios/delete/'.$usuario->id) ?>',
+                                                            nombreElemento: '<?= esc($usuario->nombre) ?> <?= esc($usuario->apellidos) ?>',
+                                                            actionUrl: '<?= site_url('usuarios/eliminar/'.$usuario->id) ?>',
                                                             titulo: 'Eliminar Usuario',
-                                                            mensajeAdicional: 'Se eliminarán todos los registros asociados a este usuario.',
+                                                            mensajeAdicional: 'Se eliminarán todos los registros asociados.',
                                                             icono: 'bx-user-x'
                                                         })"
                                                         title="Eliminar">
@@ -567,9 +732,64 @@
         </div>
     </div>
 
-    <!-- Incluir modales -->
+    <!-- Incluir modal de eliminación reutilizable -->
     <?= $this->include('includes/modal_eliminar') ?>
-    <?= $this->include('includes/modal_estado') ?>
+
+    <!-- Modal de Cambio de Estado -->
+    <div class="modal fade" id="modalEstado" tabindex="-1" aria-labelledby="modalEstadoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content status-modal">
+                
+                <!-- Ícono gigante animado de fondo -->
+                <div class="status-icon-bg">
+                    <i class="bx bx-toggle-right"></i>
+                </div>
+                
+                <!-- Efectos de partículas -->
+                <div class="status-particles">
+                    <div class="particle"></div>
+                    <div class="particle"></div>
+                    <div class="particle"></div>
+                    <div class="particle"></div>
+                    <div class="particle"></div>
+                </div>
+                
+                <div class="modal-header border-bottom" style="border-color: rgba(245, 158, 11, 0.3) !important; background: rgba(0,0,0,0.3); backdrop-filter: blur(10px);">
+                    <h5 class="modal-title status-title" style="font-size: 1.2rem; font-weight: 600;">
+                        <i class='bx bx-toggle-right me-2 status-icon-header'></i>
+                        <span id="modalEstadoTitulo">Cambiar Estado</span>
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white close-btn-animated" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                
+                <form id="formEstado" method="post" action="">
+                    <?= csrf_field() ?>
+                    <input type="hidden" id="idElementoEstado" name="id">
+                    <div class="modal-body py-4 text-center" style="background: rgba(0,0,0,0.2); backdrop-filter: blur(5px);">
+                        <div class="status-content">
+                            <div class="status-icon-main mb-3">
+                                <i class='bx bx-toggle-right'></i>
+                            </div>
+                            <p style="font-size: 1rem; margin-bottom: 1rem; font-weight: 500;">
+                                ¿Está seguro que desea <strong><span id="accionEstado"></span></strong> al usuario <strong><span id="nombreElementoEstado"></span></strong>?
+                            </p>
+                            <p style="font-size: 0.85rem; color: #f59e0b; margin-bottom: 0;" id="mensajeAdicionalEstado">
+                                Esta acción cambiará la capacidad de acceso del usuario al sistema.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top justify-content-center" style="border-color: rgba(245, 158, 11, 0.3) !important; background: rgba(0,0,0,0.3); backdrop-filter: blur(10px);">
+                        <button type="button" class="btn btn-outline-light status-btn-cancel me-2" data-bs-dismiss="modal">
+                            <i class='bx bx-x me-1'></i> Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-warning status-btn-confirm">
+                            <i class='bx bx-check me-1'></i> Confirmar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -604,6 +824,59 @@
                 this.style.boxShadow = 'var(--shadow-xl)';
             });
         });
+
+        // Función para configurar el modal de cambio de estado
+        function configurarModalEstado(options) {
+            const {
+                idElemento,
+                nombreElemento,
+                actionUrl,
+                estadoActual,
+                titulo = 'Cambiar Estado'
+            } = options;
+
+            const accion = estadoActual == 1 ? 'desactivar' : 'activar';
+            const mensajeAdicional = estadoActual == 1 
+                ? 'El usuario no podrá acceder al sistema hasta que sea reactivado.' 
+                : 'El usuario podrá acceder nuevamente al sistema.';
+
+            document.getElementById('modalEstadoTitulo').textContent = titulo;
+            document.getElementById('idElementoEstado').value = idElemento;
+            document.getElementById('nombreElementoEstado').textContent = nombreElemento;
+            document.getElementById('accionEstado').textContent = accion;
+            document.getElementById('mensajeAdicionalEstado').textContent = mensajeAdicional;
+            document.getElementById('formEstado').action = actionUrl;
+            
+            // Cambiar ícono según el estado
+            const icono = document.querySelector('.status-icon-main i');
+            icono.className = estadoActual == 1 ? 'bx bx-toggle-left' : 'bx bx-toggle-right';
+        }
+
+        // Función para configurar el modal de eliminación (si no está ya definida)
+        if (typeof configurarModalEliminar === 'undefined') {
+            function configurarModalEliminar(options) {
+                const {
+                    idElemento,
+                    nombreElemento,
+                    actionUrl,
+                    titulo = 'Eliminar',
+                    mensajeAdicional = '',
+                    icono = 'bx-trash'
+                } = options;
+
+                document.getElementById('modalEliminarTitulo').textContent = titulo;
+                document.getElementById('idElementoEliminar').value = idElemento;
+                document.getElementById('nombreElementoEliminar').textContent = nombreElemento;
+                document.getElementById('mensajeAdicionalEliminar').textContent = mensajeAdicional;
+                document.getElementById('formEliminar').action = actionUrl;
+                
+                // Cambiar ícono si está disponible
+                const iconoElement = document.querySelector('#modalEliminar .modal-icon i');
+                if (iconoElement) {
+                    iconoElement.className = 'bx ' + icono;
+                }
+            }
+        }
     </script>
     <?= $this->include('includes/footer') ?>
 </body>

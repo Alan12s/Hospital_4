@@ -376,7 +376,6 @@
             }
         }
     </style>
-    </style>
 </head>
 <body>
     <div class="wrapper">
@@ -391,10 +390,10 @@
                     <i class='bx bx-plus-medical'></i><?= esc($title) ?>
                 </h1>
                 <div class="d-flex gap-2">
-                    <a href="<?= site_url('anestesistas/crear') ?>" class="btn btn-primary">
-                        <i class='bx bx-plus'></i> Nuevo Anestesista
+                    <a href="<?= site_url('enfermeros/crear') ?>" class="btn btn-primary">
+                        <i class='bx bx-plus'></i> Nuevo Enfermero
                     </a>
-                    <a href="<?= site_url('anestesistas/disponibles') ?>" class="btn btn-success">
+                    <a href="<?= site_url('enfermeros/disponibles') ?>" class="btn btn-success">
                         <i class='bx bx-check-circle'></i> Disponibles
                     </a>
                 </div>
@@ -421,11 +420,11 @@
                 </div>
             <?php endif; ?>
 
-            <!-- Anestesistas Table -->
+            <!-- Nurses Table -->
             <div class="glass-card animate-fade-in" style="animation-delay: 0.1s">
                 <div class="card-header">
-                    <h5><i class='bx bx-table me-2'></i>Listado de Anestesistas</h5>
-                    <span class="badge bg-primary"><?= count($anestesistas) ?> registros</span>
+                    <h5><i class='bx bx-table me-2'></i>Listado de Enfermeros</h5>
+                    <span class="badge bg-primary"><?= count($enfermeros) ?> registros</span>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -433,6 +432,7 @@
                             <thead>
                                 <tr>
                                     <th>Nombre Completo</th>
+                                    <th>DNI</th>
                                     <th>Especialidad</th>
                                     <th>Disponibilidad</th>
                                     <th>Contacto</th>
@@ -440,15 +440,15 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php if (empty($anestesistas)): ?>
+                                <?php if (empty($enfermeros)): ?>
                                     <tr>
-                                        <td colspan="5" class="empty-state">
+                                        <td colspan="6" class="empty-state">
                                             <i class='bx bx-user-x'></i>
-                                            <p>No hay anestesistas registrados</p>
+                                            <p>No hay enfermeros registrados</p>
                                         </td>
                                     </tr>
                                 <?php else: ?>
-                                    <?php foreach ($anestesistas as $anestesista): ?>
+                                    <?php foreach ($enfermeros as $enfermero): ?>
                                         <tr>
                                             <td>
                                                 <div class="d-flex align-items-center">
@@ -456,30 +456,32 @@
                                                         <i class='bx bx-user-circle' style="font-size: 1.25rem; color: var(--primary-color);"></i>
                                                     </div>
                                                     <div>
-                                                        <strong><?= esc($anestesista['nombre']) ?></strong>
+                                                        <strong><?= esc($enfermero['nombre']) ?></strong>
                                                         <div class="text-muted small" style="font-size: 0.75rem;">
-                                                            <?= esc($anestesista['email']) ?>
+                                                            <?= esc($enfermero['email']) ?>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td><?= esc($anestesista['especialidad']) ?></td>
+                                            <td><?= esc($enfermero['dni']) ?></td>
+                                            <td><?= esc($enfermero['especialidad']) ?></td>
                                             <td>
-                                                <span class="badge bg-<?= $anestesista['disponibilidad'] ?>">
-                                                    <?= ucfirst(str_replace('_', ' ', $anestesista['disponibilidad'])) ?>
+                                                <span class="badge bg-<?= $enfermero['disponibilidad'] ?>">
+                                                    <?= ucfirst(str_replace('_', ' ', $enfermero['disponibilidad'])) ?>
                                                 </span>
                                             </td>
                                             <td>
                                                 <div class="d-flex flex-column">
-                                                    <small><?= esc($anestesista['telefono']) ?></small>
+                                                    <small><?= esc($enfermero['telefono']) ?></small>
+                                                    <small class="text-muted"><?= esc($enfermero['direccion'] ?? 'Sin dirección') ?></small>
                                                 </div>
                                             </td>
                                             <td class="text-end">
                                                 <div class="d-flex justify-content-end">
-                                                    <a href="<?= site_url('anestesistas/ver/'.$anestesista['id']) ?>" class="btn-action btn-view" title="Ver detalles">
+                                                    <a href="<?= site_url('enfermeros/ver/'.$enfermero['id']) ?>" class="btn-action btn-view" title="Ver detalles">
                                                         <i class='bx bx-show'></i>
                                                     </a>
-                                                    <a href="<?= site_url('anestesistas/editar/'.$anestesista['id']) ?>" class="btn-action btn-edit" title="Editar">
+                                                    <a href="<?= site_url('enfermeros/editar/'.$enfermero['id']) ?>" class="btn-action btn-edit" title="Editar">
                                                         <i class='bx bx-edit'></i>
                                                     </a>
                                                     <button type="button"
@@ -487,10 +489,10 @@
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#modalEliminar"
                                                         onclick="configurarModalEliminar({
-                                                            idElemento: '<?= $anestesista['id'] ?>',
-                                                            nombreElemento: '<?= esc($anestesista['nombre']) ?>',
-                                                            actionUrl: '<?= site_url('anestesistas/eliminar/'.$anestesista['id']) ?>',
-                                                            titulo: 'Eliminar Anestesista',
+                                                            idElemento: '<?= $enfermero['id'] ?>',
+                                                            nombreElemento: '<?= esc($enfermero['nombre']) ?>',
+                                                            actionUrl: '<?= site_url('enfermeros/delete/'.$enfermero['id']) ?>',
+                                                            titulo: 'Eliminar Enfermero',
                                                             mensajeAdicional: 'Se eliminarán todos los registros asociados.',
                                                             icono: 'bx-user-x'
                                                         })"

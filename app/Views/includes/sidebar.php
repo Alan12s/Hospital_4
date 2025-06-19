@@ -83,7 +83,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="<?= base_url('instrumentista') ?>" class="nav-link text-white d-flex align-items-center py-2 ps-3" style="font-size: 0.85rem;">
+                                <a href="<?= base_url('instrumentistas') ?>" class="nav-link text-white d-flex align-items-center py-2 ps-3" style="font-size: 0.85rem;">
                                     <i class='bx bx-wrench bx-tada me-2' style="font-size: 0.9rem;"></i>
                                     <span>Instrumentistas</span>
                                 </a>

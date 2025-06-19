@@ -782,3 +782,204 @@
         grid-template-columns: 1fr;
     }
 }
+/* ============= ESTILOS PARA NOTIFICACIONES TOAST ============= */
+.notification-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 1rem 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-xl);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    z-index: 9999;
+    transform: translateX(150%);
+    transition: transform 0.3s ease-out;
+    max-width: 350px;
+}
+
+.notification-toast.show {
+    transform: translateX(0);
+}
+
+.notification-toast.primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.notification-toast.success {
+    background: var(--success-color);
+    color: white;
+}
+
+.notification-toast.warning {
+    background: var(--warning-color);
+    color: white;
+}
+
+.notification-toast.info {
+    background: var(--info-color);
+    color: white;
+}
+
+.notification-toast.danger {
+    background: var(--danger-color);
+    color: white;
+}
+
+.toast-icon {
+    font-size: 1.5rem;
+}
+
+.toast-message {
+    flex: 1;
+    font-weight: 500;
+}
+
+.toast-close {
+    margin-left: 1rem;
+    cursor: pointer;
+    font-size: 1.2rem;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.toast-close:hover {
+    opacity: 1;
+}
+
+/* ============= ANIMACIONES ADICIONALES ============= */
+.stat-updated {
+    animation: pulse 1s ease;
+}
+
+.chart-updated {
+    animation: pulse 1s ease;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: var(--shadow-xl);
+    }
+    50% {
+        transform: scale(1.02);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+}
+
+/* ============= ESTILOS PARA EL FEED DE ACTIVIDAD ============= */
+.feed-item {
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: var(--border-radius-sm);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    animation: slideIn 0.5s ease-out;
+    transition: all 0.3s ease;
+}
+
+.feed-item:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateX(5px);
+}
+
+.feed-item-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.feed-item-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.feed-item-text {
+    font-size: 0.9rem;
+    color: var(--gray-700);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.feed-item-time {
+    font-size: 0.7rem;
+    color: var(--gray-500);
+}
+
+/* Colores de fondo para íconos */
+.bg-primary { background-color: var(--primary-color); }
+.bg-success { background-color: var(--success-color); }
+.bg-warning { background-color: var(--warning-color); }
+.bg-info { background-color: var(--info-color); }
+.bg-secondary { background-color: var(--gray-500); }
+.bg-danger { background-color: var(--danger-color); }
+
+/* ============= ESTILOS PARA EL WIDGET DEL CLIMA ============= */
+.weather-widget {
+    padding: 1.5rem;
+    text-align: center;
+    border-radius: var(--border-radius);
+    transition: all 0.3s ease;
+}
+
+.weather-widget:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.weather-icon {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+.weather-temp {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--gray-800);
+    margin-bottom: 0.25rem;
+}
+
+.weather-desc {
+    color: var(--gray-600);
+    font-size: 0.9rem;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+/* ============= BARRA DE DESPLAZAMIENTO PERSONALIZADA ============= */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.6);
+}

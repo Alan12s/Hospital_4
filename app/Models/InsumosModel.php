@@ -180,22 +180,4 @@ class InsumosModel extends Model
     {
         return $this->where('cantidad <', $criticalQuantity)->countAllResults();
     }
-
-    /**
-     * Obtener insumos por categoría
-     */
-    public function getInsumosPorCategoria($categoria)
-    {
-        return $this->where('categoria', $categoria)->findAll();
-    }
-
-    /**
-     * Obtener estadísticas por categoría
-     */
-    public function getEstadisticasPorCategoria()
-    {
-        return $this->select('categoria, COUNT(*) as total, SUM(cantidad) as cantidad_total')
-                    ->groupBy('categoria')
-                    ->findAll();
-    }
 }

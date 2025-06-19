@@ -1,410 +1,374 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Actualizar hora en tiempo real
-    updateTime();
-    setInterval(updateTime, 1000);
-    
-    // Actualizar estadísticas cada 30 segundos
-    setInterval(updateStats, 30000);
-    
+    function updateClock() {
+        const now = new Date();
+        document.getElementById('current-time').textContent = now.toLocaleTimeString();
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
     // Inicializar gráficos
     initCharts();
     
-    // Aplicar animaciones escalonadas
-    applyStaggeredAnimations();
-    
-    // Inicializar Live Feed
-    initLiveFeed();
-    
-    // Simular cambios de estado
-    simulateStatusChanges();
-    
-    function updateTime() {
-        const now = new Date();
-        const timeString = now.toLocaleTimeString('es-AR', {
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-        });
-        const timeElement = document.getElementById('current-time');
-        if (timeElement) {
-            timeElement.textContent = timeString;
-        }
-    }
-    
-    function updateStats() {
-        fetch('<?= base_url("inicio/getStats") ?>')
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    // Actualizar estadísticas con animación
-                    animateCounter('turnos-hoy', data.turnos_hoy);
-                    animateCounter('cirujanos-count', data.cirujanos_count);
-                    animateCounter('enfermeros-count', data.enfermeros_disponibles);
-                    animateCounter('pacientes-count', data.pacientes_count);
-                    
-                    // Actualizar fecha y hora si es necesario
-                    const timeElement = document.getElementById('current-time');
-                    if (timeElement) {
-                        timeElement.textContent = data.hora_actual;
-                    }
-                }
-            })
-            .catch(error => console.error('Error al actualizar estadísticas:', error));
-    }
-    
-    function animateCounter(elementId, targetValue) {
-        const element = document.getElementById(elementId);
-        if (!element) return;
-        
-        targetValue = Math.max(0, parseInt(targetValue) || 0);
-        const currentValue = Math.max(0, parseInt(element.textContent) || 0);
-        
-        if (currentValue === targetValue) return;
-        
-        const difference = targetValue - currentValue;
-        const increment = difference > 0 ? 1 : -1;
-        const steps = Math.abs(difference);
-        const duration = Math.min(1000, steps * 50);
-        
-        const stepTime = duration / steps;
-        
-        let current = currentValue;
-        const timer = setInterval(() => {
-            current += increment;
-            element.textContent = Math.max(0, current);
-            
-            if ((increment > 0 && current >= targetValue) || 
-                (increment < 0 && current <= targetValue)) {
-                clearInterval(timer);
-                element.textContent = targetValue;
-            }
-        }, stepTime);
-    }
-    
-    function initCharts() {
-        // Gráfico semanal de cirugías
-        const weeklyCtx = document.getElementById('weeklyChart');
-        if (weeklyCtx) {
-            Chart.defaults.font.family = 'Inter, sans-serif';
-            Chart.defaults.color = '#64748b';
-            
-            fetch('<?= base_url("inicio/getWeeklyStats") ?>')
-                .then(response => response.json())
-                .then(data => {
-                    new Chart(weeklyCtx, {
-                        type: 'line',
-                        data: {
-                            labels: data.labels || ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
-                            datasets: [{
-                                label: 'Cirugías Realizadas',
-                                data: data.data || [12, 19, 8, 15, 22, 13, 7],
-                                borderColor: 'rgb(37, 99, 235)',
-                                backgroundColor: 'rgba(37, 99, 235, 0.1)',
-                                borderWidth: 3,
-                                fill: true,
-                                tension: 0.4,
-                                pointBackgroundColor: 'rgb(37, 99, 235)',
-                                pointBorderColor: '#fff',
-                                pointBorderWidth: 2,
-                                pointRadius: 6
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    display: false
-                                }
-                            },
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    grid: {
-                                        color: 'rgba(0,0,0,0.1)'
-                                    }
-                                },
-                                x: {
-                                    grid: {
-                                        color: 'rgba(0,0,0,0.1)'
-                                    }
-                                }
-                            }
-                        }
-                    });
-                })
-                .catch(error => {
-                    console.error('Error al cargar datos semanales:', error);
-                    createDefaultWeeklyChart(weeklyCtx);
-                });
-        }
-        
-        // Gráfico de distribución por especialidad
-        const specialtyCtx = document.getElementById('specialtyChart');
-        if (specialtyCtx) {
-            fetch('<?= base_url("inicio/getSpecialtyStats") ?>')
-                .then(response => response.json())
-                .then(data => {
-                    new Chart(specialtyCtx, {
-                        type: 'doughnut',
-                        data: {
-                            labels: data.labels || ['Traumatologia', 'Urologia', 'Ginecologia', 'General'],
-                            datasets: [{
-                                data: data.data || [15, 20, 25, 30],
-                                backgroundColor: [
-                                    'rgb(37, 99, 235)',
-                                    'rgb(16, 185, 129)',
-                                    'rgb(245, 158, 11)',
-                                    'rgb(239, 68, 68)'
-                                ],
-                                borderWidth: 0,
-                                hoverOffset: 10
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    position: 'bottom',
-                                    labels: {
-                                        padding: 20,
-                                        usePointStyle: true
-                                    }
-                                }
-                            }
-                        }
-                    });
-                })
-                .catch(error => {
-                    console.error('Error al cargar datos por especialidad:', error);
-                    createDefaultSpecialtyChart(specialtyCtx);
-                });
-        }
-    }
-    
-    function createDefaultWeeklyChart(ctx) {
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
-                datasets: [{
-                    label: 'Cirugías Realizadas',
-                    data: [12, 19, 8, 15, 22, 13, 7],
-                    borderColor: 'rgb(37, 99, 235)',
-                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: 'rgb(37, 99, 235)',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2,
-                    pointRadius: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
+    // Cargar datos iniciales
+    loadStats();
+    loadWeeklyStats();
+    loadSpecialtyStats();
+    loadNotifications();
+    loadLiveFeed();
+    updateWeather();
+
+    // Configurar actualización periódica
+    setInterval(loadStats, 30000); // Actualizar cada 30 segundos
+    setInterval(loadLiveFeed, 15000); // Actualizar feed cada 15 segundos
+
+    // Efectos hover para tarjetas
+    setupHoverEffects();
+});
+
+function initCharts() {
+    // Gráfico semanal (se actualizará con datos reales)
+    const weeklyCtx = document.getElementById('weeklyChart').getContext('2d');
+    window.weeklyChart = new Chart(weeklyCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+            datasets: [{
+                label: 'Cirugías',
+                data: [0, 0, 0, 0, 0, 0, 0],
+                backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1,
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
                     }
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(0,0,0,0.1)'
-                        }
-                    },
-                    x: {
-                        grid: {
-                            color: 'rgba(0,0,0,0.1)'
-                        }
+                x: {
+                    grid: {
+                        display: false
                     }
                 }
-            }
-        });
-    }
-    
-    function createDefaultSpecialtyChart(ctx) {
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Cardiovascular', 'Neurología', 'Ortopedia', 'General'],
-                datasets: [{
-                    data: [30, 25, 25, 20],
-                    backgroundColor: [
-                        'rgb(37, 99, 235)',
-                        'rgb(16, 185, 129)',
-                        'rgb(245, 158, 11)',
-                        'rgb(239, 68, 68)'
-                    ],
-                    borderWidth: 0,
-                    hoverOffset: 10
-                }]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 20,
-                            usePointStyle: true
-                        }
-                    }
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleFont: {
+                        size: 14,
+                        weight: 'bold'
+                    },
+                    bodyFont: {
+                        size: 12
+                    },
+                    padding: 12,
+                    cornerRadius: 8
                 }
             }
-        });
-    }
+        }
+    });
+
+    // Gráfico de especialidades (se actualizará con datos reales)
+    const specialtyCtx = document.getElementById('specialtyChart').getContext('2d');
+    window.specialtyChart = new Chart(specialtyCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Cardiovascular', 'Neurología', 'Ortopedia', 'General'],
+            datasets: [{
+                data: [0, 0, 0, 0],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(54, 162, 235, 0.7)',
+                    'rgba(255, 206, 86, 0.7)',
+                    'rgba(75, 192, 192, 0.7)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '70%',
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: {
+                        padding: 20,
+                        usePointStyle: true,
+                        pointStyle: 'circle'
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleFont: {
+                        size: 14,
+                        weight: 'bold'
+                    },
+                    bodyFont: {
+                        size: 12
+                    },
+                    padding: 12,
+                    cornerRadius: 8
+                }
+            }
+        }
+    });
+}
+
+function loadStats() {
+    fetch('/inicio/getStats', {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Actualizar estadísticas
+            document.getElementById('turnos-hoy').textContent = data.turnos_hoy;
+            document.getElementById('cirujanos-count').textContent = data.cirujanos_count;
+            document.getElementById('enfermeros-count').textContent = data.enfermeros_disponibles;
+            document.getElementById('pacientes-count').textContent = data.pacientes_count;
+            
+            // Animación de actualización
+            animateStatUpdate();
+        }
+    })
+    .catch(error => console.error('Error al cargar estadísticas:', error));
+}
+
+function loadWeeklyStats() {
+    fetch('/inicio/getWeeklyStats', {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Actualizar gráfico semanal
+        window.weeklyChart.data.labels = data.labels;
+        window.weeklyChart.data.datasets[0].data = data.data;
+        window.weeklyChart.update();
+        
+        // Efecto visual
+        document.querySelector('#weeklyChart').parentElement.classList.add('chart-updated');
+        setTimeout(() => {
+            document.querySelector('#weeklyChart').parentElement.classList.remove('chart-updated');
+        }, 1000);
+    })
+    .catch(error => console.error('Error al cargar estadísticas semanales:', error));
+}
+
+function loadSpecialtyStats() {
+    fetch('/inicio/getSpecialtyStats', {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Actualizar gráfico de especialidades
+        window.specialtyChart.data.labels = data.labels;
+        window.specialtyChart.data.datasets[0].data = data.data;
+        window.specialtyChart.update();
+        
+        // Efecto visual
+        document.querySelector('#specialtyChart').parentElement.classList.add('chart-updated');
+        setTimeout(() => {
+            document.querySelector('#specialtyChart').parentElement.classList.remove('chart-updated');
+        }, 1000);
+    })
+    .catch(error => console.error('Error al cargar estadísticas por especialidad:', error));
+}
+
+function loadNotifications() {
+    fetch('/inicio/getNotifications', {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success' && data.notifications.length > 0) {
+            // Mostrar notificación más reciente como toast
+            const latestNotification = data.notifications[0];
+            showNotificationToast(latestNotification);
+        }
+    })
+    .catch(error => console.error('Error al cargar notificaciones:', error));
+}
+
+function showNotificationToast(notification) {
+    const toast = document.createElement('div');
+    toast.className = `notification-toast ${notification.type}`;
+    toast.innerHTML = `
+        <div class="toast-icon">
+            <i class="bx ${notification.icon}"></i>
+        </div>
+        <div class="toast-message">${notification.message}</div>
+        <div class="toast-close">&times;</div>
+    `;
     
-    function applyStaggeredAnimations() {
-        const elements = document.querySelectorAll('.animate-fade-in');
-        elements.forEach((element, index) => {
-            element.style.animationDelay = `${index * 0.1}s`;
-        });
-    }
+    document.body.appendChild(toast);
     
-    // Efectos de hover mejorados
-    document.querySelectorAll('.stats-card').forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-8px) scale(1.02)';
+    // Mostrar toast con animación
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 100);
+    
+    // Cerrar toast al hacer click
+    toast.querySelector('.toast-close').addEventListener('click', () => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+            toast.remove();
+        }, 300);
+    });
+    
+    // Auto-ocultar después de 5 segundos
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+            toast.remove();
+        }, 300);
+    }, 5000);
+}
+
+function loadLiveFeed() {
+    // En una implementación real, esto haría una petición AJAX
+    // Por ahora simulamos datos del controlador
+    
+    const feedContainer = document.getElementById('live-feed-items');
+    feedContainer.innerHTML = '';
+    
+    // Datos simulados (en producción vendrían del servidor)
+    const activities = [
+        {
+            tipo: 'cirugia_completada',
+            mensaje: 'Cirugía de apendicectomía completada exitosamente',
+            usuario: 'Dr. Pérez',
+            tiempo: 'Hace 2 horas',
+            icono: 'bx-check-circle',
+            color: 'success'
+        },
+        {
+            tipo: 'paciente_registrado',
+            mensaje: 'Nuevo paciente registrado en el sistema',
+            usuario: 'Enf. García',
+            tiempo: 'Hace 4 horas',
+            icono: 'bx-user-plus',
+            color: 'info'
+        },
+        {
+            tipo: 'insumo_bajo',
+            mensaje: 'Stock bajo detectado en insumos quirúrgicos',
+            usuario: 'Sistema',
+            tiempo: 'Hace 6 horas',
+            icono: 'bx-package',
+            color: 'warning'
+        },
+        {
+            tipo: 'mantenimiento',
+            mensaje: 'Mantenimiento programado de equipos completado',
+            usuario: 'Técnico',
+            tiempo: 'Hace 8 horas',
+            icono: 'bx-wrench',
+            color: 'secondary'
+        }
+    ];
+    
+    activities.forEach(activity => {
+        const feedItem = document.createElement('div');
+        feedItem.className = 'feed-item';
+        feedItem.innerHTML = `
+            <div class="feed-item-icon bg-${activity.color}">
+                <i class="bx ${activity.icono}"></i>
+            </div>
+            <div class="feed-item-content">
+                <div class="feed-item-text">${activity.mensaje}</div>
+                <div class="feed-item-time">${activity.tiempo} • ${activity.usuario}</div>
+            </div>
+        `;
+        feedContainer.appendChild(feedItem);
+    });
+}
+
+function updateWeather() {
+    // En una implementación real, esto haría una petición a una API del clima
+    // Por ahora usamos los datos simulados del controlador
+    
+    const weatherData = {
+        icono: '🌤️',
+        temperatura: 22,
+        descripcion: 'Parcialmente nublado',
+        ciudad: 'San Juan, Argentina'
+    };
+    
+    const weatherWidget = document.querySelector('.weather-widget');
+    if (weatherWidget) {
+        weatherWidget.querySelector('.weather-icon').textContent = weatherData.icono;
+        weatherWidget.querySelector('.weather-temp').textContent = `${weatherData.temperatura}°C`;
+        weatherWidget.querySelectorAll('.weather-desc')[0].textContent = weatherData.descripcion;
+        weatherWidget.querySelectorAll('.weather-desc')[1].textContent = weatherData.ciudad;
+    }
+}
+
+function animateStatUpdate() {
+    const statCards = document.querySelectorAll('.stats-card');
+    statCards.forEach(card => {
+        card.classList.add('stat-updated');
+        setTimeout(() => {
+            card.classList.remove('stat-updated');
+        }, 1000);
+    });
+}
+
+function setupHoverEffects() {
+    // Efecto de elevación en tarjetas
+    const cards = document.querySelectorAll('.stats-card, .action-card, .chart-container, .status-board, .resource-monitor');
+    
+    cards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            card.style.transform = 'translateY(-5px)';
+            card.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.15)';
         });
         
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0) scale(1)';
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = '';
+            card.style.boxShadow = '';
         });
     });
     
-    // Live Feed Functions
-    function initLiveFeed() {
-        const feedItems = [
-            {
-                icon: 'bx-user-plus',
-                color: 'var(--info-color)',
-                text: 'Nuevo paciente registrado en el sistema',
-                time: 'Hace 2 minutos'
-            },
-            {
-                icon: 'bx-calendar-check',
-                color: 'var(--primary-color)',
-                text: 'Cirugía programada para mañana a las 08:00',
-                time: 'Hace 15 minutos'
-            },
-            {
-                icon: 'bx-package',
-                color: 'var(--warning-color)',
-                text: 'Stock bajo en insumos quirúrgicos',
-                time: 'Hace 30 minutos'
-            },
-            {
-                icon: 'bx-check-circle',
-                color: 'var(--success-color)',
-                text: 'Cirugía de apendicectomía completada con éxito',
-                time: 'Hace 1 hora'
-            },
-            {
-                icon: 'bx-user',
-                color: 'var(--secondary-color)',
-                text: 'Nuevo cirujano agregado al equipo',
-                time: 'Hace 2 horas'
+    // Efecto en botones de acción rápida
+    const actionCards = document.querySelectorAll('.action-card');
+    actionCards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            const icon = card.querySelector('.action-card-icon');
+            if (icon) {
+                icon.style.transform = 'scale(1.1) rotate(5deg)';
             }
-        ];
-        
-        const feedContainer = document.getElementById('live-feed-items');
-        
-        // Mostrar items iniciales
-        feedItems.forEach(item => {
-            addFeedItem(feedContainer, item);
         });
         
-        // Simular nuevos items cada cierto tiempo
-        setInterval(() => {
-            const randomItems = [
-                {
-                    icon: 'bx-calendar',
-                    color: 'var(--primary-color)',
-                    text: 'Nueva cirugía programada para ' + randomDay() + ' a las ' + randomTime(),
-                    time: 'Ahora mismo'
-                },
-                {
-                    icon: 'bx-heart',
-                    color: 'var(--danger-color)',
-                    text: 'Paciente en sala de emergencias',
-                    time: 'Ahora mismo'
-                },
-                {
-                    icon: 'bx-check',
-                    color: 'var(--success-color)',
-                    text: 'Cirugía completada satisfactoriamente',
-                    time: 'Ahora mismo'
-                },
-                {
-                    icon: 'bx-alarm',
-                    color: 'var(--warning-color)',
-                    text: 'Recordatorio: Reunión de equipo en 15 minutos',
-                    time: 'Ahora mismo'
-                }
-            ];
-            
-            const randomItem = randomItems[Math.floor(Math.random() * randomItems.length)];
-            addFeedItem(feedContainer, randomItem);
-            
-            // Mantener máximo 8 items en el feed
-            if (feedContainer.children.length > 8) {
-                feedContainer.removeChild(feedContainer.children[0]);
+        card.addEventListener('mouseleave', () => {
+            const icon = card.querySelector('.action-card-icon');
+            if (icon) {
+                icon.style.transform = '';
             }
-        }, 10000); // Cada 10 segundos
-    }
-    
-    function addFeedItem(container, item) {
-        const feedItem = document.createElement('div');
-        feedItem.className = 'feed-item';
-        
-        feedItem.innerHTML = `
-            <div class="feed-item-icon" style="background: ${item.color}">
-                <i class="bx ${item.icon}"></i>
-            </div>
-            <div class="feed-item-content">
-                <div class="feed-item-text">${item.text}</div>
-                <div class="feed-item-time">${item.time}</div>
-            </div>
-        `;
-        
-        container.appendChild(feedItem);
-    }
-    
-    function randomDay() {
-        const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-        return days[Math.floor(Math.random() * days.length)];
-    }
-    
-    function randomTime() {
-        const hours = Math.floor(Math.random() * 12) + 1;
-        const minutes = Math.floor(Math.random() * 60);
-        const ampm = Math.random() > 0.5 ? 'AM' : 'PM';
-        return `${hours}:${minutes < 10 ? '0' + minutes : minutes} ${ampm}`;
-    }
-    
-    // Simular cambios de estado
-    function simulateStatusChanges() {
-        setInterval(() => {
-            const statusIndicators = document.querySelectorAll('.status-indicator');
-            statusIndicators.forEach(indicator => {
-                // 10% de probabilidad de cambiar el estado
-                if (Math.random() < 0.1) {
-                    indicator.classList.toggle('active');
-                    indicator.classList.toggle('warning');
-                    
-                    // Agregar animación de pulso temporal
-                    indicator.classList.add('pulse-animation');
-                    setTimeout(() => {
-                        indicator.classList.remove('pulse-animation');
-                    }, 2000);
-                }
-            });
-        }, 5000); // Cada 5 segundos
-    }
-});
+        });
+    });
+}

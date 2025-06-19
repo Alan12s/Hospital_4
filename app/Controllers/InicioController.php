@@ -90,7 +90,7 @@ class InicioController extends BaseController
         try {
             // Modelo de Enfermeros
             if (class_exists('\App\Models\EnfermeroModel')) {
-                $enfermeroModel = new \App\Models\EnfermeroModel();
+                $enfermeroModel = new \App\Models\EnfermerosModel();
                 $stats['enfermeros_disponibles'] = $enfermeroModel->countDisponibles();
             }
         } catch (\Exception $e) {
@@ -110,7 +110,7 @@ class InicioController extends BaseController
         try {
             // Modelo de Insumos
             if (class_exists('\App\Models\InsumoModel')) {
-                $insumoModel = new \App\Models\InsumoModel();
+                $insumoModel = new \App\Models\InsumosModel();
                 $stats['insumos_bajo_stock'] = $insumoModel->countBajoStock();
             }
         } catch (\Exception $e) {
@@ -408,7 +408,7 @@ class InicioController extends BaseController
         // Verificar insumos bajos
         try {
             if (class_exists('\App\Models\InsumoModel')) {
-                $insumoModel = new \App\Models\InsumoModel();
+                $insumoModel = new \App\Models\InsumosModel();
                 $insumosBajos = $insumoModel->countBajoStock();
                 
                 if ($insumosBajos > 0) {

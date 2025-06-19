@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title) ?> - Sistema Quirúrgico</title>
+    <title><?= esc($titulo) ?> - Sistema Quirúrgico</title>
     
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -97,36 +97,27 @@
             color: var(--accent-color);
         }
 
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-dark);
+        .page-subtitle {
+            color: var(--gray-200);
+            font-size: 0.95rem;
+            margin-top: 0.5rem;
+        }
+
+        .btn-secondary {
+            background-color: var(--gray-500);
+            border-color: var(--gray-600);
             font-weight: 600;
             letter-spacing: 0.5px;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 0.5rem;
             transition: all 0.3s ease;
+            padding: 0.5rem 1.25rem;
+            border-radius: var(--border-radius-sm);
         }
 
-        .btn-primary:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .btn-success {
-            background-color: var(--success-color);
-            border-color: #16a34a;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .btn-success:hover {
-            background-color: #16a34a;
+        .btn-secondary:hover {
+            background-color: var(--gray-600);
             transform: translateY(-2px);
             box-shadow: var(--shadow-md);
         }
@@ -253,18 +244,6 @@
             box-shadow: var(--shadow);
         }
 
-        .btn-delete {
-            background-color: rgba(220, 53, 69, 0.1);
-            color: var(--danger-color);
-        }
-
-        .btn-delete:hover {
-            background-color: rgba(220, 53, 69, 0.2);
-            color: var(--danger-color);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-
         /* ============= EMPTY STATE ============= */
         .empty-state {
             padding: 2rem;
@@ -282,15 +261,6 @@
         .empty-state p {
             margin-bottom: 0;
             font-size: 0.95rem;
-        }
-
-        /* ============= ALERT STYLES ============= */
-        .alert {
-            border-radius: var(--border-radius-sm);
-            margin-bottom: 1.5rem;
-            font-size: 0.9rem;
-            border: none;
-            box-shadow: var(--shadow-sm);
         }
 
         /* ============= BADGE STYLES ============= */
@@ -341,7 +311,7 @@
                 font-size: 1.5rem;
             }
             
-            .btn-primary, .btn-success {
+            .btn-secondary {
                 width: 100%;
                 justify-content: center;
             }
@@ -376,7 +346,6 @@
             }
         }
     </style>
-    </style>
 </head>
 <body>
     <div class="wrapper">
@@ -387,45 +356,22 @@
         <div class="main-content">
             <!-- Page Header -->
             <div class="dashboard-header animate-fade-in">
-                <h1>
-                    <i class='bx bx-plus-medical'></i><?= esc($title) ?>
-                </h1>
-                <div class="d-flex gap-2">
-                    <a href="<?= site_url('anestesistas/crear') ?>" class="btn btn-primary">
-                        <i class='bx bx-plus'></i> Nuevo Anestesista
-                    </a>
-                    <a href="<?= site_url('anestesistas/disponibles') ?>" class="btn btn-success">
-                        <i class='bx bx-check-circle'></i> Disponibles
-                    </a>
+                <div>
+                    <h1>
+                        <i class='bx bx-check-circle'></i><?= esc($titulo) ?>
+                    </h1>
+                    <p class="page-subtitle">Enfermeros actualmente disponibles para asignación</p>
                 </div>
+                <a href="<?= site_url('enfermeros') ?>" class="btn btn-secondary">
+                    <i class='bx bx-arrow-back'></i> Volver
+                </a>
             </div>
 
-            <!-- Flash Messages -->
-            <?php if (session()->getFlashdata('success')): ?>
-                <div class="alert alert-success alert-dismissible fade show glass-card">
-                    <div class="d-flex align-items-center">
-                        <i class='bx bx-check-circle me-2'></i>
-                        <?= esc(session()->getFlashdata('success')) ?>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            <?php endif; ?>
-
-            <?php if (session()->getFlashdata('error')): ?>
-                <div class="alert alert-danger alert-dismissible fade show glass-card">
-                    <div class="d-flex align-items-center">
-                        <i class='bx bx-error-circle me-2'></i>
-                        <?= esc(session()->getFlashdata('error')) ?>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            <?php endif; ?>
-
-            <!-- Anestesistas Table -->
+            <!-- Nurses Table -->
             <div class="glass-card animate-fade-in" style="animation-delay: 0.1s">
                 <div class="card-header">
-                    <h5><i class='bx bx-table me-2'></i>Listado de Anestesistas</h5>
-                    <span class="badge bg-primary"><?= count($anestesistas) ?> registros</span>
+                    <h5><i class='bx bx-list-check me-2'></i>Listado de Enfermeros Disponibles</h5>
+                    <span class="badge bg-success"><?= count($enfermeros) ?> disponibles</span>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -433,75 +379,48 @@
                             <thead>
                                 <tr>
                                     <th>Nombre Completo</th>
+                                    <th>DNI</th>
+                                    <th>Teléfono</th>
+                                    <th>Email</th>
                                     <th>Especialidad</th>
-                                    <th>Disponibilidad</th>
-                                    <th>Contacto</th>
+                                    <th>Estado</th>
                                     <th class="text-end">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php if (empty($anestesistas)): ?>
-                                    <tr>
-                                        <td colspan="5" class="empty-state">
-                                            <i class='bx bx-user-x'></i>
-                                            <p>No hay anestesistas registrados</p>
-                                        </td>
-                                    </tr>
-                                <?php else: ?>
-                                    <?php foreach ($anestesistas as $anestesista): ?>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="me-2">
-                                                        <i class='bx bx-user-circle' style="font-size: 1.25rem; color: var(--primary-color);"></i>
-                                                    </div>
-                                                    <div>
-                                                        <strong><?= esc($anestesista['nombre']) ?></strong>
-                                                        <div class="text-muted small" style="font-size: 0.75rem;">
-                                                            <?= esc($anestesista['email']) ?>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td><?= esc($anestesista['especialidad']) ?></td>
-                                            <td>
-                                                <span class="badge bg-<?= $anestesista['disponibilidad'] ?>">
-                                                    <?= ucfirst(str_replace('_', ' ', $anestesista['disponibilidad'])) ?>
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <div class="d-flex flex-column">
-                                                    <small><?= esc($anestesista['telefono']) ?></small>
-                                                </div>
-                                            </td>
-                                            <td class="text-end">
-                                                <div class="d-flex justify-content-end">
-                                                    <a href="<?= site_url('anestesistas/ver/'.$anestesista['id']) ?>" class="btn-action btn-view" title="Ver detalles">
-                                                        <i class='bx bx-show'></i>
-                                                    </a>
-                                                    <a href="<?= site_url('anestesistas/editar/'.$anestesista['id']) ?>" class="btn-action btn-edit" title="Editar">
-                                                        <i class='bx bx-edit'></i>
-                                                    </a>
-                                                    <button type="button"
-                                                        class="btn-action btn-delete"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#modalEliminar"
-                                                        onclick="configurarModalEliminar({
-                                                            idElemento: '<?= $anestesista['id'] ?>',
-                                                            nombreElemento: '<?= esc($anestesista['nombre']) ?>',
-                                                            actionUrl: '<?= site_url('anestesistas/eliminar/'.$anestesista['id']) ?>',
-                                                            titulo: 'Eliminar Anestesista',
-                                                            mensajeAdicional: 'Se eliminarán todos los registros asociados.',
-                                                            icono: 'bx-user-x'
-                                                        })"
-                                                        title="Eliminar">
-                                                        <i class='bx bx-trash'></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
+                               <?php if (empty($enfermeros)): ?>
+    <tr>
+        <td colspan="7" class="empty-state">
+            <i class='bx bx-user-x'></i>
+            <p>No hay enfermeros disponibles actualmente</p>
+        </td>
+    </tr>
+<?php else: ?>
+    <?php foreach ($enfermeros as $enfermero): ?>
+        <tr>
+            <td><?= esc($enfermero['nombre']) ?></td>
+            <td><?= esc($enfermero['dni']) ?></td>
+            <td><?= esc($enfermero['telefono']) ?></td>
+            <td><?= esc($enfermero['email']) ?></td>
+            <td><?= esc($enfermero['especialidad'] ?? 'Sin especialidad') ?></td>
+            <td>
+                <span class="badge bg-<?= $enfermero['disponibilidad'] ?>">
+                    <?= ucfirst(str_replace('_', ' ', $enfermero['disponibilidad'])) ?>
+                </span>
+            </td>
+            <td class="text-end">
+                <div class="d-flex justify-content-end">
+                    <a href="<?= site_url('enfermeros/ver/'.$enfermero['id']) ?>" class="btn-action btn-view" title="Ver detalles">
+                        <i class='bx bx-show'></i>
+                    </a>
+                    <a href="<?= site_url('enfermeros/editar/'.$enfermero['id']) ?>" class="btn-action btn-edit" title="Editar">
+                        <i class='bx bx-edit'></i>
+                    </a>
+                </div>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+<?php endif; ?>
                             </tbody>
                         </table>
                     </div>
@@ -510,22 +429,11 @@
         </div>
     </div>
 
-    <!-- Incluir modal de eliminación reutilizable -->
-    <?= $this->include('includes/modal_eliminar') ?>
-
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Auto-hide alerts after 5 seconds
-            const alertas = document.querySelectorAll('.alert');
-            alertas.forEach(alerta => {
-                setTimeout(() => {
-                    alerta.classList.remove('show');
-                }, 5000);
-            });
-
             // Aplicar animaciones escalonadas
             const elementosAnimados = document.querySelectorAll('.animate-fade-in');
             elementosAnimados.forEach((elemento, index) => {

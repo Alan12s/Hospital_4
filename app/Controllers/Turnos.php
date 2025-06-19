@@ -1,56 +1,73 @@
 <?php
-
 namespace App\Controllers;
 
 use App\Models\TurnoModel;
 use App\Models\InsumosModel;
-use CodeIgniter\Controller;
+use App\Models\ProcedimientoModel;
+use CodeIgniter\Exceptions\PageNotFoundException;
 
 class Turnos extends BaseController
 {
     protected $turnoModel;
-    protected $insumosModel;
+    protected $insumoModel;
+    protected $procedimientoModel;
     protected $session;
     protected $validation;
 
     public function __construct()
     {
         $this->turnoModel = new TurnoModel();
-        $this->insumosModel = new InsumosModel();
+        $this->insumoModel = new InsumosModel();
+        $this->procedimientoModel = new ProcedimientoModel();
         $this->session = \Config\Services::session();
         $this->validation = \Config\Services::validation();
         
-        // Verificar autenticación
         if (!$this->session->get('logged_in')) {
-            return redirect()->to('auth/login');
+            return redirect()->to('/auth/login');
         }
     }
 
     public function index()
     {
-        $data = [
-            'titulo' => 'Gestión de Turnos Quirúrgicos',
-            'turnos' => $this->turnoModel->listarTurnos()
+        $filtros = [
+            'fecha' => $this->request->getGet('fecha'),
+            'estado' => $this->request->getGet('estado'),
+            'quirofano' => $this->request->getGet('quirofano'),
+            'cirujano' => $this->request->getGet('cirujano')
         ];
 
-        return view('turnos/index', $data);
+        $data = [
+            'titulo' => 'Gestión de Turnos Quirúrgicos',
+            'turnos' => $this->turnoModel->listarTurnos($filtros),
+            'quirofanos' => $this->turnoModel->getQuirofanos(),
+            'cirujanos' => $this->turnoModel->getCirujanos(),
+            'estados' => [
+                'programado' => 'Programado',
+                'en_proceso' => 'En Proceso',
+                'completado' => 'Completado',
+                'cancelado' => 'Cancelado'
+            ],
+            'filtros' => $filtros
+        ];
+        
+        return view('turnos/index', $data) . view('includes/footer');
     }
 
     public function crear()
     {
         $data = [
             'titulo' => 'Crear Turno Quirúrgico',
-            'medicos' => $this->turnoModel->getMedicos(),
+            'cirujanos' => $this->turnoModel->getCirujanos(),
             'pacientes' => $this->turnoModel->getPacientes(),
             'quirofanos' => $this->turnoModel->getQuirofanos(),
             'anestesistas' => $this->turnoModel->getAnestesistas(),
             'enfermeros' => $this->turnoModel->getEnfermeros(),
             'procedimientos' => [],
-            'insumos' => $this->turnoModel->getInsumos(),
+            'insumos' => $this->insumoModel->where('cantidad >', 0)->findAll(),
             'validation' => $this->validation
         ];
-
-        if ($this->request->getMethod() === 'POST') {
+        
+        if ($this->request->getMethod() === 'post') {
             $rules = [
                 'fecha' => 'required|valid_date',
                 'hora_inicio' => 'required',
@@ -58,123 +75,142 @@ class Turnos extends BaseController
                 'id_cirujano' => 'required|numeric',
                 'id_paciente' => 'required|numeric',
                 'procedimiento' => 'required',
-                'duracion' => 'required|numeric',
+                'duracion' => 'required|numeric|greater_than[0]',
                 'id_enfermero' => 'required|numeric',
                 'id_anestesista' => 'required|numeric'
             ];
-
+            
             if (!$this->validate($rules)) {
-                $data['validation'] = $this->validation;
-                return view('turnos/crear', $data);
+                return view('turnos/crear', $data) . view('includes/footer');
             }
-
+            
             $fecha = $this->request->getPost('fecha');
-            $hora_inicio = $this->request->getPost('hora_inicio');
-            $duracion = (int)$this->request->getPost('duracion');
-            $quirofano_id = $this->request->getPost('id_quirofano');
-            $cirujano_id = $this->request->getPost('id_cirujano');
-
-            // Calcular hora de finalización correctamente
-            $hora_inicio_obj = new \DateTime($hora_inicio);
-            $hora_fin_obj = clone $hora_inicio_obj;
-            $hora_fin_obj->add(new \DateInterval('PT' . $duracion . 'M'));
-            $hora_fin = $hora_fin_obj->format('H:i:s');
-
-            // Verificar disponibilidad usando el método correcto del modelo
-            if (!$this->turnoModel->checkDisponibilidad($quirofano_id, $fecha, $hora_inicio, $duracion)) {
+            $horaInicio = $this->request->getPost('hora_inicio');
+            $duracion = $this->request->getPost('duracion');
+            $quirofanoId = $this->request->getPost('id_quirofano');
+            
+            if (!$this->turnoModel->checkDisponibilidad($quirofanoId, $fecha, $horaInicio, $duracion)) {
                 $this->session->setFlashdata('error', 'El quirófano no está disponible en el horario seleccionado');
-                $data['validation'] = $this->validation;
-                return view('turnos/crear', $data);
+                return redirect()->to('/turnos/crear');
             }
-
-            $procedimiento = $this->request->getPost('procedimiento') == 'otro' 
-                ? $this->request->getPost('otro_procedimiento') 
-                : $this->request->getPost('procedimiento');
-
-            // Preparar datos del turno
-            $turno_data = [
+            
+            // Manejar procedimiento (puede ser seleccionado o custom)
+            $procedimiento = $this->request->getPost('procedimiento');
+            $procedimientoCustom = null;
+            $procedimientoId = null;
+            
+            if ($procedimiento === 'otro') {
+                $procedimientoCustom = $this->request->getPost('procedimiento_custom');
+            } else {
+                $procedimientoId = $procedimiento;
+                $proc = $this->procedimientoModel->find($procedimientoId);
+                $procedimientoCustom = $proc ? $proc->nombre : null;
+            }
+            
+            $turnoData = [
                 'fecha' => $fecha,
-                'hora_inicio' => $hora_inicio,
-                'hora_finalizacion' => $hora_fin,
-                'duracion' => $duracion,
-                'id_quirofano' => $quirofano_id,
-                'id_cirujano' => $cirujano_id,
+                'hora_inicio' => $horaInicio,
+                'id_quirofano' => $quirofanoId,
+                'id_cirujano' => $this->request->getPost('id_cirujano'),
                 'id_paciente' => $this->request->getPost('id_paciente'),
-                'procedimiento' => $procedimiento,
+                'id_procedimiento' => $procedimientoId,
+                'procedimiento_custom' => $procedimientoCustom,
+                'duracion' => $duracion,
                 'estado' => 'programado',
                 'id_enfermero' => $this->request->getPost('id_enfermero'),
                 'id_anestesista' => $this->request->getPost('id_anestesista'),
-                'id_cirujano_ayudante' => $this->request->getPost('id_cirujano_ayudante'),
-                'id_instrumentador_principal' => $this->request->getPost('id_instrumentador_principal'),
-                'id_instrumentador_circulante' => $this->request->getPost('id_instrumentador_circulante'),
-                'id_tecnico_anestesista' => $this->request->getPost('id_tecnico_anestesista'),
-                'observaciones' => $this->request->getPost('observaciones'),
-                'tipo_anestesia' => $this->request->getPost('tipo_anestesia') ?? 'general'
+                'observaciones' => $this->request->getPost('observaciones')
             ];
-
-            // Preparar insumos
-            $insumos = [];
-            $insumos_seleccionados = $this->request->getPost('insumos');
             
-            if ($insumos_seleccionados) {
-                foreach ($insumos_seleccionados as $insumo_id => $cantidad) {
-                    if ((int)$cantidad > 0) {
-                        $insumos[$insumo_id] = (int)$cantidad;
+            // Comenzar transacción
+            $db = \Config\Database::connect();
+            $db->transStart();
+            
+            // Guardar el turno
+            $turnoId = $this->turnoModel->insert($turnoData);
+            
+            if (!$turnoId) {
+                $db->transRollback();
+                $this->session->setFlashdata('error', 'Error al crear el turno');
+                return redirect()->to('/turnos/crear');
+            }
+            
+            // Procesar insumos
+            $insumosSeleccionados = $this->request->getPost('insumos');
+            
+            if ($insumosSeleccionados) {
+                foreach ($insumosSeleccionados as $insumoId => $cantidad) {
+                    $cantidad = (int)$cantidad;
+                    if ($cantidad > 0) {
+                        $insumo = $this->insumoModel->find($insumoId);
+                        
+                        if (!$insumo || $insumo['cantidad'] < $cantidad) {
+                            $db->transRollback();
+                            $nombre = $insumo ? $insumo['nombre'] : 'ID '.$insumoId;
+                            $this->session->setFlashdata('error', "No hay stock suficiente del insumo {$nombre}");
+                            return redirect()->to('/turnos/crear');
+                        }
+                        
+                        // Registrar insumo en turno
+                        $this->turnoModel->guardarInsumoTurno([
+                            'id_turno' => $turnoId,
+                            'id_insumo' => $insumoId,
+                            'cantidad' => $cantidad,
+                            'fecha_registro' => date('Y-m-d H:i:s')
+                        ]);
+                        
+                        // Actualizar stock
+                        $this->insumoModel->update($insumoId, [
+                            'cantidad' => $insumo['cantidad'] - $cantidad
+                        ]);
                     }
                 }
             }
-
-            try {
-                // Usar el método del modelo que maneja transacciones
-                $turno_id = $this->turnoModel->crearTurnoConInsumos($turno_data, $insumos);
-                
-                $this->session->setFlashdata('mensaje', 'Turno creado exitosamente');
-                return redirect()->to('turnos');
-
-            } catch (\Exception $e) {
-                $this->session->setFlashdata('error', $e->getMessage());
-                $data['validation'] = $this->validation;
-                return view('turnos/crear', $data);
+            
+            $db->transComplete();
+            
+            if ($db->transStatus() === false) {
+                $this->session->setFlashdata('error', 'Error al crear el turno');
+                return redirect()->to('/turnos/crear');
             }
+            
+            $this->session->setFlashdata('success', 'Turno creado exitosamente');
+            return redirect()->to('/turnos');
         }
-
-        return view('turnos/crear', $data);
+        
+        return view('turnos/crear', $data) . view('includes/footer');
     }
 
     public function editar($id = null)
     {
         if ($id === null) {
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+            throw PageNotFoundException::forPageNotFound();
         }
-
-        $turno = $this->turnoModel->find($id);
+        
+        $turno = $this->turnoModel->getTurnoCompleto($id);
         
         if (empty($turno)) {
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+            throw PageNotFoundException::forPageNotFound();
         }
-
+        
+        // Obtener procedimientos basados en la especialidad del cirujano
+        $procedimientos = $this->procedimientoModel->where('id_especialidad', $turno->especialidad_id)->findAll();
+        
         $data = [
             'titulo' => 'Editar Turno Quirúrgico',
             'turno' => $turno,
-            'medicos' => $this->turnoModel->getMedicos(),
+            'cirujanos' => $this->turnoModel->getCirujanos(),
             'pacientes' => $this->turnoModel->getPacientes(),
             'quirofanos' => $this->turnoModel->getQuirofanos(),
             'anestesistas' => $this->turnoModel->getAnestesistas(),
             'enfermeros' => $this->turnoModel->getEnfermeros(),
-            'insumos' => $this->turnoModel->getInsumos(),
+            'procedimientos' => $procedimientos,
+            'insumos' => $this->insumoModel->findAll(),
             'insumos_turno' => $this->turnoModel->getInsumosTurno($id),
             'validation' => $this->validation
         ];
-
-        // Obtener procedimientos basados en la especialidad del médico
-        $medico = $this->turnoModel->getMedicoById($turno['id_cirujano']);
-        if ($medico) {
-            $data['procedimientos'] = $this->turnoModel->getProcedimientosPorEspecialidad($medico['id_especialidad']);
-        } else {
-            $data['procedimientos'] = [];
-        }
-
-        if ($this->request->getMethod() === 'POST') {
+        
+        if ($this->request->getMethod() === 'post') {
             $rules = [
                 'fecha' => 'required|valid_date',
                 'hora_inicio' => 'required',
@@ -182,291 +218,252 @@ class Turnos extends BaseController
                 'id_cirujano' => 'required|numeric',
                 'id_paciente' => 'required|numeric',
                 'procedimiento' => 'required',
-                'duracion' => 'required|numeric',
+                'duracion' => 'required|numeric|greater_than[0]',
                 'id_enfermero' => 'required|numeric',
                 'id_anestesista' => 'required|numeric',
                 'estado' => 'required'
             ];
-
+            
             if (!$this->validate($rules)) {
-                $data['validation'] = $this->validation;
-                // Preparar insumos seleccionados para la vista
-                if (!empty($data['insumos_turno'])) {
-                    $data['insumos_seleccionados'] = [];
-                    foreach ($data['insumos_turno'] as $insumo) {
-                        $data['insumos_seleccionados'][$insumo['id_insumo']] = $insumo['cantidad'];
-                    }
-                }
-                return view('turnos/editar', $data);
+                return view('turnos/editar', $data) . view('includes/footer');
             }
-
+            
             $fecha = $this->request->getPost('fecha');
-            $hora_inicio = $this->request->getPost('hora_inicio');
-            $duracion = (int)$this->request->getPost('duracion');
-            $quirofano_id = $this->request->getPost('id_quirofano');
-
-            // Calcular hora de finalización
-            $hora_inicio_obj = new \DateTime($hora_inicio);
-            $hora_fin_obj = clone $hora_inicio_obj;
-            $hora_fin_obj->add(new \DateInterval('PT' . $duracion . 'M'));
-            $hora_fin = $hora_fin_obj->format('H:i:s');
-
-            // Verificar disponibilidad (excluyendo el turno actual)
-            if (!$this->turnoModel->checkDisponibilidad($quirofano_id, $fecha, $hora_inicio, $duracion, $id)) {
+            $horaInicio = $this->request->getPost('hora_inicio');
+            $duracion = $this->request->getPost('duracion');
+            $quirofanoId = $this->request->getPost('id_quirofano');
+            
+            if (!$this->turnoModel->checkDisponibilidad($quirofanoId, $fecha, $horaInicio, $duracion, $id)) {
                 $this->session->setFlashdata('error', 'El quirófano no está disponible en el horario seleccionado');
-                return redirect()->to('turnos/editar/' . $id);
+                return redirect()->to("/turnos/editar/{$id}");
             }
-
-            $procedimiento = $this->request->getPost('procedimiento') == 'otro' 
-                ? $this->request->getPost('otro_procedimiento') 
-                : $this->request->getPost('procedimiento');
-
-            $turno_data = [
+            
+            // Manejar procedimiento
+            $procedimiento = $this->request->getPost('procedimiento');
+            $procedimientoCustom = null;
+            $procedimientoId = null;
+            
+            if ($procedimiento === 'otro') {
+                $procedimientoCustom = $this->request->getPost('procedimiento_custom');
+            } else {
+                $procedimientoId = $procedimiento;
+                $proc = $this->procedimientoModel->find($procedimientoId);
+                $procedimientoCustom = $proc ? $proc->nombre : null;
+            }
+            
+            $turnoData = [
                 'fecha' => $fecha,
-                'hora_inicio' => $hora_inicio,
-                'hora_finalizacion' => $hora_fin,
-                'duracion' => $duracion,
-                'id_quirofano' => $quirofano_id,
+                'hora_inicio' => $horaInicio,
+                'id_quirofano' => $quirofanoId,
                 'id_cirujano' => $this->request->getPost('id_cirujano'),
                 'id_paciente' => $this->request->getPost('id_paciente'),
-                'procedimiento' => $procedimiento,
+                'id_procedimiento' => $procedimientoId,
+                'procedimiento_custom' => $procedimientoCustom,
+                'duracion' => $duracion,
                 'estado' => $this->request->getPost('estado'),
                 'id_enfermero' => $this->request->getPost('id_enfermero'),
                 'id_anestesista' => $this->request->getPost('id_anestesista'),
-                'id_cirujano_ayudante' => $this->request->getPost('id_cirujano_ayudante'),
-                'id_instrumentador_principal' => $this->request->getPost('id_instrumentador_principal'),
-                'id_instrumentador_circulante' => $this->request->getPost('id_instrumentador_circulante'),
-                'id_tecnico_anestesista' => $this->request->getPost('id_tecnico_anestesista'),
                 'observaciones' => $this->request->getPost('observaciones'),
-                'tipo_anestesia' => $this->request->getPost('tipo_anestesia') ?? 'general'
+                'complicaciones' => $this->request->getPost('complicaciones')
             ];
-
-            // Preparar insumos
-            $insumos = [];
-            $insumos_seleccionados = $this->request->getPost('insumos');
             
-            if ($insumos_seleccionados) {
-                foreach ($insumos_seleccionados as $insumo_id => $cantidad) {
-                    if ((int)$cantidad > 0) {
-                        $insumos[$insumo_id] = (int)$cantidad;
+            // Comenzar transacción
+            $db = \Config\Database::connect();
+            $db->transStart();
+            
+            // Actualizar turno
+            if (!$this->turnoModel->update($id, $turnoData)) {
+                $db->transRollback();
+                $this->session->setFlashdata('error', 'Error al actualizar el turno');
+                return redirect()->to("/turnos/editar/{$id}");
+            }
+            
+            // Procesar insumos
+            $insumosSeleccionados = $this->request->getPost('insumos');
+            $insumosActuales = $this->turnoModel->getInsumosTurno($id);
+            
+            // Primero devolver todos los insumos al stock
+            foreach ($insumosActuales as $insumo) {
+                $this->insumoModel->set('cantidad', "cantidad + {$insumo->cantidad}", false)
+                                 ->where('id', $insumo->id_insumo)
+                                 ->update();
+            }
+            
+            // Eliminar asociaciones anteriores
+            $this->turnoModel->eliminarInsumosTurno($id);
+            
+            // Procesar nuevos insumos
+            if ($insumosSeleccionados) {
+                foreach ($insumosSeleccionados as $insumoId => $cantidad) {
+                    $cantidad = (int)$cantidad;
+                    if ($cantidad > 0) {
+                        $insumo = $this->insumoModel->find($insumoId);
+                        
+                        if (!$insumo || $insumo['cantidad'] < $cantidad) {
+                            $db->transRollback();
+                            $nombre = $insumo ? $insumo['nombre'] : 'ID '.$insumoId;
+                            $this->session->setFlashdata('error', "No hay stock suficiente del insumo {$nombre}");
+                            return redirect()->to("/turnos/editar/{$id}");
+                        }
+                        
+                        // Registrar insumo en turno
+                        $this->turnoModel->guardarInsumoTurno([
+                            'id_turno' => $id,
+                            'id_insumo' => $insumoId,
+                            'cantidad' => $cantidad,
+                            'fecha_registro' => date('Y-m-d H:i:s')
+                        ]);
+                        
+                        // Actualizar stock
+                        $this->insumoModel->update($insumoId, [
+                            'cantidad' => $insumo['cantidad'] - $cantidad
+                        ]);
                     }
                 }
             }
-
-            try {
-                // Usar el método del modelo que maneja transacciones
-                $this->turnoModel->actualizarTurnoConInsumos($id, $turno_data, $insumos);
-                
-                $this->session->setFlashdata('mensaje', 'Turno actualizado exitosamente');
-                return redirect()->to('turnos');
-
-            } catch (\Exception $e) {
-                $this->session->setFlashdata('error', $e->getMessage());
-                return redirect()->to('turnos/editar/' . $id);
+            
+            $db->transComplete();
+            
+            if ($db->transStatus() === false) {
+                $this->session->setFlashdata('error', 'Error al actualizar el turno');
+                return redirect()->to("/turnos/editar/{$id}");
             }
+            
+            $this->session->setFlashdata('success', 'Turno actualizado exitosamente');
+            return redirect()->to('/turnos');
         }
-
-        // Preparar insumos seleccionados para la vista
-        if (!empty($data['insumos_turno'])) {
-            $data['insumos_seleccionados'] = [];
-            foreach ($data['insumos_turno'] as $insumo) {
-                $data['insumos_seleccionados'][$insumo['id_insumo']] = $insumo['cantidad'];
-            }
-        }
-
-        return view('turnos/editar', $data);
+        
+        return view('turnos/editar', $data) . view('includes/footer');
     }
 
     public function ver($id = null)
     {
         if ($id === null) {
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+            throw PageNotFoundException::forPageNotFound();
         }
-
+        
         $turno = $this->turnoModel->getTurnoCompleto($id);
         
         if (empty($turno)) {
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+            throw PageNotFoundException::forPageNotFound();
         }
-
+        
         $data = [
             'titulo' => 'Detalles del Turno Quirúrgico',
             'turno' => $turno,
             'insumos_turno' => $this->turnoModel->getInsumosTurno($id)
         ];
-
-        return view('turnos/ver', $data);
+        
+        return view('turnos/ver', $data) . view('includes/footer');
     }
 
     public function eliminar($id = null)
     {
         if ($id === null) {
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+            throw PageNotFoundException::forPageNotFound();
         }
-
+        
         $turno = $this->turnoModel->find($id);
         
         if (empty($turno)) {
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+            throw PageNotFoundException::forPageNotFound();
         }
-
-        if (in_array($turno['estado'], ['en_proceso', 'completado'])) {
+        
+        if (in_array($turno->estado, ['en_proceso', 'completado'])) {
             $this->session->setFlashdata('error', 'No se puede eliminar un turno que ya está en proceso o completado');
-            return redirect()->to('turnos');
+            return redirect()->to('/turnos');
         }
-
-        try {
-            // Usar el método de cancelar del modelo que devuelve insumos
-            $this->turnoModel->cancelarTurno($id, 'Cancelado por el usuario');
-            $this->session->setFlashdata('mensaje', 'Turno cancelado exitosamente');
-        } catch (\Exception $e) {
-            $this->session->setFlashdata('error', 'Error al cancelar el turno: ' . $e->getMessage());
+        
+        if ($this->turnoModel->cambiarEstado($id, 'cancelado')) {
+            $this->session->setFlashdata('success', 'Turno cancelado exitosamente');
+        } else {
+            $this->session->setFlashdata('error', 'Error al cancelar el turno');
         }
-
-        return redirect()->to('turnos');
+        
+        return redirect()->to('/turnos');
     }
 
     public function eliminarDefinitivo($id)
     {
-        try {
-            // Primero cancelar para devolver insumos, luego eliminar
-            $this->turnoModel->cancelarTurno($id, 'Eliminado definitivamente');
-            $this->turnoModel->delete($id);
-            $this->session->setFlashdata('mensaje', 'Turno eliminado definitivamente');
-        } catch (\Exception $e) {
-            $this->session->setFlashdata('error', 'Error al eliminar el turno: ' . $e->getMessage());
+        if ($this->turnoModel->eliminarTurno($id)) {
+            $this->session->setFlashdata('success', 'Turno eliminado definitivamente');
+        } else {
+            $this->session->setFlashdata('error', 'Error al eliminar el turno');
         }
         
-        return redirect()->to('turnos');
+        return redirect()->to('/turnos');
     }
 
-    public function cambiarEstado()
-    {
-        if (!$this->request->isAJAX()) {
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
-        }
-
-        $id = $this->request->getPost('id');
-        $estado = $this->request->getPost('estado');
-
-        $turno = $this->turnoModel->find($id);
-        if (empty($turno)) {
-            return $this->response->setJSON(['success' => false, 'message' => 'Turno no encontrado']);
-        }
-
-        $estados_validos = ['programado', 'en_proceso', 'completado', 'cancelado'];
-        if (!in_array($estado, $estados_validos)) {
-            return $this->response->setJSON(['success' => false, 'message' => 'Estado no válido']);
-        }
-
-        try {
-            if ($estado === 'cancelado') {
-                // Si se cancela, usar el método que devuelve insumos
-                $this->turnoModel->cancelarTurno($id, 'Cancelado desde la interfaz');
-            } else {
-                $this->turnoModel->update($id, ['estado' => $estado]);
-            }
-            return $this->response->setJSON(['success' => true, 'message' => 'Estado actualizado']);
-        } catch (\Exception $e) {
-            return $this->response->setJSON(['success' => false, 'message' => 'Error al actualizar el estado: ' . $e->getMessage()]);
-        }
+    // API: Obtener procedimientos por especialidad (para AJAX)
+public function getProcedimientos($especialidadId)
+{
+    if (!is_numeric($especialidadId)) {  // Aquí faltaba el paréntesis de cierre
+        return $this->response->setStatusCode(400)
+                             ->setJSON(['error' => 'ID de especialidad inválido']);
     }
-
-    public function getProcedimientos($id_especialidad)
-    {
-        if (!is_numeric($id_especialidad) || $id_especialidad <= 0) {
-            return $this->response->setStatusCode(400)->setJSON(['error' => 'ID de especialidad inválido']);
-        }
-
-        $procedimientos = $this->turnoModel->getProcedimientosPorEspecialidad($id_especialidad);
-
-        if (empty($procedimientos)) {
-            return $this->response->setStatusCode(404)->setJSON(['error' => 'No hay procedimientos para esta especialidad']);
-        }
-
-        $response = [];
-        foreach ($procedimientos as $proc) {
-            $response[] = [
-                'id' => $proc['id'],
-                'nombre' => $proc['nombre']
-            ];
-        }
-
-        return $this->response->setJSON($response);
+    
+    $procedimientos = $this->procedimientoModel->where('id_especialidad', $especialidadId)
+                                              ->orderBy('nombre', 'ASC')
+                                              ->findAll();
+    
+    if (empty($procedimientos)) {
+        return $this->response->setStatusCode(404)
+                             ->setJSON(['error' => 'No hay procedimientos para esta especialidad']);
     }
+    
+    return $this->response->setJSON($procedimientos);
+}
 
+    // API: Buscar insumos (para AJAX)
     public function buscarInsumos()
     {
         if (!$this->request->isAJAX()) {
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+            throw PageNotFoundException::forPageNotFound();
         }
-
+        
         $termino = $this->request->getPost('termino');
         if (empty($termino)) {
             return $this->response->setJSON([]);
         }
-
+        
         $termino = esc($termino);
-        $insumos = $this->turnoModel->buscarInsumos($termino);
-
+        
+        $insumos = $this->insumoModel->like('nombre', $termino)
+                                    ->orLike('codigo', $termino)
+                                    ->orLike('tipo', $termino)
+                                    ->limit(10)
+                                    ->findAll();
+        
         return $this->response->setJSON($insumos);
     }
 
-    public function iniciarCirugia($id)
+    // API: Cambiar estado del turno (para AJAX)
+    public function cambiarEstado()
     {
-        try {
-            $this->turnoModel->iniciarCirugia($id);
-            $this->session->setFlashdata('mensaje', 'Cirugía iniciada exitosamente');
-        } catch (\Exception $e) {
-            $this->session->setFlashdata('error', 'Error al iniciar la cirugía: ' . $e->getMessage());
+        if (!$this->request->isAJAX()) {
+            throw PageNotFoundException::forPageNotFound();
         }
         
-        return redirect()->to('turnos');
-    }
-
-    public function finalizarCirugia($id)
-    {
-        $observaciones = $this->request->getPost('observaciones');
+        $id = $this->request->getPost('id');
+        $estado = $this->request->getPost('estado');
         
-        try {
-            $this->turnoModel->finalizarCirugia($id, $observaciones);
-            $this->session->setFlashdata('mensaje', 'Cirugía finalizada exitosamente');
-        } catch (\Exception $e) {
-            $this->session->setFlashdata('error', 'Error al finalizar la cirugía: ' . $e->getMessage());
+        $turno = $this->turnoModel->find($id);
+        if (empty($turno)) {
+            return $this->response->setStatusCode(404)
+                                 ->setJSON(['success' => false, 'message' => 'Turno no encontrado']);
         }
         
-        return redirect()->to('turnos');
-    }
-
-    public function calendario()
-    {
-        $fecha = $this->request->getGet('fecha') ?? date('Y-m-d');
-        
-        $data = [
-            'titulo' => 'Calendario de Turnos',
-            'fecha' => $fecha,
-            'turnos' => $this->turnoModel->getTurnosPorFecha($fecha),
-            'quirofanos' => $this->turnoModel->getQuirofanos()
-        ];
-
-        return view('turnos/calendario', $data);
-    }
-
-    public function reportes()
-    {
-        $fecha_inicio = $this->request->getGet('fecha_inicio');
-        $fecha_fin = $this->request->getGet('fecha_fin');
-        
-        $data = [
-            'titulo' => 'Reportes de Turnos',
-            'fecha_inicio' => $fecha_inicio,
-            'fecha_fin' => $fecha_fin
-        ];
-
-        if ($fecha_inicio && $fecha_fin) {
-            $data['turnos'] = $this->turnoModel->getTurnosPorRangoFecha($fecha_inicio, $fecha_fin);
+        $estadosValidos = ['programado', 'en_proceso', 'completado', 'cancelado'];
+        if (!in_array($estado, $estadosValidos)) {
+            return $this->response->setStatusCode(400)
+                                 ->setJSON(['success' => false, 'message' => 'Estado no válido']);
         }
-
-        return view('turnos/reportes', $data);
+        
+        if ($this->turnoModel->cambiarEstado($id, $estado)) {
+            return $this->response->setJSON(['success' => true, 'message' => 'Estado actualizado']);
+        }
+        
+        return $this->response->setStatusCode(500)
+                             ->setJSON(['success' => false, 'message' => 'Error al actualizar el estado']);
     }
 }

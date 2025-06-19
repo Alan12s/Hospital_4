@@ -84,10 +84,22 @@ class CirujanoModel extends Model
     {
         // Verifica si existe la tabla antes de hacer la consulta
         if ($this->db->tableExists('turnos_quirurgicos')) {
-            return $this->db->table('turnos_quirurgicos')
-                            ->where('id_medico', $cirujanoId)
-                            ->where('estado', 'programado')
-                            ->countAllResults() > 0;
+            // Intentar con diferentes nombres de columna que podrían existir
+            $columnasProbar = ['id_cirujano', 'cirujano_id', 'medico_id', 'id_medico'];
+            
+            foreach ($columnasProbar as $columna) {
+                // Verificar si la columna existe en la tabla
+                if ($this->db->fieldExists($columna, 'turnos_quirurgicos')) {
+                    return $this->db->table('turnos_quirurgicos')
+                                    ->where($columna, $cirujanoId)
+                                    ->where('estado', 'programado')
+                                    ->countAllResults() > 0;
+                }
+            }
+            
+            // Si ninguna columna existe, log para debug y retorna false
+            log_message('info', 'No se encontró columna de referencia a cirujanos en turnos_quirurgicos');
+            return false;
         }
         return false; // Si la tabla no existe, retorna false
     }
@@ -104,9 +116,15 @@ class CirujanoModel extends Model
         }
         return []; // Si la tabla no existe, retorna array vacío
     }
-    public function countCirujanos()
-{
-    return $this->countAll();
-}
 
+    // Método auxiliar para verificar si una columna existe en una tabla
+    private function columnExists($table, $column)
+    {
+        try {
+            return $this->db->fieldExists($column, $table);
+        } catch (\Exception $e) {
+            log_message('error', 'Error verificando columna: ' . $e->getMessage());
+            return false;
+        }
+    }
 }

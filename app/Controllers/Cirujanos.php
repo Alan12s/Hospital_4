@@ -18,7 +18,7 @@ class Cirujanos extends BaseController
     {
         $data = [
             'titulo' => 'Gestión de Cirujanos',
-            'cirujanos' => $this->cirujanoModel->listarMedicos() // Usar el método correcto
+            'cirujanos' => $this->cirujanoModel->listarMedicos()
         ];
 
         return view('cirujanos/index', $data);
@@ -105,18 +105,38 @@ class Cirujanos extends BaseController
         return view('cirujanos/ver', $data);
     }
 
-    public function eliminar($id = null)
+    // Método corregido para eliminar
+    public function delete($id = null)
     {
-        $cirujano = $this->cirujanoModel->buscarPorID($id);
-        if (!$cirujano) {
-            throw new \CodeIgniter\Exceptions\PageNotFoundException('Cirujano no encontrado');
+        // Verificar que sea una petición POST
+        if ($this->request->getMethod() !== 'post') {
+            return redirect()->to('/cirujanos')->with('error', 'Método no permitido');
         }
 
+        // Buscar el cirujano
+        $cirujano = $this->cirujanoModel->buscarPorID($id);
+        if (!$cirujano) {
+            return redirect()->to('/cirujanos')->with('error', 'Cirujano no encontrado');
+        }
+
+        // Verificar si tiene turnos programados
         if ($this->cirujanoModel->tieneTurnosProgramados($id)) {
             return redirect()->to('/cirujanos')->with('error', 'No se puede eliminar el cirujano porque tiene turnos quirúrgicos programados');
         }
 
-        $this->cirujanoModel->eliminar($id);
-        return redirect()->to('/cirujanos')->with('mensaje', 'Cirujano eliminado exitosamente');
+        // Intentar eliminar
+        try {
+            $this->cirujanoModel->eliminar($id);
+            return redirect()->to('/cirujanos')->with('mensaje', 'Cirujano eliminado exitosamente');
+        } catch (\Exception $e) {
+            log_message('error', 'Error al eliminar cirujano: ' . $e->getMessage());
+            return redirect()->to('/cirujanos')->with('error', 'Error al eliminar el cirujano. Inténtelo de nuevo.');
+        }
+    }
+
+    // Mantener método eliminar para compatibilidad (opcional)
+    public function eliminar($id = null)
+    {
+        return $this->delete($id);
     }
 }

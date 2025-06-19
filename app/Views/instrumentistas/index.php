@@ -376,7 +376,6 @@
             }
         }
     </style>
-    </style>
 </head>
 <body>
     <div class="wrapper">
@@ -391,10 +390,10 @@
                     <i class='bx bx-plus-medical'></i><?= esc($title) ?>
                 </h1>
                 <div class="d-flex gap-2">
-                    <a href="<?= site_url('anestesistas/crear') ?>" class="btn btn-primary">
-                        <i class='bx bx-plus'></i> Nuevo Anestesista
+                    <a href="<?= site_url('instrumentistas/crear') ?>" class="btn btn-primary">
+                        <i class='bx bx-plus'></i> Nuevo Instrumentista
                     </a>
-                    <a href="<?= site_url('anestesistas/disponibles') ?>" class="btn btn-success">
+                    <a href="<?= site_url('instrumentistas/disponibles') ?>" class="btn btn-success">
                         <i class='bx bx-check-circle'></i> Disponibles
                     </a>
                 </div>
@@ -421,11 +420,11 @@
                 </div>
             <?php endif; ?>
 
-            <!-- Anestesistas Table -->
+            <!-- Instrumentistas Table -->
             <div class="glass-card animate-fade-in" style="animation-delay: 0.1s">
                 <div class="card-header">
-                    <h5><i class='bx bx-table me-2'></i>Listado de Anestesistas</h5>
-                    <span class="badge bg-primary"><?= count($anestesistas) ?> registros</span>
+                    <h5><i class='bx bx-table me-2'></i>Listado de Instrumentistas</h5>
+                    <span class="badge bg-primary"><?= count($instrumentistas) ?> registros</span>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -433,6 +432,7 @@
                             <thead>
                                 <tr>
                                     <th>Nombre Completo</th>
+                                    <th>DNI</th>
                                     <th>Especialidad</th>
                                     <th>Disponibilidad</th>
                                     <th>Contacto</th>
@@ -440,15 +440,15 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php if (empty($anestesistas)): ?>
+                                <?php if (empty($instrumentistas)): ?>
                                     <tr>
-                                        <td colspan="5" class="empty-state">
+                                        <td colspan="6" class="empty-state">
                                             <i class='bx bx-user-x'></i>
-                                            <p>No hay anestesistas registrados</p>
+                                            <p>No hay instrumentistas registrados</p>
                                         </td>
                                     </tr>
                                 <?php else: ?>
-                                    <?php foreach ($anestesistas as $anestesista): ?>
+                                    <?php foreach ($instrumentistas as $instrumentista): ?>
                                         <tr>
                                             <td>
                                                 <div class="d-flex align-items-center">
@@ -456,30 +456,31 @@
                                                         <i class='bx bx-user-circle' style="font-size: 1.25rem; color: var(--primary-color);"></i>
                                                     </div>
                                                     <div>
-                                                        <strong><?= esc($anestesista['nombre']) ?></strong>
+                                                        <strong><?= esc($instrumentista['nombre']) ?></strong>
                                                         <div class="text-muted small" style="font-size: 0.75rem;">
-                                                            <?= esc($anestesista['email']) ?>
+                                                            <?= esc($instrumentista['email']) ?>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td><?= esc($anestesista['especialidad']) ?></td>
+                                            <td><?= esc($instrumentista['dni']) ?></td>
+                                            <td><?= esc($instrumentista['especialidad']) ?></td>
                                             <td>
-                                                <span class="badge bg-<?= $anestesista['disponibilidad'] ?>">
-                                                    <?= ucfirst(str_replace('_', ' ', $anestesista['disponibilidad'])) ?>
+                                                <span class="badge bg-<?= $instrumentista['disponibilidad'] ?>">
+                                                    <?= ucfirst(str_replace('_', ' ', $instrumentista['disponibilidad'])) ?>
                                                 </span>
                                             </td>
                                             <td>
                                                 <div class="d-flex flex-column">
-                                                    <small><?= esc($anestesista['telefono']) ?></small>
+                                                    <small><?= esc($instrumentista['telefono']) ?></small>
                                                 </div>
                                             </td>
                                             <td class="text-end">
                                                 <div class="d-flex justify-content-end">
-                                                    <a href="<?= site_url('anestesistas/ver/'.$anestesista['id']) ?>" class="btn-action btn-view" title="Ver detalles">
+                                                    <a href="<?= site_url('instrumentistas/ver/'.$instrumentista['id']) ?>" class="btn-action btn-view" title="Ver detalles">
                                                         <i class='bx bx-show'></i>
                                                     </a>
-                                                    <a href="<?= site_url('anestesistas/editar/'.$anestesista['id']) ?>" class="btn-action btn-edit" title="Editar">
+                                                    <a href="<?= site_url('instrumentistas/editar/'.$instrumentista['id']) ?>" class="btn-action btn-edit" title="Editar">
                                                         <i class='bx bx-edit'></i>
                                                     </a>
                                                     <button type="button"
@@ -487,10 +488,10 @@
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#modalEliminar"
                                                         onclick="configurarModalEliminar({
-                                                            idElemento: '<?= $anestesista['id'] ?>',
-                                                            nombreElemento: '<?= esc($anestesista['nombre']) ?>',
-                                                            actionUrl: '<?= site_url('anestesistas/eliminar/'.$anestesista['id']) ?>',
-                                                            titulo: 'Eliminar Anestesista',
+                                                            idElemento: '<?= $instrumentista['id'] ?>',
+                                                            nombreElemento: '<?= esc($instrumentista['nombre']) ?>',
+                                                            actionUrl: '<?= site_url('instrumentistas/eliminar/'.$instrumentista['id']) ?>',
+                                                            titulo: 'Eliminar Instrumentista',
                                                             mensajeAdicional: 'Se eliminarán todos los registros asociados.',
                                                             icono: 'bx-user-x'
                                                         })"

@@ -317,6 +317,24 @@
                 </div>
             <?php endif; ?>
 
+            <!-- Mostrar errores de validación -->
+            <?php if (session()->getFlashdata('errors')): ?>
+                <div class="alert alert-danger alert-dismissible fade show glass-card">
+                    <div class="d-flex align-items-center">
+                        <i class='bx bx-error-circle me-2'></i>
+                        <div>
+                            <strong>Por favor corrige los siguientes errores:</strong>
+                            <ul class="mb-0 mt-2">
+                                <?php foreach (session()->getFlashdata('errors') as $error): ?>
+                                    <li><?= esc($error) ?></li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            <?php endif; ?>
+
             <!-- Form Card -->
             <div class="glass-card animate-fade-in" style="animation-delay: 0.1s">
                 <div class="card-header">
@@ -324,7 +342,7 @@
                     <span class="badge bg-primary">ID: <?= esc($usuario->id) ?></span>
                 </div>
                 <div class="card-body">
-                    <form action="<?= site_url('usuarios/update/' . $usuario->id) ?>" method="post" class="form-container">
+                    <form action="<?= site_url('usuarios/editar/' . $usuario->id) ?>" method="post" class="form-container">
                         <?= csrf_field() ?>
                         
                         <div class="row">
@@ -332,7 +350,7 @@
                                 <div class="form-group">
                                     <label for="nombre" class="form-label">Nombre</label>
                                     <input type="text" class="form-control <?= session('errors.nombre') ? 'is-invalid' : '' ?>" 
-                                           id="nombre" name="nombre" value="<?= old('nombre', $usuario->nombre) ?>">
+                                           id="nombre" name="nombre" value="<?= old('nombre', $usuario->nombre) ?>" required>
                                     <?php if (session('errors.nombre')): ?>
                                         <div class="invalid-feedback"><?= session('errors.nombre') ?></div>
                                     <?php endif; ?>
@@ -343,7 +361,7 @@
                                 <div class="form-group">
                                     <label for="apellidos" class="form-label">Apellidos</label>
                                     <input type="text" class="form-control <?= session('errors.apellidos') ? 'is-invalid' : '' ?>" 
-                                           id="apellidos" name="apellidos" value="<?= old('apellidos', $usuario->apellidos) ?>">
+                                           id="apellidos" name="apellidos" value="<?= old('apellidos', $usuario->apellidos) ?>" required>
                                     <?php if (session('errors.apellidos')): ?>
                                         <div class="invalid-feedback"><?= session('errors.apellidos') ?></div>
                                     <?php endif; ?>
@@ -356,7 +374,7 @@
                                 <div class="form-group">
                                     <label for="email" class="form-label">Correo electrónico</label>
                                     <input type="email" class="form-control <?= session('errors.email') ? 'is-invalid' : '' ?>" 
-                                           id="email" name="email" value="<?= old('email', $usuario->email) ?>">
+                                           id="email" name="email" value="<?= old('email', $usuario->email) ?>" required>
                                     <?php if (session('errors.email')): ?>
                                         <div class="invalid-feedback"><?= session('errors.email') ?></div>
                                     <?php endif; ?>
@@ -367,7 +385,7 @@
                                 <div class="form-group">
                                     <label for="username" class="form-label">Nombre de usuario</label>
                                     <input type="text" class="form-control <?= session('errors.username') ? 'is-invalid' : '' ?>" 
-                                           id="username" name="username" value="<?= old('username', $usuario->username) ?>">
+                                           id="username" name="username" value="<?= old('username', $usuario->username) ?>" required>
                                     <?php if (session('errors.username')): ?>
                                         <div class="invalid-feedback"><?= session('errors.username') ?></div>
                                     <?php endif; ?>
@@ -405,9 +423,9 @@
                                 <div class="form-group">
                                     <label for="rol" class="form-label">Rol</label>
                                     <select class="form-control <?= session('errors.rol') ? 'is-invalid' : '' ?>" 
-                                            id="rol" name="rol">
+                                            id="rol" name="rol" required>
                                         <option value="administrador" <?= old('rol', $usuario->rol) == 'administrador' ? 'selected' : '' ?>>Administrador</option>
-                                        <option value="medico" <?= old('rol', $usuario->rol) == 'medico' ? 'selected' : '' ?>>Médico</option>
+                                        <option value="cirujano" <?= old('rol', $usuario->rol) == 'cirujano' ? 'selected' : '' ?>>Cirujano</option>
                                         <option value="enfermero" <?= old('rol', $usuario->rol) == 'enfermero' ? 'selected' : '' ?>>Enfermero</option>
                                         <option value="supervisor" <?= old('rol', $usuario->rol) == 'supervisor' ? 'selected' : '' ?>>Supervisor</option>
                                         <option value="usuario" <?= old('rol', $usuario->rol) == 'usuario' ? 'selected' : '' ?>>Usuario</option>
@@ -424,12 +442,12 @@
                                     <div class="d-flex align-items-center">
                                         <div class="form-check me-3">
                                             <input class="form-check-input" type="radio" name="estado" id="estado_activo" 
-                                                   value="1" <?= old('estado', $usuario->estado) == 1 ? 'checked' : '' ?>>
+                                                   value="1" <?= old('estado', $usuario->estado) == 1 ? 'checked' : '' ?> required>
                                             <label class="form-check-label" for="estado_activo">Activo</label>
                                         </div>
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="estado" id="estado_inactivo" 
-                                                   value="0" <?= old('estado', $usuario->estado) == 0 ? 'checked' : '' ?>>
+                                                   value="0" <?= old('estado', $usuario->estado) == 0 ? 'checked' : '' ?> required>
                                             <label class="form-check-label" for="estado_inactivo">Inactivo</label>
                                         </div>
                                     </div>
