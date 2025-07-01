@@ -352,6 +352,8 @@
                                        name="nombre" 
                                        value="<?= old('nombre') ?>" 
                                        placeholder="Ingrese el nombre completo"
+                                       pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$" 
+                                       title="Solo letras y espacios. No se permiten números ni símbolos." 
                                        required>
                                 <?php if (isset($validation) && $validation->hasError('nombre')): ?>
                                     <div class="invalid-feedback"><?= esc($validation->getError('nombre')) ?></div>
@@ -368,6 +370,8 @@
                                        name="dni" 
                                        value="<?= old('dni') ?>" 
                                        placeholder="Ej: 12345678"
+                                       pattern="^[0-9]+$"
+                                       title="Solo se permiten números"
                                        required>
                                 <?php if (isset($validation) && $validation->hasError('dni')): ?>
                                     <div class="invalid-feedback"><?= esc($validation->getError('dni')) ?></div>
@@ -407,6 +411,8 @@
                                        name="telefono" 
                                        value="<?= old('telefono') ?>" 
                                        placeholder="Ej: +54 9 11 1234-5678"
+                                       pattern="^[0-9]+$"
+                                       title="Solo números, paréntesis, guiones y símbolo +"
                                        required>
                                 <?php if (isset($validation) && $validation->hasError('telefono')): ?>
                                     <div class="invalid-feedback"><?= esc($validation->getError('telefono')) ?></div>

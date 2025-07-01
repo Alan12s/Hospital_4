@@ -360,7 +360,7 @@
         font-size: 0.9rem;
     }
     
-    /* ============= NUEVOS ESTILOS PARA LAS SECCIONES INNOVADORAS ============= */
+    /* ============= NUEVAS SECCIONES ============= */
     .innovative-section {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -368,7 +368,8 @@
         margin-bottom: 2rem;
     }
 
-    .status-board {
+    /* Widget de Personal Médico */
+    .staff-widget {
         padding: 1.5rem;
         border-radius: var(--border-radius);
         box-shadow: var(--shadow-lg);
@@ -384,13 +385,13 @@
         gap: 0.5rem;
     }
 
-    .status-grid {
+    .staff-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 1rem;
     }
 
-    .status-item {
+    .staff-item {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -400,231 +401,155 @@
         transition: all 0.3s ease;
     }
 
-    .status-item:hover {
+    .staff-item:hover {
         transform: translateY(-3px);
         box-shadow: var(--shadow-sm);
     }
 
-    .status-indicator {
-        width: 12px;
-        height: 12px;
+    .staff-icon {
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         margin-bottom: 0.5rem;
+        color: white;
+        font-size: 1.2rem;
     }
 
-    .status-indicator.active {
-        background-color: var(--success-color);
-        box-shadow: 0 0 10px var(--success-color);
-    }
-
-    .status-indicator.warning {
-        background-color: var(--warning-color);
-        box-shadow: 0 0 10px var(--warning-color);
-    }
-
-    .status-value {
+    .staff-value {
         font-weight: 700;
         color: var(--gray-800);
         margin-top: 0.25rem;
     }
 
-    /* Monitor de Recursos */
-    .resource-monitor {
+    /* Monitor de Cirugías */
+    .surgery-monitor {
         padding: 1.5rem;
         border-radius: var(--border-radius);
         box-shadow: var(--shadow-lg);
     }
 
-    .resource-bars {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    .resource-item {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-    .progress-container {
-        height: 8px;
-        background: var(--gray-200);
-        border-radius: 4px;
-        overflow: hidden;
-        position: relative;
-    }
-
-    .progress-bar {
-        height: 100%;
-        border-radius: 4px;
-        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-        position: relative;
-    }
-
-    .progress-bar.warning {
-        background: linear-gradient(90deg, var(--warning-color), var(--accent-color));
-    }
-
-    .resource-percent {
-        font-size: 0.9rem;
-        font-weight: 600;
-        color: var(--gray-600);
-        align-self: flex-end;
-    }
-
-    /* Live Feed */
-    .live-feed {
-        display: grid;
-        grid-template-columns: 2fr 1fr;
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-    }
-
-    .live-feed-container {
-        padding: 1.5rem;
-        border-radius: var(--border-radius);
-        box-shadow: var(--shadow-lg);
-    }
-
-    .feed-items {
+    .surgery-list {
         display: flex;
         flex-direction: column;
         gap: 0.75rem;
-        max-height: 300px;
-        overflow-y: auto;
-        padding-right: 0.5rem;
     }
 
-    .feed-item {
+    .surgery-item {
+        display: flex;
+        align-items: center;
         padding: 0.75rem;
         background: rgba(255, 255, 255, 0.7);
         border-radius: var(--border-radius-sm);
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        animation: slideIn 0.5s ease-out;
+        transition: all 0.3s ease;
     }
 
-    .feed-item-icon {
-        width: 30px;
-        height: 30px;
+    .surgery-item:hover {
+        transform: translateX(5px);
+        background: rgba(255, 255, 255, 0.9);
+    }
+
+    .surgery-status {
+        width: 12px;
+        height: 12px;
         border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 0.9rem;
+        margin-right: 0.75rem;
     }
 
-    .feed-item-content {
+    .surgery-status.scheduled {
+        background-color: var(--info-color);
+    }
+
+    .surgery-status.in-progress {
+        background-color: var(--warning-color);
+    }
+
+    .surgery-status.completed {
+        background-color: var(--success-color);
+    }
+
+    .surgery-content {
         flex: 1;
     }
 
-    .feed-item-text {
+    .surgery-title {
         font-size: 0.9rem;
-        color: var(--gray-700);
+        font-weight: 600;
+        color: var(--gray-800);
     }
 
-    .feed-item-time {
-        font-size: 0.7rem;
+    .surgery-time {
+        font-size: 0.8rem;
         color: var(--gray-500);
     }
 
-    /* Animaciones */
-    .pulse-animation {
-        animation: pulse 2s infinite;
-    }
-
-    .animate-progress {
-        animation: progressAnimation 1.5s ease-out;
-    }
-
-    @keyframes progressAnimation {
-        from {
-            width: 0%;
-        }
-        to {
-            width: 100%;
-        }
-    }
-
-    @keyframes slideIn {
-        from {
-            opacity: 0;
-            transform: translateX(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-
-    /* ============= ESTILOS PARA NOTIFICACIONES TOAST ============= */
-    .notification-toast {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 1rem 1.5rem;
+    /* Widget del Clima */
+    .weather-widget {
+        padding: 1.5rem;
         border-radius: var(--border-radius);
-        box-shadow: var(--shadow-xl);
+        box-shadow: var(--shadow-lg);
+        text-align: center;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .weather-widget:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .weather-icon {
+        font-size: 3rem;
+        margin-bottom: 0.5rem;
+        animation: float 3s ease-in-out infinite;
+    }
+
+    .weather-temp {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--gray-800);
+        margin-bottom: 0.25rem;
+    }
+
+    .weather-desc {
+        color: var(--gray-600);
+        font-size: 0.9rem;
+    }
+
+    .weather-location {
+        color: var(--gray-500);
+        font-size: 0.8rem;
+        margin-top: 0.5rem;
+    }
+
+    .weather-details {
         display: flex;
+        justify-content: space-around;
+        margin-top: 1rem;
+        font-size: 0.8rem;
+    }
+
+    .weather-detail {
+        display: flex;
+        flex-direction: column;
         align-items: center;
-        gap: 1rem;
-        z-index: 9999;
-        transform: translateX(150%);
-        transition: transform 0.3s ease-out;
-        max-width: 350px;
     }
 
-    .notification-toast.show {
-        transform: translateX(0);
+    .weather-detail i {
+        margin-bottom: 0.25rem;
     }
 
-    .notification-toast.primary {
-        background: var(--primary-color);
-        color: white;
-    }
-
-    .notification-toast.success {
-        background: var(--success-color);
-        color: white;
-    }
-
-    .notification-toast.warning {
-        background: var(--warning-color);
-        color: white;
-    }
-
-    .notification-toast.info {
-        background: var(--info-color);
-        color: white;
-    }
-
-    .notification-toast.danger {
-        background: var(--danger-color);
-        color: white;
-    }
-
-    .toast-icon {
-        font-size: 1.5rem;
-    }
-
-    .toast-message {
-        flex: 1;
-        font-weight: 500;
-    }
-
-    .toast-close {
-        margin-left: 1rem;
-        cursor: pointer;
-        font-size: 1.2rem;
-        opacity: 0.8;
-        transition: opacity 0.2s;
-    }
-
-    .toast-close:hover {
-        opacity: 1;
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-5px);
+        }
     }
 
     /* ============= RESPONSIVE ============= */
@@ -804,7 +729,7 @@
                     </a>
                     <?php endif; ?>
                     
-                    <?php if(in_array($rol, ['administrador', 'supervisor', 'cirujano'])): ?>
+                    <?php if(in_array($rol, ['administrador', 'supervisor', 'enfermero'])): ?>
                     <a href="<?= base_url('insumos') ?>" class="action-card">
                         <div class="action-card-icon">
                             <i class="bx bx-package"></i>
@@ -834,94 +759,114 @@
                     </a>
                     <?php endif; ?>
 
+                    <?php if(in_array($rol, ['administrador', 'supervisor', 'enfermero'])): ?>
                     <a href="<?= base_url('instrumentistas') ?>" class="action-card">
                         <div class="action-card-icon">
                             <i class="bx bx-bar-chart-alt-2"></i>
                         </div>
                         <div class="action-card-title">Instrumentistas</div>
                     </a>
+                    <?php endif; ?>
 
-                    <a href="<?= base_url('Anestesistas') ?>" class="action-card">
+                    <?php if(in_array($rol, ['administrador', 'supervisor'])): ?>
+                    <a href="<?= base_url('anestesistas') ?>" class="action-card">
                         <div class="action-card-icon">
                             <i class="bx bx-plus-medical"></i>
                         </div>
                         <div class="action-card-title">Anestesistas</div>
                     </a>
+                    <?php endif; ?>
                 </div>
 
                 <!-- Nuevas Secciones Innovadoras -->
                 <div class="innovative-section animate-fade-in" style="animation-delay: 0.7s">
-                    <!-- Panel de Estado del Hospital -->
-                    <div class="status-board glass-card-solid">
-                        <h3 class="section-title"><i class='bx bx-pulse'></i> Estado del Hospital</h3>
-                        <div class="status-grid">
-                            <div class="status-item">
-                                <div class="status-indicator active pulse-animation"></div>
-                                <span>Emergencias</span>
-                                <div class="status-value">Operativo</div>
-                            </div>
-                            <div class="status-item">
-                                <div class="status-indicator active"></div>
-                                <span>Quirófanos</span>
-                                <div class="status-value">3/5 en uso</div>
-                            </div>
-                            <div class="status-item">
-                                <div class="status-indicator warning pulse-animation"></div>
-                                <span>Equipos</span>
-                                <div class="status-value">1 en mantenimiento</div>
-                            </div>
-                            <div class="status-item">
-                                <div class="status-indicator active"></div>
-                                <span>Personal</span>
-                                <div class="status-value">85% disponible</div>
-                            </div>
-                        </div>
-                    </div>
+                   <!-- Widget de Personal Médico -->
+<div class="staff-widget glass-card-solid">
+    <h3 class="section-title"><i class='bx bx-user'></i> Personal Médico</h3>
+    <div class="staff-grid">
+        <div class="staff-item">
+            <div class="staff-icon bg-primary">
+                <i class='bx bx-user-md'></i>
+            </div>
+            <span>Cirujanos</span>
+            <div class="staff-value" id="staff-cirujanos"><?= $cirujanos_count ?? '0' ?></div>
+        </div>
+        <div class="staff-item">
+            <div class="staff-icon bg-success">
+                <i class='bx bx-plus-medical'></i>
+            </div>
+            <span>Anestesistas</span>
+            <div class="staff-value" id="staff-anestesistas"><?= $anestesistas_count ?? '0' ?></div>
+        </div>
+        <div class="staff-item">
+            <div class="staff-icon bg-info">
+                <i class='bx bx-heart'></i>
+            </div>
+            <span>Enfermeros</span>
+             <div class="staff-value" id="staff-enfermeros"><?= $enfermeros_count ?? '0' ?></div>
+        </div>
+        <div class="staff-item">
+            <div class="staff-icon bg-secondary">
+                <i class='bx bx-briefcase'></i>
+            </div>
+            <span>Instrumentistas</span>
+            <div class="staff-value" id="staff-instrumentistas"><?= $instrumentistas_count ?? '0' ?></div>
+        </div>
+    </div>
+</div>
 
-                    <!-- Monitor de Recursos -->
-                    <div class="resource-monitor glass-card-solid">
-                        <h3 class="section-title"><i class='bx bx-trending-up'></i> Monitor de Recursos</h3>
-                        <div class="resource-bars">
-                            <div class="resource-item">
-                                <span>Uso de Quirófanos</span>
-                                <div class="progress-container">
-                                    <div class="progress-bar animate-progress" style="width: 75%"></div>
+                    <!-- Monitor de Cirugías -->
+                    <div class="surgery-monitor glass-card-solid">
+                        <h3 class="section-title"><i class='bx bx-calendar'></i> Próximas Cirugías</h3>
+                        <div class="surgery-list" id="surgery-list">
+                            <!-- Las cirugías se cargarán dinámicamente -->
+                            <div class="surgery-item">
+                                <div class="surgery-status scheduled"></div>
+                                <div class="surgery-content">
+                                    <div class="surgery-title">Cargando cirugías...</div>
+                                    <div class="surgery-time">Por favor espere</div>
                                 </div>
-                                <span class="resource-percent">75%</span>
-                            </div>
-                            <div class="resource-item">
-                                <span>Disponibilidad de Personal</span>
-                                <div class="progress-container">
-                                    <div class="progress-bar animate-progress" style="width: 85%"></div>
-                                </div>
-                                <span class="resource-percent">85%</span>
-                            </div>
-                            <div class="resource-item">
-                                <span>Insumos Críticos</span>
-                                <div class="progress-container">
-                                    <div class="progress-bar animate-progress warning" style="width: 35%"></div>
-                                </div>
-                                <span class="resource-percent">35%</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Feed de Actividad en Tiempo Real -->
-                <div class="live-feed animate-fade-in" style="animation-delay: 0.8s">
-                    <div class="live-feed-container glass-card-solid">
-                        <h3 class="section-title"><i class='bx bx-radar'></i> Actividad en Tiempo Real</h3>
-                        <div class="feed-items" id="live-feed-items">
-                            <!-- Los elementos se agregarán dinámicamente via JavaScript -->
+                <!-- Sección Inferior -->
+                <div class="innovative-section animate-fade-in" style="animation-delay: 0.8s">
+                    <!-- Widget del Clima -->
+                    <div class="weather-widget glass-card-solid">
+                        <div class="weather-icon" id="weather-icon"><?= $clima['icono'] ?? '🌤️' ?></div>
+                        <div class="weather-temp" id="weather-temp"><?= $clima['temperatura'] ?? '22' ?>°C</div>
+                        <div class="weather-desc" id="weather-desc"><?= $clima['descripcion'] ?? 'Parcialmente nublado' ?></div>
+                        <div class="weather-location" id="weather-location"><?= $clima['ciudad'] ?? 'San Juan, Argentina' ?></div>
+                        <div class="weather-details">
+                            <div class="weather-detail">
+                                <i class='bx bx-water'></i>
+                                <span id="weather-humidity">65%</span>
+                            </div>
+                            <div class="weather-detail">
+                                <i class='bx bx-wind'></i>
+                                <span id="weather-wind">15 km/h</span>
+                            </div>
+                            <div class="weather-detail">
+                                <i class='bx bx-cloud'></i>
+                                <span id="weather-clouds">25%</span>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Widget del Clima -->
-                    <div class="weather-widget glass-card-solid">
-                        <div class="weather-icon"><?= $clima['icono'] ?? '🌤️' ?></div>
-                        <div class="weather-temp"><?= $clima['temperatura'] ?? '22' ?>°C</div>
-                        <div class="weather-desc"><?= $clima['descripcion'] ?? 'Parcialmente nublado' ?></div>
-                        <div class="weather-desc"><?= $clima['ciudad'] ?? 'San Juan, Argentina' ?></div>
+                    <!-- Widget de Insumos Críticos -->
+                    <div class="surgery-monitor glass-card-solid">
+                        <h3 class="section-title"><i class='bx bx-package'></i> Insumos Críticos</h3>
+                        <div class="surgery-list" id="critical-supplies">
+                            <div class="surgery-item">
+                                <div class="surgery-status warning"></div>
+                                <div class="surgery-content">
+                                    <div class="surgery-title">Cargando información...</div>
+                                    <div class="surgery-time">Por favor espere</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -999,7 +944,7 @@
                     window.specialtyChart = new Chart(specialtyCtx, {
                         type: 'doughnut',
                         data: {
-                            labels: ['Cardiovascular', 'Neurología', 'Ortopedia', 'General'],
+                            labels: ['Traumotologia', 'Urologia', 'Odontologia', 'General'],
                             datasets: [{
                                 data: [0, 0, 0, 0],
                                 backgroundColor: [
@@ -1110,7 +1055,9 @@
                 'turnos-hoy': data.turnos_hoy,
                 'cirujanos-count': data.cirujanos_count,
                 'enfermeros-count': data.enfermeros_disponibles,
-                'pacientes-count': data.pacientes_count
+                'pacientes-count': data.pacientes_count,
+                'staff-cirujanos': data.cirujanos_count,
+                'staff-enfermeros': data.enfermeros_disponibles
             };
 
             Object.entries(elements).forEach(([id, value]) => {
@@ -1263,89 +1210,268 @@
             });
         }
 
-        // 9. Feed de actividad en tiempo real con WebSocket (simulado)
-        function loadLiveFeed() {
-            const feedContainer = document.getElementById('live-feed-items');
-            if (!feedContainer) return;
-            
-            // Limpiar solo si está vacío para evitar parpadeo
-            if (feedContainer.children.length === 0) {
-                feedContainer.innerHTML = '';
-            }
-            
-            // Simular datos de actividad
-            const activities = [
-                {
-                    tipo: 'cirugia_completada',
-                    mensaje: 'Cirugía de apendicectomía completada exitosamente',
-                    usuario: 'Dr. Pérez',
-                    tiempo: 'Hace 2 minutos',
-                    icono: 'bx-check-circle',
-                    color: 'success'
-                },
-                {
-                    tipo: 'paciente_registrado',
-                    mensaje: 'Nuevo paciente registrado en el sistema',
-                    usuario: 'Enf. García',
-                    tiempo: 'Hace 15 minutos',
-                    icono: 'bx-user-plus',
-                    color: 'info'
+        // 9. Carga de información de personal médico
+        async function loadStaffInfo() {
+            try {
+                // Cargar anestesistas
+                const anestesistasResponse = await fetchWithRetry('<?= base_url('anestesistas/getCount') ?>');
+                if (anestesistasResponse.status === 'success') {
+                    document.getElementById('staff-anestesistas').textContent = anestesistasResponse.count;
                 }
-            ];
-            
-            // Limitar a 10 elementos máximo
-            if (feedContainer.children.length + activities.length > 10) {
-                const excess = feedContainer.children.length + activities.length - 10;
-                for (let i = 0; i < excess; i++) {
-                    feedContainer.removeChild(feedContainer.lastChild);
+
+                // Cargar instrumentistas
+                const instrumentistasResponse = await fetchWithRetry('<?= base_url('instrumentistas/getCount') ?>');
+                if (instrumentistasResponse.status === 'success') {
+                    document.getElementById('staff-instrumentistas').textContent = instrumentistasResponse.count;
                 }
+            } catch (error) {
+                console.error('Error al cargar información de personal:', error);
             }
-            
-            // Añadir nuevos elementos con animación
-            activities.forEach(activity => {
-                const feedItem = document.createElement('div');
-                feedItem.className = 'feed-item';
-                feedItem.innerHTML = `
-                    <div class="feed-item-icon bg-${activity.color}">
-                        <i class="bx ${activity.icono}"></i>
-                    </div>
-                    <div class="feed-item-content">
-                        <div class="feed-item-text">${activity.mensaje}</div>
-                        <div class="feed-item-time">${activity.tiempo} • ${activity.usuario}</div>
-                    </div>
-                `;
-                feedContainer.insertBefore(feedItem, feedContainer.firstChild);
-            });
         }
 
-        // 10. Widget del clima con geolocalización
-        async function updateWeather() {
-            const weatherWidget = document.querySelector('.weather-widget');
-            if (!weatherWidget) return;
-            
-            try {
-                // Simulación de datos del clima
-                const weatherData = {
-                    icono: '🌤️',
-                    temperatura: 22,
-                    descripcion: 'Parcialmente nublado',
-                    ciudad: 'San Juan, Argentina'
-                };
+        async function loadUpcomingSurgeries() {
+    const surgeryList = document.getElementById('surgery-list');
+    if (!surgeryList) return;
+
+    // Mostrar estado de carga
+    surgeryList.innerHTML = `
+        <div class="surgery-item">
+            <div class="surgery-status in-progress"></div>
+            <div class="surgery-content">
+                <div class="surgery-title">Cargando cirugías...</div>
+                <div class="surgery-time">Por favor espere</div>
+            </div>
+        </div>
+    `;
+
+    try {
+        const response = await fetch('<?= site_url('inicio/getUpcomingSurgeries') ?>', {
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || data.status !== 'success') {
+            throw new Error(data.message || 'Error en la respuesta del servidor');
+        }
+
+        if (data.surgeries.length > 0) {
+            surgeryList.innerHTML = '';
+            data.surgeries.forEach(surgery => {
+                const statusClass = getSurgeryStatusClass(surgery.status);
+                const statusText = getSurgeryStatusText(surgery.status);
                 
-                weatherWidget.querySelector('.weather-icon').textContent = weatherData.icono;
-                weatherWidget.querySelector('.weather-temp').textContent = `${weatherData.temperatura}°C`;
-                weatherWidget.querySelectorAll('.weather-desc')[0].textContent = weatherData.descripcion;
-                weatherWidget.querySelectorAll('.weather-desc')[1].textContent = weatherData.ciudad;
+                const surgeryItem = document.createElement('div');
+                surgeryItem.className = 'surgery-item';
+                surgeryItem.innerHTML = `
+                    <div class="surgery-status ${statusClass}"></div>
+                    <div class="surgery-content">
+                        <div class="surgery-title">${surgery.title}</div>
+                        <div class="surgery-time">${surgery.date} • ${surgery.time} • Dr. ${surgery.surgeon} • ${statusText}</div>
+                    </div>
+                `;
+                surgeryList.appendChild(surgeryItem);
+            });
+        } else {
+            surgeryList.innerHTML = `
+                <div class="surgery-item">
+                    <div class="surgery-status scheduled"></div>
+                    <div class="surgery-content">
+                        <div class="surgery-title">No hay cirugías programadas</div>
+                        <div class="surgery-time">No se encontraron cirugías próximas</div>
+                    </div>
+                </div>
+            `;
+        }
+    } catch (error) {
+        console.error('Error al cargar cirugías:', error);
+        surgeryList.innerHTML = `
+            <div class="surgery-item">
+                <div class="surgery-status warning"></div>
+                <div class="surgery-content">
+                    <div class="surgery-title">Error al cargar cirugías</div>
+                    <div class="surgery-time">${error.message}</div>
+                </div>
+            </div>
+        `;
+    }
+}
+
+// Funciones auxiliares
+function getSurgeryStatusClass(status) {
+    switch(status) {
+        case 'programado': return 'scheduled';
+        case 'en_progreso': return 'in-progress';
+        case 'completado': return 'completed';
+        case 'cancelado': return 'cancelled';
+        default: return 'scheduled';
+    }
+}
+
+function getSurgeryStatusText(status) {
+    switch(status) {
+        case 'programado': return 'Programado';
+        case 'en_progreso': return 'En progreso';
+        case 'completado': return 'Completado';
+        case 'cancelado': return 'Cancelado';
+        default: return status;
+    }
+}
+
+function getSurgeryStatusText(status) {
+    switch(status) {
+        case 'programado': return 'Programado';
+        case 'en_progreso': return 'En progreso';
+        case 'completado': return 'Completado';
+        case 'cancelado': return 'Cancelado';
+        default: return status;
+    }
+}
+
+        // 11. Carga de insumos críticos
+        // Función para cargar insumos críticos
+async function loadCriticalSupplies() {
+    const container = document.getElementById('critical-supplies');
+    if (!container) return;
+
+    try {
+        container.innerHTML = `
+            <div class="surgery-item">
+                <div class="surgery-status in-progress"></div>
+                <div class="surgery-content">
+                    <div class="surgery-title">Cargando insumos...</div>
+                    <div class="surgery-time">Por favor espere</div>
+                </div>
+            </div>
+        `;
+
+        const response = await fetch('<?= site_url('inicio/getCriticalSupplies') ?>', {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        });
+
+        if (!response.ok) throw new Error(`Error HTTP! Estado: ${response.status}`);
+
+        const data = await response.json();
+        
+        if (data.status !== 'success') {
+            throw new Error(data.message || 'Respuesta inesperada del servidor');
+        }
+
+        container.innerHTML = data.supplies.length ? '' : `
+            <div class="surgery-item">
+                <div class="surgery-status success"></div>
+                <div class="surgery-content">
+                    <div class="surgery-title">No hay insumos críticos</div>
+                    <div class="surgery-time">Todos los insumos están con cantidad suficiente</div>
+                </div>
+            </div>
+        `;
+
+        data.supplies.forEach(item => {
+            const urgency = item.cantidad < 20 ? 'danger' : item.cantidad < 35 ? 'warning' : 'info';
+            
+            container.innerHTML += `
+                <div class="surgery-item">
+                    <div class="surgery-status ${urgency}"></div>
+                    <div class="surgery-content">
+                        <div class="surgery-title">${item.nombre} (${item.codigo})</div>
+                        <div class="surgery-time">
+                            <span class="badge bg-${urgency}">${item.cantidad} unidades</span>
+                            Tipo: ${item.tipo} | Ubicación: ${item.ubicacion}
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+    } catch (error) {
+        console.error('Error:', error);
+        container.innerHTML = `
+            <div class="surgery-item">
+                <div class="surgery-status danger"></div>
+                <div class="surgery-content">
+                    <div class="surgery-title">Error al cargar insumos</div>
+                    <div class="surgery-time">
+                        ${error.message}
+                        <button onclick="loadCriticalSupplies()" class="btn btn-sm btn-outline-primary mt-2">
+                            <i class="bx bx-refresh"></i> Reintentar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+}
+
+        // 12. Widget del clima con API real (simulada aquí)
+        async function updateWeather() {
+            try {
+                // En un entorno real, aquí harías una llamada a una API del clima
+                // Por simplicidad, usaremos datos simulados
+                const weatherData = {
+                    icon: '🌤️',
+                    temp: 22,
+                    description: 'Parcialmente nublado',
+                    city: 'San Juan, Argentina',
+                    humidity: Math.floor(Math.random() * 30) + 50, // 50-80%
+                    wind: Math.floor(Math.random() * 10) + 10, // 10-20 km/h
+                    clouds: Math.floor(Math.random() * 50) // 0-50%
+                };
+
+                // Actualizar UI
+                document.getElementById('weather-icon').textContent = weatherData.icon;
+                document.getElementById('weather-temp').textContent = `${weatherData.temp}°C`;
+                document.getElementById('weather-desc').textContent = weatherData.description;
+                document.getElementById('weather-location').textContent = weatherData.city;
+                document.getElementById('weather-humidity').textContent = `${weatherData.humidity}%`;
+                document.getElementById('weather-wind').textContent = `${weatherData.wind} km/h`;
+                document.getElementById('weather-clouds').textContent = `${weatherData.clouds}%`;
+
+                // Cambiar el icono según las condiciones
+                updateWeatherIcon(weatherData.description, weatherData.temp);
                 
             } catch (error) {
                 console.error('Error al actualizar el clima:', error);
             }
         }
 
-        // 11. Efectos de hover mejorados
+        function updateWeatherIcon(description, temp) {
+            const iconElement = document.getElementById('weather-icon');
+            if (!iconElement) return;
+
+            const desc = description.toLowerCase();
+            
+            if (desc.includes('soleado') || desc.includes('despejado')) {
+                iconElement.textContent = '☀️';
+            } else if (desc.includes('nublado')) {
+                iconElement.textContent = '☁️';
+            } else if (desc.includes('lluvia')) {
+                iconElement.textContent = '🌧️';
+            } else if (desc.includes('tormenta')) {
+                iconElement.textContent = '⛈️';
+            } else if (desc.includes('nieve')) {
+                iconElement.textContent = '❄️';
+            } else if (desc.includes('niebla') || desc.includes('neblina')) {
+                iconElement.textContent = '🌫️';
+            } else if (temp > 30) {
+                iconElement.textContent = '🔥';
+            } else if (temp < 10) {
+                iconElement.textContent = '❄️';
+            } else {
+                iconElement.textContent = '🌤️';
+            }
+        }
+
+        // 13. Efectos de hover mejorados
         function setupHoverEffects() {
             // Efecto de elevación en tarjetas
-            const cards = document.querySelectorAll('.stats-card, .action-card, .chart-container, .status-board, .resource-monitor');
+            const cards = document.querySelectorAll('.stats-card, .action-card, .chart-container, .staff-widget, .surgery-monitor');
             
             cards.forEach(card => {
                 card.addEventListener('mouseenter', () => {
@@ -1380,7 +1506,7 @@
             });
         }
 
-        // 12. Animación de actualización de estadísticas
+        // 14. Animación de actualización de estadísticas
         function animateStatUpdate() {
             const statCards = document.querySelectorAll('.stats-card');
             statCards.forEach(card => {
@@ -1391,21 +1517,25 @@
             });
         }
 
-        // 13. Inicialización con manejo de errores
+        // 15. Inicialización con manejo de errores
         try {
             initCharts();
             loadStats();
             loadWeeklyStats();
             loadSpecialtyStats();
             loadNotifications();
-            loadLiveFeed();
+            loadStaffInfo();
+            loadUpcomingSurgeries();
+            loadCriticalSupplies();
             updateWeather();
             setupHoverEffects();
 
             // Actualización periódica
             setInterval(loadStats, 30000);
-            setInterval(loadLiveFeed, 15000);
+            setInterval(loadUpcomingSurgeries, 60000);
+            setInterval(loadCriticalSupplies, 60000);
             setInterval(loadNotifications, 60000);
+            setInterval(updateWeather, 3600000); // Actualizar clima cada hora
             
             console.log('Todos los módulos se inicializaron correctamente');
         } catch (error) {

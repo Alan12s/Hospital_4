@@ -343,20 +343,30 @@
 
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="nombre" class="form-label">
-                                    <i class='bx bx-user me-1'></i>Nombre Completo
-                                </label>
-                                <input type="text" 
-                                       class="form-control <?= (isset($validation) && $validation->hasError('nombre')) ? 'is-invalid' : '' ?>" 
-                                       id="nombre" 
-                                       name="nombre" 
-                                       value="<?= old('nombre') ?>" 
-                                       placeholder="Ingrese el nombre completo"
-                                       required>
-                                <?php if (isset($validation) && $validation->hasError('nombre')): ?>
-                                    <div class="invalid-feedback"><?= esc($validation->getError('nombre')) ?></div>
-                                <?php endif; ?>
+                                <form id="formAnestesista" method="POST" action="<?= base_url('anestesistas/guardar') ?>">
+    <div class="mb-3">
+        <label for="nombre" class="form-label">Nombre</label>
+        <input type="text" class="form-control" id="nombre" name="nombre" 
+                value="<?= old('nombre') ?? $anestesista['nombre'] ?? '' ?>"
+                oninput="validarSoloLetras(this)" required>
                             </div>
+                            <div class="col-md-6">
+    <label for="dni" class="form-label">
+        <i class='bx bx-id-card me-1'></i>DNI
+    </label>
+    <input type="text" 
+            class="form-control <?= (isset($validation) && $validation->hasError('dni')) ? 'is-invalid' : '' ?>" 
+            id="dni" 
+            name="dni" 
+            value="<?= old('dni') ?>" 
+            placeholder="Ingrese el DNI"
+            maxlength="8"
+            pattern="[0-9]{7,8}"
+            required>
+    <?php if (isset($validation) && $validation->hasError('dni')): ?>
+        <div class="invalid-feedback"><?= esc($validation->getError('dni')) ?></div>
+    <?php endif; ?>
+</div
 
                             <div class="col-md-6">
                                 <label for="especialidad" class="form-label">

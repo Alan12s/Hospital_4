@@ -8,7 +8,7 @@
         <!-- Menú principal -->
         <div class="flex-grow-1 overflow-auto py-2">
             <ul class="nav flex-column">
-                <!-- Inicio -->
+                <!-- Inicio - Accesible para todos -->
                 <li class="nav-item">
                     <a href="<?= base_url('inicio') ?>" class="nav-link text-white d-flex align-items-center py-2 px-3" style="font-size: 0.9rem;">
                         <i class="bx bx-home me-2" style="font-size: 1rem;"></i>
@@ -18,8 +18,8 @@
 
                 <?php $rol = session()->get('rol'); ?>
                 
-                <!-- Turnos -->
-                <?php if(in_array($rol, ['administrador', 'supervisor', 'cirujanos', 'enfermero'])): ?>
+                <!-- Turnos - Accesible para Admin, Supervisor, Cirujano, Enfermero -->
+                <?php if(in_array($rol, ['administrador', 'supervisor', 'cirujano', 'enfermero'])): ?>
                 <li class="nav-item">
                     <a href="<?= base_url('turnos') ?>" class="nav-link text-white d-flex align-items-center py-2 px-3" style="font-size: 0.9rem;">
                         <i class="bx bx-calendar me-2" style="font-size: 1rem;"></i>
@@ -28,8 +28,8 @@
                 </li>
                 <?php endif; ?>
 
-                <!-- Insumos -->
-                <?php if(in_array($rol, ['administrador', 'supervisor', 'medico'])): ?>
+                <!-- Insumos - Accesible para Admin, Supervisor, Enfermero -->
+                <?php if(in_array($rol, ['administrador', 'supervisor', 'enfermero'])): ?>
                 <li class="nav-item">
                     <a href="<?= base_url('insumos') ?>" class="nav-link text-white d-flex align-items-center py-2 px-3" style="font-size: 0.9rem;">
                         <i class="bx bx-box me-2" style="font-size: 1rem;"></i>
@@ -38,8 +38,8 @@
                 </li>
                 <?php endif; ?>
 
-                <!-- Pacientes -->
-                <?php if(in_array($rol, ['administrador', 'supervisor', 'medico', 'enfermero'])): ?>
+                <!-- Pacientes - Accesible para Admin, Supervisor, Cirujano, Enfermero -->
+                <?php if(in_array($rol, ['administrador', 'supervisor', 'cirujano', 'enfermero'])): ?>
                 <li class="nav-item">
                     <a href="<?= base_url('pacientes') ?>" class="nav-link text-white d-flex align-items-center py-2 px-3" style="font-size: 0.9rem;">
                         <i class="bx bx-user-circle me-2" style="font-size: 1rem;"></i>
@@ -48,8 +48,8 @@
                 </li>
                 <?php endif; ?>
 
-                <!-- Equipo (dropdown) -->
-                <?php if(in_array($rol, ['administrador', 'supervisor', 'cirujanos'])): ?>
+                <!-- Equipo (dropdown) - Accesible para Admin, Supervisor, Cirujano -->
+                <?php if(in_array($rol, ['administrador', 'supervisor', 'cirujano'])): ?>
                 <li class="nav-item">
                     <a class="nav-link text-white d-flex align-items-center py-2 px-3 collapsed" 
                        data-bs-toggle="collapse" 
@@ -93,7 +93,7 @@
                 </li>
                 <?php endif; ?>
                 
-                <!-- Usuarios -->
+                <!-- Usuarios - Accesible solo para Admin y Supervisor -->
                 <?php if(in_array($rol, ['administrador', 'supervisor'])): ?>
                 <li class="nav-item">
                     <a href="<?= base_url('usuarios') ?>" class="nav-link text-white d-flex align-items-center py-2 px-3" style="font-size: 0.9rem;">

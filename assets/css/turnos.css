@@ -1,0 +1,853 @@
+/* ============= VARIABLES CSS ============= */
+:root {
+    --primary-color: #6a1b9a;
+    --primary-light: #9c4dcc;
+    --primary-dark: #38006b;
+    --secondary-color: #10b981;
+    --accent-color: #f59e0b;
+    --danger-color: #ef4444;
+    --warning-color: #f97316;
+    --success-color: #22c55e;
+    --info-color: #06b6d4;
+    --dark-color: #1f2937;
+    --light-color: #f8fafc;
+    --white: #ffffff;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e1;
+    --gray-400: #94a3b8;
+    --gray-500: #64748b;
+    --gray-600: #475569;
+    --gray-700: #334155;
+    --gray-800: #1e293b;
+    --border-radius: 12px;
+    --border-radius-sm: 8px;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+/* ============= BASE STYLES ============= */
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: var(--gray-800);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ============= MAIN CONTENT ============= */
+.main-content {
+    flex: 1;
+    padding: 2rem;
+    min-height: 100vh;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    width: calc(100% - 220px);
+    position: relative;
+    margin-left: 220px;
+}
+
+/* ============= HEADER STYLES ============= */
+.dashboard-header {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dashboard-header h1 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--white);
+    margin-bottom: 0;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.dashboard-header h1 i {
+    font-size: 1.5rem;
+    color: var(--accent-color);
+}
+
+/* ============= GLASS CARDS ============= */
+.glass-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-xl);
+    margin-bottom: 2rem;
+    transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+    box-shadow: 0 15px 30px -5px rgba(0,0,0,0.15);
+}
+
+.card-header {
+    background: var(--primary-color);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-bottom: none;
+    border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card-header h5 {
+    margin: 0;
+    font-weight: 600;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.card-header h5 i {
+    font-size: 1.2rem;
+}
+
+/* ============= TABLE STYLES ============= */
+.table-responsive {
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    overflow: hidden;
+}
+
+.table {
+    margin-bottom: 0;
+    font-size: 0.9rem;
+    width: 100%;
+}
+
+.table thead th {
+    background-color: rgba(106, 27, 154, 0.05);
+    border-bottom-width: 1px;
+    font-weight: 600;
+    color: var(--gray-700);
+    padding: 0.75rem 1rem;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.table tbody tr {
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(106, 27, 154, 0.03);
+}
+
+.table td {
+    vertical-align: middle;
+    padding: 0.75rem 1rem;
+    white-space: nowrap;
+    color: var(--gray-700);
+}
+
+/* ============= BUTTON STYLES ============= */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-dark);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-success {
+    background-color: var(--success-color);
+    border-color: #16a34a;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    background-color: #16a34a;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-action {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    margin: 0 2px;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+    border: none;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-view {
+    background-color: rgba(13, 110, 253, 0.1);
+    color: #0d6efd;
+}
+
+.btn-view:hover {
+    background-color: rgba(13, 110, 253, 0.2);
+    color: #0d6efd;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.btn-edit {
+    background-color: rgba(106, 27, 154, 0.1);
+    color: var(--primary-color);
+}
+
+.btn-edit:hover {
+    background-color: rgba(106, 27, 154, 0.2);
+    color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.btn-cancel {
+    background-color: rgba(247, 144, 9, 0.1);
+    color: var(--warning-color);
+}
+
+.btn-cancel:hover {
+    background-color: rgba(247, 144, 9, 0.2);
+    color: var(--warning-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.btn-delete {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: var(--danger-color);
+}
+
+.btn-delete:hover {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: var(--danger-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+/* ============= STATUS BADGES ============= */
+.badge {
+    font-weight: 500;
+    padding: 0.35rem 0.65rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    border-radius: 20px;
+}
+
+.badge-estado {
+    font-weight: 500;
+    padding: 0.35rem 0.65rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    border-radius: 20px;
+}
+
+.bg-programado {
+    background-color: rgba(59, 130, 246, 0.1) !important;
+    color: #3b82f6;
+}
+
+.bg-en_proceso {
+    background-color: rgba(245, 158, 11, 0.1) !important;
+    color: #f59e0b;
+}
+
+.bg-completado {
+    background-color: rgba(34, 197, 94, 0.1) !important;
+    color: #22c55e;
+}
+
+.bg-cancelado {
+    background-color: rgba(107, 114, 128, 0.1) !important;
+    color: #6b7280;
+}
+
+.bg-disponible {
+    background-color: var(--success-color) !important;
+    color: white !important;
+}
+
+.bg-en_cirugia {
+    background-color: var(--warning-color) !important;
+    color: white !important;
+}
+
+.bg-no_disponible {
+    background-color: var(--danger-color) !important;
+    color: white !important;
+}
+
+/* ============= EMPTY STATE ============= */
+.empty-state {
+    padding: 2rem;
+    text-align: center;
+    color: var(--gray-500);
+}
+
+.empty-state i {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: var(--gray-400);
+    opacity: 0.7;
+}
+
+.empty-state p {
+    margin-bottom: 0;
+    font-size: 0.95rem;
+}
+
+/* ============= ALERT STYLES ============= */
+.alert {
+    border-radius: var(--border-radius-sm);
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    border: none;
+    box-shadow: var(--shadow-sm);
+}
+
+/* ============= ANIMATIONS ============= */
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============= MODAL DE CANCELACIÓN ============= */
+.cancel-modal {
+    animation: modalSlideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    box-shadow: 0 20px 50px rgba(245, 158, 11, 0.3), 0 0 100px rgba(245, 158, 11, 0.1);
+}
+
+/* Ícono gigante de fondo */
+.cancel-icon-bg {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    z-index: 1;
+    opacity: 0.1;
+    animation: iconPulseCancel 3s ease-in-out infinite;
+}
+
+.cancel-icon-bg i {
+    font-size: 180px;
+    color: #f59e0b;
+    transform: rotate(-15deg);
+}
+
+@keyframes iconPulseCancel {
+    0%, 100% {
+        transform: rotate(-15deg) scale(1);
+        opacity: 0.1;
+    }
+    50% {
+        transform: rotate(-10deg) scale(1.1);
+        opacity: 0.2;
+    }
+}
+
+/* Partículas flotantes */
+.particles-cancel .particle {
+    position: absolute;
+    background: #f59e0b;
+    border-radius: 50%;
+    animation: particleFloat 4s ease-in-out infinite;
+}
+
+/* Título del modal */
+.cancel-title {
+    animation: titleGlowCancel 2s ease-in-out infinite alternate;
+    position: relative;
+    z-index: 3;
+}
+
+@keyframes titleGlowCancel {
+    0% {
+        text-shadow: 0 0 5px rgba(245, 158, 11, 0.5);
+    }
+    100% {
+        text-shadow: 0 0 20px rgba(245, 158, 11, 0.8), 0 0 30px rgba(245, 158, 11, 0.4);
+    }
+}
+
+/* Ícono del header */
+.cancel-icon-header {
+    animation: iconBounce 1s ease-in-out infinite;
+}
+
+/* Ícono principal del contenido */
+.cancel-icon-main {
+    animation: mainIconRotate 3s ease-in-out infinite;
+}
+
+.cancel-icon-main i {
+    font-size: 4rem;
+    color: #fbbf24;
+    filter: drop-shadow(0 5px 15px rgba(251, 191, 36, 0.3));
+}
+
+/* Botones animados */
+.cancel-btn-confirm {
+    position: relative;
+    z-index: 3;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    font-weight: 500;
+    border-radius: 25px;
+    padding: 10px 25px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    background-color: #f59e0b;
+    border-color: #d97706;
+}
+
+.cancel-btn-confirm:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 10px 30px rgba(245, 158, 11, 0.4);
+    background: linear-gradient(45deg, #f59e0b, #fbbf24) !important;
+}
+
+.cancel-btn-confirm:active {
+    animation: confirmPulse 0.3s ease-out;
+}
+
+/* Efecto de hover en el modal */
+.cancel-modal:hover .cancel-icon-bg {
+    animation-duration: 1.5s;
+}
+
+.cancel-modal:hover .particles-cancel .particle {
+    animation-duration: 2s;
+}
+
+/* Efecto de cierre del modal */
+.modal.fade:not(.show) .cancel-modal {
+    animation: modalSlideOut 0.3s ease-in forwards;
+}
+
+/* ============= RESPONSIVE ============= */
+@media (max-width: 992px) {
+    .table td, .table th {
+        padding: 0.65rem 0.75rem;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        margin-left: 0;
+    }
+    
+    .main-content {
+        width: 100%;
+        padding: 1rem;
+        margin-left: 0;
+    }
+    
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1.25rem;
+    }
+    
+    .dashboard-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .btn-primary, .btn-success {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+@media (max-width: 576px) {
+    .main-content {
+        padding: 0.75rem;
+    }
+    
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding: 1rem;
+    }
+    
+    .table td, .table th {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+    }
+    
+    .btn-action {
+        width: 28px;
+        height: 28px;
+        font-size: 0.8rem;
+    }
+}
+
+/* ============= FORMULARIO DE CREACIÓN DE TURNOS ============= */
+/* Estilos copiados/modificados del crear.php de cirujanos */
+.form-turno {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-xl);
+    margin-bottom: 2rem;
+    transition: all 0.3s ease;
+}
+
+.form-turno:hover {
+    box-shadow: 0 15px 30px -5px rgba(0,0,0,0.15);
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+/* Form styles */
+.form-label {
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.form-control, .form-select {
+    border: 2px solid var(--gray-200);
+    border-radius: var(--border-radius-sm);
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    background-color: var(--white);
+    color: var(--gray-800);
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(106, 27, 154, 0.15);
+    background-color: var(--white);
+}
+
+.form-control.is-invalid {
+    border-color: var(--danger-color);
+}
+
+.invalid-feedback {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--danger-color);
+    margin-top: 0.25rem;
+}
+
+/* Alert styles */
+.alert-danger {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--danger-color);
+    border-left: 4px solid var(--danger-color);
+}
+
+.alert-success {
+    background-color: rgba(34, 197, 94, 0.1);
+    color: var(--success-color);
+    border-left: 4px solid var(--success-color);
+}
+
+/* Button styles */
+.btn-secondary {
+    background-color: var(--gray-600);
+    border-color: var(--gray-600);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    border-radius: var(--border-radius-sm);
+    padding: 0.75rem 1.5rem;
+}
+
+.btn-secondary:hover {
+    background-color: var(--gray-700);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Form sections */
+.form-section {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.form-section:last-child {
+    border-bottom: none;
+}
+
+.form-section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-section-title i {
+    color: var(--accent-color);
+}
+
+.required-field::after {
+    content: " *";
+    color: var(--danger-color);
+}
+
+/* ============= MODAL DE INSUMOS ============= */
+.insumos-modal {
+    animation: modalSlideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    box-shadow: 0 20px 50px rgba(34, 197, 94, 0.3), 0 0 100px rgba(34, 197, 94, 0.1);
+    background: linear-gradient(135deg, #1a2e1b 0%, #1b3a1d 100%);
+    color: white;
+    border: 1px solid var(--success-color);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+.insumos-icon-bg {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    z-index: 1;
+    opacity: 0.1;
+    animation: iconPulseInsumos 3s ease-in-out infinite;
+}
+
+.insumos-icon-bg i {
+    font-size: 180px;
+    color: var(--success-color);
+    transform: rotate(-15deg);
+}
+
+.insumos-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.insumos-particles .particle {
+    position: absolute;
+    background: var(--success-color);
+    border-radius: 50%;
+    animation: particleFloat 4s ease-in-out infinite;
+}
+
+.insumos-modal-header {
+    border-bottom: 1px solid rgba(34, 197, 94, 0.3) !important;
+    background: rgba(0,0,0,0.3);
+    backdrop-filter: blur(10px);
+}
+
+.insumos-modal-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    animation: titleGlowInsumos 2s ease-in-out infinite alternate;
+    position: relative;
+    z-index: 3;
+}
+
+.insumos-modal-body {
+    background: rgba(0,0,0,0.2);
+    backdrop-filter: blur(5px);
+}
+
+.insumos-modal-footer {
+    border-top: 1px solid rgba(34, 197, 94, 0.3) !important;
+    background: rgba(0,0,0,0.3);
+    backdrop-filter: blur(10px);
+}
+
+.insumos-icon-main {
+    animation: mainIconRotate 3s ease-in-out infinite;
+}
+
+.insumos-icon-main i {
+    font-size: 4rem;
+    color: #86efac;
+    filter: drop-shadow(0 5px 15px rgba(134, 239, 172, 0.3));
+}
+
+.insumos-btn-confirm {
+    background-color: var(--success-color);
+    border-color: #16a34a;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    border-radius: var(--border-radius-sm);
+    padding: 0.75rem 1.5rem;
+}
+
+.insumos-btn-confirm:hover {
+    background: linear-gradient(45deg, #22c55e, #86efac) !important;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 10px 30px rgba(34, 197, 94, 0.4);
+}
+
+/* Animaciones específicas para el modal de insumos */
+@keyframes iconPulseInsumos {
+    0%, 100% {
+        transform: rotate(-15deg) scale(1);
+        opacity: 0.1;
+    }
+    50% {
+        transform: rotate(-10deg) scale(1.1);
+        opacity: 0.2;
+    }
+}
+
+@keyframes titleGlowInsumos {
+    0% {
+        text-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
+    }
+    100% {
+        text-shadow: 0 0 20px rgba(34, 197, 94, 0.8), 0 0 30px rgba(34, 197, 94, 0.4);
+    }
+}
+
+/* Tabla de insumos dentro del modal */
+.table-insumos {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: var(--border-radius-sm);
+}
+
+.table-insumos thead th {
+    background-color: rgba(106, 27, 154, 0.05);
+    color: var(--gray-700);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+}
+
+.table-insumos tbody tr:hover {
+    background-color: rgba(106, 27, 154, 0.03);
+}
+
+/* Estilos para la tabla de insumos seleccionados */
+#tabla-insumos-seleccionados tr:hover {
+    background-color: rgba(106, 27, 154, 0.03);
+}
+
+/* Estilos para el botón de seleccionar insumos */
+.btn-seleccionar-insumos {
+    background-color: var(--success-color);
+    border-color: #16a34a;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    border-radius: var(--border-radius-sm);
+    padding: 0.75rem 1.5rem;
+}
+
+.btn-seleccionar-insumos:hover {
+    background-color: #16a34a;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Estilos para el contador de resultados */
+#contador-resultados {
+    font-size: 0.85rem;
+    color: var(--gray-500);
+    font-style: italic;
+    margin-bottom: 1rem;
+}
+
+/* Estilos para el campo de búsqueda de insumos */
+#buscador-insumos {
+    border-radius: var(--border-radius-sm) 0 0 var(--border-radius-sm);
+}
+
+#btn-buscar-insumos {
+    border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0;
+}
+
+/* Efecto de hover en el modal de insumos */
+.insumos-modal:hover .insumos-icon-bg {
+    animation-duration: 1.5s;
+}
+
+.insumos-modal:hover .particle {
+    animation-duration: 2s;
+}
+select option:disabled {
+    color: #ccc;
+    background-color: #f8f9fa;
+}
+
+.error-profesional {
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+.error-profesional i {
+    margin-right: 5px;
+}

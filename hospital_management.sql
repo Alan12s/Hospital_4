@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 19, 2025 at 12:07 AM
+-- Generation Time: Jun 30, 2025 at 07:37 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -30,6 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `anestesistas` (
   `id` int(11) NOT NULL,
   `nombre` varchar(100) NOT NULL,
+  `dni` varchar(20) NOT NULL,
   `especialidad` varchar(100) DEFAULT NULL,
   `disponibilidad` enum('disponible','no_disponible','en_cirugia') DEFAULT 'disponible',
   `telefono` varchar(20) DEFAULT NULL,
@@ -40,13 +41,13 @@ CREATE TABLE `anestesistas` (
 -- Dumping data for table `anestesistas`
 --
 
-INSERT INTO `anestesistas` (`id`, `nombre`, `especialidad`, `disponibilidad`, `telefono`, `email`) VALUES
-(1, 'Dra. Laura Méndez', 'Anestesiología General', 'disponible', '1122334455', 'l.mendez@hospital.com'),
-(3, 'Dra. Adriana Castro', 'Anestesiología Pediátrica', 'disponible', '1144556677', 'a.castro@hospital.com'),
-(4, 'Dr. Marcos Vidal', 'Anestesiología en Dolor Crónico', 'disponible', '1155667788', 'm.vidal@hospital.com'),
-(5, 'Dra. Silvia Paredes', 'Anestesiología General', 'disponible', '1166778899', 's.paredes@hospital.com'),
-(7, 'Enzo Cordoba', 'Anestesiología General', 'disponible', '2643418049', 'enzo@hospital.com'),
-(8, 'Dr. Luis Miguel', 'Anestesiología General', 'disponible', '2645556709', 'luism@hospital.com');
+INSERT INTO `anestesistas` (`id`, `nombre`, `dni`, `especialidad`, `disponibilidad`, `telefono`, `email`) VALUES
+(8, 'Dr. Luis Miguel', '', 'Anestesiología General', 'disponible', '2645556709', 'luism@hospital.com'),
+(13, 'Alexandro Brizuela', '', 'Anestesiología Pediátrica', 'disponible', '2645657890', 'alexx@hospital.com'),
+(15, 'Dr. Ricardo Moreno', '28765432', 'Anestesiología en Cirugía Mayor', 'disponible', '2647654321', 'r.moreno@hospital.com'),
+(16, 'Dra. Isabel Gutiérrez', '31876543', 'Anestesiología Obstétrica', 'disponible', '2648765432', 'i.gutierrez@hospital.com'),
+(17, 'Dr. Joaquín Herrera', '33987654', 'Anestesiología Regional', 'disponible', '2649876543', 'j.herrera@hospital.com'),
+(18, 'Dra. Mónica Delgado', '29654321', 'Anestesiología General', 'disponible', '2640987654', 'm.delgado@hospital.com');
 
 -- --------------------------------------------------------
 
@@ -75,11 +76,13 @@ INSERT INTO `cirujanos` (`id`, `nombre`, `dni`, `id_especialidad`, `telefono`, `
 (3, 'Dr. Javier Torres', '27456321', 4, '1167892345', 'j.torres@hospital.com', '2025-05-09 07:30:06', '2025-05-18 00:49:31', 'disponible'),
 (6, 'Dra. Patricia Vargas', '33456784', 2, '1192345678', 'p.vargas@hospital.com', '2025-05-09 07:30:06', NULL, 'disponible'),
 (7, 'Dr. Roberto Jiménez', '30456785', 3, '1123456789', 'r.jimenez@hospital.com', '2025-05-09 07:30:06', NULL, 'disponible'),
-(8, 'Dra. Carmen Ruiz', '32456786', 4, '1134567890', 'c.ruiz@hospital.com', '2025-05-09 07:30:06', '2025-05-18 00:49:13', 'disponible'),
-(11, 'Dr. Fernando Ríos', '27456789', 5, '1167890123', 'f.rios@hospital.com', '2025-05-09 07:30:06', NULL, 'disponible'),
-(16, 'Victoria Lozano', '33784130', 1, '2641234539', 'victoria@hospital.com', '2025-05-17 16:18:51', NULL, 'disponible'),
-(17, 'Maria Mendoza', '34798455', 2, '2641234509', 'mariam@hospital.com', '2025-05-20 14:44:01', NULL, 'disponible'),
-(18, 'Luis Gomez', '40390567', 5, '2649993412', 'luis@hospital.com', '2025-06-08 17:47:37', '2025-06-08 17:47:37', 'disponible');
+(24, 'Dr. Alejandro Ruiz', '29876543', 1, '2647123456', 'a.ruiz@hospital.com', '2025-06-30 04:25:04', NULL, 'disponible'),
+(25, 'Dra. Valentina Ortega', '31987654', 2, '2648234567', 'v.ortega@hospital.com', '2025-06-30 04:25:04', NULL, 'disponible'),
+(26, 'Dr. Sebastián Molina', '33098765', 3, '2649345678', 's.molina@hospital.com', '2025-06-30 04:25:04', NULL, 'disponible'),
+(27, 'Dra. Gabriela Herrera', '30765432', 4, '2640456789', 'g.herrera@hospital.com', '2025-06-30 04:25:04', NULL, 'disponible'),
+(28, 'Dr. Nicolás Fernández', '32654321', 5, '2641567890', 'n.fernandez@hospital.com', '2025-06-30 04:25:04', NULL, 'disponible'),
+(29, 'Dra. Camila Vásquez', '28543210', 1, '2642678901', 'c.vasquez@hospital.com', '2025-06-30 04:25:04', NULL, 'disponible'),
+(30, 'Dr. Martín Cordero', '34432109', 3, '2643789012', 'm.cordero@hospital.com', '2025-06-30 04:25:04', NULL, 'disponible');
 
 -- --------------------------------------------------------
 
@@ -103,15 +106,12 @@ CREATE TABLE `enfermeros` (
 --
 
 INSERT INTO `enfermeros` (`id`, `nombre`, `dni`, `especialidad`, `telefono`, `email`, `fecha_ingreso`, `disponibilidad`) VALUES
-(1, 'María López', '30123456', 'Enfermería Quirúrgica', '1122334455', 'm.lopez@hospital.com', '2020-05-15', 'disponible'),
-(2, 'Carlos Rojas', '28987654', 'Enfermería de Urgencias', '1155667788', 'c.rojas@hospital.com', '2019-03-10', 'disponible'),
 (3, 'Ana Martínez', '33445566', 'Enfermería Pediátrica', '1199887766', 'a.martinez@hospital.com', '2022-01-20', 'disponible'),
-(7, 'Macarena Bustos', '40633924', 'Enfermería Quirurgica', '2646552093', 'macarena@hospital.com', NULL, 'disponible'),
-(8, 'Luis Tello', '39453981', 'Enfermería Quirurgica', '2642349012', 'luist@hospital.com', NULL, 'disponible'),
-(9, 'Luis Guerra', '37238001', 'Enfermería de Urgencias', '2646729012', 'luisg@gmail.com', NULL, 'disponible'),
-(10, 'Miguel Arjona', '30458231', 'Enfermería Quirúrgica', '2648790121', 'miguel@hospital.com', NULL, 'disponible'),
-(11, 'Maria Nuñes', '40390560', 'Enfermería Pediátrica', '2645657899', 'marias@hospital.com', '2025-06-04', 'disponible'),
-(12, 'Alexandro Brizuela', '38903123', 'Enfermería de Urgencias', '2645318901', 'alex@hospital.com', '2025-02-05', 'disponible');
+(15, 'Sofía Ramírez', '35789012', 'Enfermería Quirúrgica', '2647890123', 's.ramirez@hospital.com', '2021-08-15', 'disponible'),
+(16, 'Miguel Torres', '32456789', 'Enfermería de Cuidados Intensivos', '2648901234', 'm.torres@hospital.com', '2020-11-20', 'disponible'),
+(17, 'Laura Fernández', '29876543', 'Enfermería Pediátrica', '2649012345', 'l.fernandez@hospital.com', '2023-03-10', 'disponible'),
+(18, 'Roberto Silva', '34567890', 'Enfermería de Urgencias', '2640123456', 'r.silva@hospital.com', '2022-07-05', 'disponible'),
+(19, 'Carmen Morales', '31234567', 'Enfermería Quirúrgica', '2641234567', 'c.morales@hospital.com', '2021-12-01', 'disponible');
 
 -- --------------------------------------------------------
 
@@ -158,7 +158,10 @@ CREATE TABLE `instrumentistas` (
 --
 
 INSERT INTO `instrumentistas` (`id`, `nombre`, `dni`, `especialidad`, `telefono`, `email`, `fecha_ingreso`, `disponibilidad`) VALUES
-(2, 'Dr. Leon Kennedy', '33089333', 'Instrumentista Quirúrgico General', '2645659081', 'kennedy@hospital.com', '2025-06-25', 'disponible');
+(5, 'Diana Espinoza', '33567890', 'Instrumentista Quirúrgico General', '2642345678', 'd.espinoza@hospital.com', '2022-05-15', 'disponible'),
+(6, 'Carlos Mendoza', '30789012', 'Instrumentista en Cirugía Ortopédica', '2643456789', 'c.mendoza.inst@hospital.com', '2021-09-20', 'disponible'),
+(7, 'Patricia Vega', '32890123', 'Instrumentista en Cirugía Urológica', '2644567890', 'p.vega@hospital.com', '2020-02-28', 'disponible'),
+(8, 'Fernando López', '34901234', 'Instrumentista Quirúrgico General', '2645678901', 'f.lopez@hospital.com', '2023-01-10', 'disponible');
 
 -- --------------------------------------------------------
 
@@ -170,6 +173,7 @@ CREATE TABLE `insumos` (
   `id_insumo` int(11) NOT NULL,
   `codigo` varchar(100) NOT NULL,
   `nombre` varchar(70) NOT NULL,
+  `categoria` varchar(20) DEFAULT 'descartable',
   `tipo` varchar(50) NOT NULL,
   `cantidad` int(11) NOT NULL,
   `lote` varchar(100) DEFAULT NULL,
@@ -182,17 +186,27 @@ CREATE TABLE `insumos` (
 -- Dumping data for table `insumos`
 --
 
-INSERT INTO `insumos` (`id_insumo`, `codigo`, `nombre`, `tipo`, `cantidad`, `lote`, `fecha_vencimiento`, `tiene_vencimiento`, `ubicacion`) VALUES
-(1, 'INS-001', 'Guantes quirúrgicos estériles', 'Consumible', 500, 'LOT-2025-01', '2028-09-30', 1, 'Almacén A, Estante 1'),
-(2, 'INS-002', 'Jeringas 10ml', 'Consumible', 300, 'LOT-2025-02', '2029-01-30', 1, 'Almacén A, Estante 2'),
-(3, 'INS-003', 'Gasas estériles 10x10', 'Consumible', 200, 'LOT-2025-03', '2027-09-15', 1, 'Almacén B, Estante 1'),
-(5, 'INS-005', 'Mascarillas N95', 'Protección personal', 400, 'LOT-2025-05', '2028-01-30', 1, 'Almacén C, Estante 1'),
-(6, 'INS-006', 'Bisturí #10', 'Instrumental', 50, 'LOT-2025-06', '2027-01-31', 1, 'Almacén C, Estante 2'),
-(7, 'INS-007', 'Catéter intravenoso 18G', 'Material quirúrgico', 250, 'LOT-2025-07', '2028-11-30', 1, 'Almacén D, Estante 1'),
-(9, 'INS-009', 'Bisturi', 'Material quirúrgico', 30, 'LOT-2025-09', '2028-06-18', 1, 'Almacen A, Estante 1'),
-(10, 'INS-010', 'Gasa', 'Material quirúrgico', 20, 'LOTE-20250518-0010', '2027-12-18', 1, 'Almacen A, Estante 3'),
-(11, 'INS-47BAAE', 'Cateter', 'Material quirúrgico', 230, 'LOTE-20250518-0011', '2027-10-18', 1, 'Almacen B, Estante 1'),
-(12, 'INS-556556', 'Pinzas Desechables', 'Material quirúrgico', 100, 'LOTE-20250519-0012', '2028-06-18', 1, 'Almacen A, Estante 1');
+INSERT INTO `insumos` (`id_insumo`, `codigo`, `nombre`, `categoria`, `tipo`, `cantidad`, `lote`, `fecha_vencimiento`, `tiene_vencimiento`, `ubicacion`) VALUES
+(1, 'INS-001', 'Guantes quirúrgicos estériles', 'descartable', 'Consumible', 496, 'LOT-2025-01', '2028-09-30', 1, 'Almacén A, Estante 1'),
+(2, 'INS-002', 'Jeringas 10ml', 'descartable', 'Consumible', 295, 'LOT-2025-02', '2029-01-30', 1, 'Almacén A, Estante 2'),
+(3, 'INS-003', 'Gasas estériles 10x10', 'descartable', 'Consumible', 199, 'LOT-2025-03', '2027-09-15', 1, 'Almacén B, Estante 1'),
+(6, 'INS-006', 'Bisturí #10', 'descartable', 'Instrumental', 50, 'LOT-2025-06', '2027-01-31', 1, 'Almacén C, Estante 2'),
+(7, 'INS-007', 'Catéter intravenoso 18G', 'descartable', 'Material quirúrgico', 250, 'LOT-2025-07', '2028-11-30', 1, 'Almacén D, Estante 1'),
+(9, 'INS-009', 'Bisturi', 'descartable', 'Material quirúrgico', 30, 'LOT-2025-09', '2028-06-18', 1, 'Almacen A, Estante 1'),
+(11, 'INS-47BAAE', 'Cateter', 'descartable', 'Material quirúrgico', 230, 'LOTE-20250518-0011', '2027-10-18', 1, 'Almacen B, Estante 1'),
+(14, 'INS-012', 'Sutura de seda 3-0', 'descartable', 'Material quirúrgico', 150, 'LOT-2025-12', '2029-03-15', 1, 'Almacén A, Estante 2'),
+(15, 'INS-013', 'Sutura de nylon 4-0', 'descartable', 'Material quirúrgico', 120, 'LOT-2025-13', '2028-12-20', 1, 'Almacén A, Estante 2'),
+(16, 'INS-014', 'Apósitos adhesivos grandes', 'descartable', 'Material de curación', 200, 'LOT-2025-14', '2027-08-30', 1, 'Almacén B, Estante 2'),
+(17, 'INS-015', 'Sondas vesicales Foley 16Fr', 'descartable', 'Material quirúrgico', 80, 'LOT-2025-15', '2029-05-10', 1, 'Almacén C, Estante 3'),
+(19, 'INS-017', 'Compresas quirúrgicas 30x30', 'descartable', 'Material quirúrgico', 300, 'LOT-2025-17', '2027-11-15', 1, 'Almacén A, Estante 3'),
+(20, 'INS-018', 'Agujas hipodérmicas 21G', 'descartable', 'Consumible', 500, 'LOT-2025-18', '2030-02-28', 1, 'Almacén B, Estante 3'),
+(21, 'INS-019', 'Solución salina 0.9% 500ml', 'descartable', 'Solución', 100, 'LOT-2025-19', '2027-06-30', 1, 'Almacén C, Estante 1'),
+(22, 'INS-020', 'Drenajes Jackson-Pratt', 'descartable', 'Material quirúrgico', 40, 'LOT-2025-20', '2028-09-15', 1, 'Almacén D, Estante 3'),
+(23, 'INS-021', 'Electrodos de electrocauterio', 'descartable', 'Material quirúrgico', 75, 'LOT-2025-21', '2029-01-10', 1, 'Almacén A, Estante 4'),
+(24, 'INS-022', 'Batas quirúrgicas desechables', 'descartable', 'Protección personal', 180, 'LOT-2025-22', '2027-04-20', 1, 'Almacén B, Estante 1'),
+(25, 'INS-023', 'Cánulas nasales de oxígeno', 'descartable', 'Material respiratorio', 120, 'LOT-2025-23', '2028-03-31', 1, 'Almacén C, Estante 2'),
+(26, 'INS-024', 'Pinzas Kocher desechables', 'descartable', 'Instrumental', 90, 'LOT-2025-24', '2029-08-15', 1, 'Almacén D, Estante 1'),
+(27, 'INS-025', 'Campos quirúrgicos estériles', 'descartable', 'Material quirúrgico', 250, 'LOT-2025-25', '2028-05-30', 1, 'Almacén A, Estante 1');
 
 -- --------------------------------------------------------
 
@@ -263,11 +277,15 @@ CREATE TABLE `pacientes` (
 --
 
 INSERT INTO `pacientes` (`id`, `nombre`, `edad`, `historial_medico`, `dni`, `telefono`, `direccion`, `email`, `obra_social`, `departamento`, `fecha_nacimiento`) VALUES
-(1, 'Juan Pérez', 35, 'Alergia a la penicilina, hipertensión controlada', '30123456', '1122334455', 'Calle Falsa 123', 'juan.perez@example.com', 'Obra Social Provincia', 'Sarmiento', '1990-01-10'),
-(2, 'María González', 28, 'Asma leve, vacunas al día', '28987654', '1155667788', 'Av. Siempreviva 456', 'maria.gonzalez@example.com', 'No tiene', 'Caucete', '1983-06-10'),
+(1, 'Juan Pérez', 35, 'Alergia a la penicilina, hipertensión controlada', '30123456', '1122334455', 'Calle Falsa 123', 'juan.perez@example.com', 'Obra Social Provincia', 'santa rosa', '1990-01-17'),
 (3, 'Carlos López', 42, 'Diabetes tipo 2, cirugía de apéndice 2010', '33445566', '1199887766', 'Calle Real 789', 'carlos.lopez@example.com', 'No tiene', 'Sarmiento', '1989-02-08'),
 (4, 'Ana Martínez', 50, 'Artritis reumatoide, control anual', '32123456', '1133445566', 'Av. Libertad 333', 'ana.martinez@example.com', 'Obra Social Provincia', '25 de mayo', '1989-06-17'),
-(5, 'Pedro Sánchez', 22, 'Ninguna condición conocida', '22234567', '1144556677', 'Calle Nueva 654', 'pedro.sanchez@example.com', 'PAMI', '25 de mayo', '1970-04-02');
+(15, 'Rosa Álvarez', 58, 'Colesterol alto, ex fumadora', '25456789', '2641122334', 'Av. San Martín 456', 'rosa.alvarez@email.com', 'OSECAC', 'Rawson', '1967-03-15'),
+(16, 'Diego Ramírez', 33, 'Deportista, sin antecedentes relevantes', '31567890', '2642233445', 'Calle Mendoza 789', 'diego.ramirez@email.com', 'Swiss Medical', 'Capital', '1992-11-22'),
+(17, 'Elena Castro', 45, 'Migraña crónica, alergia a aspirina', '27678901', '2643344556', 'Barrio Norte 123', 'elena.castro@email.com', 'Obra Social Provincia', 'Chimbas', '1980-07-08'),
+(18, 'Mateo González', 29, 'Fractura previa en brazo izquierdo', '32789012', '2644455667', 'Villa Krause 321', 'mateo.gonzalez@email.com', 'PAMI', 'Rivadavia', '1996-01-30'),
+(19, 'Lucía Herrera', 52, 'Diabetes tipo 2, hipertensión', '26890123', '2645566778', 'Barrio Sur 654', 'lucia.herrera@email.com', 'No tiene', 'Santa Lucía', '1973-09-12'),
+(20, 'Andrés Morales', 38, 'Alergia a anestésicos locales', '30901234', '2646677889', 'Centro 987', 'andres.morales@email.com', 'Obra Social Provincia', 'Pocito', '1987-12-05');
 
 -- --------------------------------------------------------
 
@@ -360,12 +378,12 @@ CREATE TABLE `turnos_quirurgicos` (
   `fecha` date NOT NULL,
   `hora_inicio` time NOT NULL,
   `hora_finalizacion` time DEFAULT NULL,
+  `duracion` int(11) NOT NULL,
   `id_quirofano` int(11) NOT NULL,
   `id_cirujano` int(11) NOT NULL,
   `id_cirujano_ayudante` int(11) DEFAULT NULL,
   `id_paciente` int(11) NOT NULL,
   `id_anestesista` int(11) DEFAULT NULL,
-  `id_enfermero` int(11) DEFAULT NULL,
   `id_instrumentador_principal` int(11) DEFAULT NULL,
   `id_instrumentador_circulante` int(11) DEFAULT NULL,
   `id_tecnico_anestesista` int(11) DEFAULT NULL,
@@ -382,16 +400,8 @@ CREATE TABLE `turnos_quirurgicos` (
 -- Dumping data for table `turnos_quirurgicos`
 --
 
-INSERT INTO `turnos_quirurgicos` (`id`, `fecha`, `hora_inicio`, `hora_finalizacion`, `id_quirofano`, `id_cirujano`, `id_cirujano_ayudante`, `id_paciente`, `id_anestesista`, `id_enfermero`, `id_instrumentador_principal`, `id_instrumentador_circulante`, `id_tecnico_anestesista`, `tipo_anestesia`, `complicaciones`, `procedimiento`, `estado`, `observaciones`, `created_at`, `updated_at`) VALUES
-(1, '2025-05-22', '15:00:00', NULL, 1, 1, NULL, 3, 1, 1, NULL, NULL, NULL, NULL, NULL, 'Apendicectomía', 'programado', 'Paciente alergico a la penicilina', '2025-05-13 21:16:37', '2025-05-13 21:17:21'),
-(2, '2025-05-30', '16:00:00', NULL, 2, 1, NULL, 2, 5, 2, NULL, NULL, NULL, NULL, NULL, 'Colecistectomía (extirpación de la vesícula biliar)', 'programado', '--', '2025-05-16 14:15:40', '2025-05-18 23:10:53'),
-(3, '2025-05-29', '16:00:00', NULL, 1, 7, NULL, 2, NULL, 2, NULL, NULL, NULL, NULL, NULL, 'Reducción y fijación de fracturas', 'cancelado', '--', '2025-05-17 13:54:02', '2025-05-17 16:06:08'),
-(4, '2025-06-07', '08:00:00', NULL, 1, 7, NULL, 5, 4, 2, NULL, NULL, NULL, NULL, NULL, 'Reducción y fijación de fracturas', 'programado', '', '2025-05-17 16:06:51', '2025-05-17 16:06:51'),
-(5, '2025-06-20', '13:00:00', NULL, 1, 11, NULL, 4, 1, 3, NULL, NULL, NULL, NULL, NULL, 'Cirugía de terceros molares (muelas del juicio)', 'programado', '--', '2025-05-18 23:14:27', '2025-05-18 23:14:27'),
-(7, '2025-05-19', '19:00:00', NULL, 2, 7, NULL, 3, NULL, 1, NULL, NULL, NULL, NULL, NULL, 'Reparación de lesiones meniscales', 'cancelado', '', '2025-05-19 21:10:04', '2025-05-20 15:10:59'),
-(8, '2025-05-20', '09:00:00', NULL, 1, 3, NULL, 3, 4, 8, NULL, NULL, NULL, NULL, NULL, 'Cirugía para incontinencia urinaria', 'programado', '', '2025-05-20 11:51:50', '2025-05-20 11:51:50'),
-(9, '2025-05-30', '12:00:00', NULL, 1, 11, NULL, 1, 7, 9, NULL, NULL, NULL, NULL, NULL, 'Extracción de piezas dentales complejas', 'cancelado', '', '2025-05-20 15:12:02', '2025-05-20 15:12:27'),
-(10, '2025-05-29', '12:00:00', NULL, 2, 3, NULL, 1, 7, 9, NULL, NULL, NULL, NULL, NULL, 'Cirugía para incontinencia urinaria', 'programado', '', '2025-05-20 15:12:59', '2025-05-20 15:12:59');
+INSERT INTO `turnos_quirurgicos` (`id`, `fecha`, `hora_inicio`, `hora_finalizacion`, `duracion`, `id_quirofano`, `id_cirujano`, `id_cirujano_ayudante`, `id_paciente`, `id_anestesista`, `id_instrumentador_principal`, `id_instrumentador_circulante`, `id_tecnico_anestesista`, `tipo_anestesia`, `complicaciones`, `procedimiento`, `estado`, `observaciones`, `created_at`, `updated_at`) VALUES
+(38, '2025-07-10', '10:00:00', '11:00:00', 60, 1, 3, 1, 3, 8, 7, 6, 3, 'Regional', NULL, 'Prostatectomía (extirpación total o parcial de la próstata)', 'cancelado', NULL, '2025-06-30 04:35:40', '2025-06-30 05:10:26');
 
 -- --------------------------------------------------------
 
@@ -421,10 +431,10 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id`, `nombre`, `apellidos`, `email`, `username`, `fecha_registro`, `fecha_actualizacion`, `ultimo_acceso`, `rol`, `estado`, `password`, `remember_token`, `reset_token`, `reset_expires`) VALUES
-(1, 'Ramon', 'Areyuna', 'admin@hospital.com', 'admin', '2025-04-17 22:36:48', NULL, '2025-06-18 21:31:27', 'administrador', 1, '$2y$10$d68qdYU5o0GoL11xeayc7.seuNo7AF56cGxaoaMrEzoylfEVBFMTO', '047d35f49e26d7caa7bee79ecd1e636996b31437cf2c2c5755e90a594b639b19', 'e046c6d3cb97e1e62eead996f03128a78b37371c2ce825c137b56171a826a17f', '2025-04-19 22:37:33'),
+(1, 'Ramon', 'Areyuna', 'admin@hospital.com', 'admin', '2025-04-17 22:36:48', NULL, '2025-06-30 04:33:26', 'administrador', 1, '$2y$10$d68qdYU5o0GoL11xeayc7.seuNo7AF56cGxaoaMrEzoylfEVBFMTO', '047d35f49e26d7caa7bee79ecd1e636996b31437cf2c2c5755e90a594b639b19', 'e046c6d3cb97e1e62eead996f03128a78b37371c2ce825c137b56171a826a17f', '2025-04-19 22:37:33'),
 (2, 'Maria', 'Herrera', 'maria@hospital.com', 'enfermera', '2025-04-19 21:23:13', NULL, NULL, 'enfermero', 1, '$2y$10$PGiSgn509EfsxTbc5hV9dOyPQb7cy46onNvsimJTP2p4GywWylA.C', NULL, NULL, NULL),
-(5, 'Manuel', 'Gonzales', 'manuel@hospital.com', 'supervisor', '2025-04-19 21:29:55', NULL, '2025-05-03 17:14:39', 'supervisor', 1, '$2y$10$WakpL4f6cWWR0HfOn.Auc.jPNFy/mYKYSSem/vkvEZhkmaQ6IkZEC', NULL, NULL, NULL),
-(6, 'Pablo', 'Alboran', 'pablo@hospital.com', 'enfermero', '2025-05-03 17:23:48', NULL, '2025-05-16 05:45:49', 'enfermero', 1, '$2y$10$iqggD1A3D0qL8eDygSs.5uyFsfWuyGHg.onOQlKwfidp4ZxEn2pPm', NULL, NULL, NULL),
+(5, 'Manuel', 'Gonzales', 'manuel@hospital.com', 'supervisor', '2025-04-19 21:29:55', NULL, '2025-06-27 21:25:23', 'supervisor', 1, '$2y$10$WakpL4f6cWWR0HfOn.Auc.jPNFy/mYKYSSem/vkvEZhkmaQ6IkZEC', NULL, NULL, NULL),
+(6, 'Pablo', 'Alboran', 'pablo@hospital.com', 'enfermero', '2025-05-03 17:23:48', NULL, '2025-06-27 21:53:40', 'enfermero', 1, '$2y$10$iqggD1A3D0qL8eDygSs.5uyFsfWuyGHg.onOQlKwfidp4ZxEn2pPm', NULL, NULL, NULL),
 (9, 'Lujan Ana', 'Cordoba', 'lujan@hospital.com', 'lujan', '2025-06-15 00:11:47', '2025-06-15 00:12:56', '2025-06-15 00:13:10', 'cirujano', 1, '$2y$10$t2MeMCk.xuk5soeKkQhmPulOItssxXFL0TfuQLDXK0JLxsbtGKRH6', NULL, NULL, NULL);
 
 --
@@ -529,7 +539,6 @@ ALTER TABLE `turnos_quirurgicos`
   ADD KEY `medico_id` (`id_cirujano`),
   ADD KEY `fk_turno_paciente` (`id_paciente`),
   ADD KEY `fk_turno_anestesista` (`id_anestesista`),
-  ADD KEY `fk_turno_enfermero` (`id_enfermero`),
   ADD KEY `fk_turno_cirujano_ayudante` (`id_cirujano_ayudante`),
   ADD KEY `fk_turno_instrumentador_principal` (`id_instrumentador_principal`),
   ADD KEY `fk_turno_instrumentador_circulante` (`id_instrumentador_circulante`),
@@ -551,19 +560,19 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT for table `anestesistas`
 --
 ALTER TABLE `anestesistas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `cirujanos`
 --
 ALTER TABLE `cirujanos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `enfermeros`
 --
 ALTER TABLE `enfermeros`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `especialidades`
@@ -575,13 +584,13 @@ ALTER TABLE `especialidades`
 -- AUTO_INCREMENT for table `instrumentistas`
 --
 ALTER TABLE `instrumentistas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `insumos`
 --
 ALTER TABLE `insumos`
-  MODIFY `id_insumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id_insumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `insumos_cirugia`
@@ -599,7 +608,7 @@ ALTER TABLE `logs`
 -- AUTO_INCREMENT for table `pacientes`
 --
 ALTER TABLE `pacientes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `procedimientos`
@@ -617,19 +626,19 @@ ALTER TABLE `quirofanos`
 -- AUTO_INCREMENT for table `turnos_insumos`
 --
 ALTER TABLE `turnos_insumos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `turnos_quirurgicos`
 --
 ALTER TABLE `turnos_quirurgicos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT for table `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Constraints for dumped tables
@@ -639,42 +648,47 @@ ALTER TABLE `usuarios`
 -- Constraints for table `cirujanos`
 --
 ALTER TABLE `cirujanos`
-  ADD CONSTRAINT `fk_medico_especialidad` FOREIGN KEY (`id_especialidad`) REFERENCES `especialidades` (`id`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_cirujano_especialidad` FOREIGN KEY (`id_especialidad`) REFERENCES `especialidades` (`id`) ON UPDATE CASCADE;
 
 --
 -- Constraints for table `insumos_cirugia`
 --
 ALTER TABLE `insumos_cirugia`
-  ADD CONSTRAINT `insumos_cirugia_ibfk_1` FOREIGN KEY (`id_turno`) REFERENCES `turnos_quirurgicos` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `insumos_cirugia_ibfk_2` FOREIGN KEY (`id_insumo`) REFERENCES `insumos` (`id_insumo`),
-  ADD CONSTRAINT `insumos_cirugia_ibfk_3` FOREIGN KEY (`registrado_por`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL;
+  ADD CONSTRAINT `fk_insumo_cirugia_insumo` FOREIGN KEY (`id_insumo`) REFERENCES `insumos` (`id_insumo`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_insumo_cirugia_turno` FOREIGN KEY (`id_turno`) REFERENCES `turnos_quirurgicos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_insumo_cirugia_usuario` FOREIGN KEY (`registrado_por`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Constraints for table `logs`
+--
+ALTER TABLE `logs`
+  ADD CONSTRAINT `fk_log_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `procedimientos`
 --
 ALTER TABLE `procedimientos`
-  ADD CONSTRAINT `fk_procedimiento_especialidad` FOREIGN KEY (`id_especialidad`) REFERENCES `especialidades` (`id`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_procedimiento_especialidad` FOREIGN KEY (`id_especialidad`) REFERENCES `especialidades` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `turnos_insumos`
 --
 ALTER TABLE `turnos_insumos`
-  ADD CONSTRAINT `fk_insumo_turno` FOREIGN KEY (`id_insumo`) REFERENCES `insumos` (`id_insumo`),
-  ADD CONSTRAINT `fk_turno_insumo` FOREIGN KEY (`id_turno`) REFERENCES `turnos_quirurgicos` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `fk_turno_insumo_insumo` FOREIGN KEY (`id_insumo`) REFERENCES `insumos` (`id_insumo`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_turno_insumo_turno` FOREIGN KEY (`id_turno`) REFERENCES `turnos_quirurgicos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `turnos_quirurgicos`
 --
 ALTER TABLE `turnos_quirurgicos`
-  ADD CONSTRAINT `fk_turno_anestesista` FOREIGN KEY (`id_anestesista`) REFERENCES `anestesistas` (`id`),
-  ADD CONSTRAINT `fk_turno_cirujano` FOREIGN KEY (`id_cirujano`) REFERENCES `cirujanos` (`id`),
-  ADD CONSTRAINT `fk_turno_cirujano_ayudante` FOREIGN KEY (`id_cirujano_ayudante`) REFERENCES `cirujanos` (`id`),
-  ADD CONSTRAINT `fk_turno_enfermero` FOREIGN KEY (`id_enfermero`) REFERENCES `enfermeros` (`id`),
-  ADD CONSTRAINT `fk_turno_instrumentador_circulante` FOREIGN KEY (`id_instrumentador_circulante`) REFERENCES `enfermeros` (`id`),
-  ADD CONSTRAINT `fk_turno_instrumentador_principal` FOREIGN KEY (`id_instrumentador_principal`) REFERENCES `enfermeros` (`id`),
-  ADD CONSTRAINT `fk_turno_paciente` FOREIGN KEY (`id_paciente`) REFERENCES `pacientes` (`id`),
-  ADD CONSTRAINT `fk_turno_tecnico_anestesista` FOREIGN KEY (`id_tecnico_anestesista`) REFERENCES `enfermeros` (`id`),
-  ADD CONSTRAINT `turnos_quirurgicos_ibfk_1` FOREIGN KEY (`id_quirofano`) REFERENCES `quirofanos` (`id`);
+  ADD CONSTRAINT `fk_turno_anestesista` FOREIGN KEY (`id_anestesista`) REFERENCES `anestesistas` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_turno_cirujano_ayudante` FOREIGN KEY (`id_cirujano_ayudante`) REFERENCES `cirujanos` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_turno_cirujano_principal` FOREIGN KEY (`id_cirujano`) REFERENCES `cirujanos` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_turno_instrumentista_circulante` FOREIGN KEY (`id_instrumentador_circulante`) REFERENCES `instrumentistas` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_turno_instrumentista_principal` FOREIGN KEY (`id_instrumentador_principal`) REFERENCES `instrumentistas` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_turno_paciente` FOREIGN KEY (`id_paciente`) REFERENCES `pacientes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_turno_quirofano` FOREIGN KEY (`id_quirofano`) REFERENCES `quirofanos` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_turno_tecnico_anestesista` FOREIGN KEY (`id_tecnico_anestesista`) REFERENCES `enfermeros` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

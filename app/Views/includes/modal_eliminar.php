@@ -19,7 +19,7 @@
             
             <div class="modal-header border-bottom" style="border-color: rgba(220, 53, 69, 0.3) !important; background: rgba(0,0,0,0.3); backdrop-filter: blur(10px);">
                 <h5 class="modal-title delete-title" style="font-size: 1.2rem; font-weight: 600;">
-                    <i class='bx bx-trash me-2 delete-icon-header'></i>
+                    <i class='bx bx-trash me-2 delete-icon-header' id="iconoModalHeader"></i>
                     <span id="modalEliminarTitulo">Confirmar Eliminación</span>
                 </h5>
                 <button type="button" class="btn-close btn-close-white close-btn-animated" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -31,7 +31,7 @@
                 <div class="modal-body py-4 text-center" style="background: rgba(0,0,0,0.2); backdrop-filter: blur(5px);">
                     <div class="delete-content">
                         <div class="delete-icon-main mb-3">
-                            <i class='bx bx-user-x'></i>
+                            <i class='bx bx-user-x' id="iconoModalMain"></i>
                         </div>
                         <p style="font-size: 1rem; margin-bottom: 1rem; font-weight: 500;">
                             ¿Está seguro que desea eliminar <strong><span id="nombreElemento"></span></strong>?
@@ -45,7 +45,7 @@
                     <button type="button" class="btn btn-outline-light delete-btn-cancel me-2" data-bs-dismiss="modal">
                         <i class='bx bx-x me-1'></i> Cancelar
                     </button>
-                    <button type="submit" class="btn btn-danger delete-btn-confirm">
+                    <button type="submit" class="btn btn-danger delete-btn-confirm" id="btnConfirmarEliminar">
                         <i class='bx bx-trash me-1'></i> Eliminar
                     </button>
                 </div>
@@ -320,22 +320,70 @@
 </style>
 
 <script>
-// Función para configurar el modal de eliminación (reutilizable)
-function configurarModalEliminar(options) {
-    const {
-        idElemento,
-        nombreElemento,
-        actionUrl,
-        titulo = 'Confirmar Eliminación',
-        mensajeAdicional = 'Esta acción no se puede deshacer y se perderán todos los datos asociados.',
-        icono = 'bx-user-x'
-    } = options;
-
-    document.getElementById('modalEliminarTitulo').textContent = titulo;
-    document.getElementById('idElemento').value = idElemento;
-    document.getElementById('nombreElemento').textContent = nombreElemento;
-    document.getElementById('mensajeAdicional').textContent = mensajeAdicional;
-    document.getElementById('formEliminar').action = actionUrl;
-    document.querySelector('.delete-icon-main i').className = `bx ${icono}`;
+function configurarModalEliminar(config) {
+    console.log('Configurando modal con:', config);
+    
+    // Configurar el título del modal
+    const tituloElement = document.getElementById('modalEliminarTitulo');
+    if (tituloElement) {
+        tituloElement.textContent = config.titulo || 'Confirmar Eliminación';
+    }
+    
+    // Configurar el nombre del elemento a eliminar
+    const nombreElement = document.getElementById('nombreElemento');
+    if (nombreElement) {
+        nombreElement.textContent = config.nombreElemento || 'este elemento';
+    }
+    
+    // Configurar el mensaje adicional
+    const mensajeElement = document.getElementById('mensajeAdicional');
+    if (mensajeElement && config.mensajeAdicional) {
+        mensajeElement.textContent = config.mensajeAdicional;
+    }
+    
+    // Cambiar el ícono del header si se proporciona
+    if (config.icono) {
+        const iconoHeaderElement = document.getElementById('iconoModalHeader');
+        const iconoMainElement = document.getElementById('iconoModalMain');
+        
+        if (iconoHeaderElement) {
+            iconoHeaderElement.className = `bx ${config.icono} me-2 delete-icon-header`;
+        }
+        if (iconoMainElement) {
+            iconoMainElement.className = `bx ${config.icono}`;
+        }
+    }
+    
+    // Configurar la acción del formulario
+    const form = document.getElementById('formEliminar');
+    if (form && config.actionUrl) {
+        form.action = config.actionUrl;
+        console.log('Form action configurada:', config.actionUrl);
+    }
+    
+    // Configurar el ID del elemento (si se necesita)
+    const idElementInput = document.getElementById('idElemento');
+    if (idElementInput && config.idElemento) {
+        idElementInput.value = config.idElemento;
+    }
 }
+
+// Agregar confirmación adicional antes del envío
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('formEliminar');
+    const btnConfirmar = document.getElementById('btnConfirmarEliminar');
+    
+    if (form && btnConfirmar) {
+        form.addEventListener('submit', function(e) {
+            // Cambiar texto del botón para indicar que se está procesando
+            btnConfirmar.innerHTML = '<i class="bx bx-loader-alt bx-spin me-1"></i> Eliminando...';
+            btnConfirmar.disabled = true;
+            
+            // Opcional: agregar un pequeño delay para mostrar el estado de carga
+            setTimeout(() => {
+                // El formulario se enviará normalmente después del delay
+            }, 500);
+        });
+    }
+});
 </script>

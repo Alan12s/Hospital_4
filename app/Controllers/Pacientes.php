@@ -128,93 +128,99 @@ class Pacientes extends Controller
         return view('pacientes/editar', $data);
     }
 
-    public function update($id)
-    {
-        $rules = [
-            'nombre'            => 'required|max_length[100]|regex_match[/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/]',
-            'historial_medico'  => 'required|max_length[400]',
-            'dni'               => 'required|numeric|max_length[20]',
-            'email'             => 'required|valid_email',
-            'telefono'          => 'required|numeric|max_length[20]',
-            'direccion'         => 'required|max_length[150]',
-            'fecha_nacimiento'  => 'required|valid_date',
-            'obra_social'       => 'required',
-            'departamento'      => 'required'
-        ];
+public function update($id)
+{
+    $rules = [
+        'nombre'            => 'required|max_length[100]|regex_match[/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/]',
+        'historial_medico'  => 'required|max_length[400]',
+        'dni'               => 'required|numeric|max_length[20]',
+        'email'             => 'required|valid_email',
+        'telefono'          => 'required|numeric|max_length[20]',
+        'direccion'         => 'required|max_length[150]',
+        'fecha_nacimiento'  => 'required|valid_date',
+        'obra_social'       => 'required',
+        'departamento'      => 'required'
+    ];
 
-        $messages = [
-            'nombre' => [
-                'required' => 'El nombre es obligatorio',
-                'max_length' => 'El nombre no puede exceder los 100 caracteres',
-                'regex_match' => 'El campo nombre solo puede contener letras y espacios.'
-            ],
-            'dni' => [
-                'required' => 'El DNI es obligatorio',
-                'numeric' => 'El DNI debe contener solo números.',
-                'max_length' => 'El DNI no puede exceder los 20 caracteres'
-            ],
-            'email' => [
-                'required' => 'El email es obligatorio',
-                'valid_email' => 'Ingrese un email válido'
-            ],
-            'telefono' => [
-                'required' => 'El teléfono es obligatorio',
-                'numeric' => 'El teléfono debe contener solo números.',
-                'max_length' => 'El teléfono no puede exceder los 20 caracteres'
-            ],
-            'direccion' => [
-                'required' => 'La dirección es obligatoria',
-                'max_length' => 'La dirección no puede exceder los 150 caracteres'
-            ],
-            'fecha_nacimiento' => [
-                'required' => 'La fecha de nacimiento es obligatoria',
-                'valid_date' => 'Ingrese una fecha válida'
-            ],
-            'obra_social' => [
-                'required' => 'La obra social es obligatoria'
-            ],
-            'departamento' => [
-                'required' => 'El departamento es obligatorio'
-            ]
-        ];
+    $messages = [
+        'nombre' => [
+            'required' => 'El nombre es obligatorio',
+            'max_length' => 'El nombre no puede exceder los 100 caracteres',
+            'regex_match' => 'El campo nombre solo puede contener letras y espacios.'
+        ],
+        'dni' => [
+            'required' => 'El DNI es obligatorio',
+            'numeric' => 'El DNI debe contener solo números.',
+            'max_length' => 'El DNI no puede exceder los 20 caracteres'
+        ],
+        'email' => [
+            'required' => 'El email es obligatorio',
+            'valid_email' => 'Ingrese un email válido'
+        ],
+        'telefono' => [
+            'required' => 'El teléfono es obligatorio',
+            'numeric' => 'El teléfono debe contener solo números.',
+            'max_length' => 'El teléfono no puede exceder los 20 caracteres'
+        ],
+        'direccion' => [
+            'required' => 'La dirección es obligatoria',
+            'max_length' => 'La dirección no puede exceder los 150 caracteres'
+        ],
+        'fecha_nacimiento' => [
+            'required' => 'La fecha de nacimiento es obligatoria',
+            'valid_date' => 'Ingrese una fecha válida'
+        ],
+        'obra_social' => [
+            'required' => 'La obra social es obligatoria'
+        ],
+        'departamento' => [
+            'required' => 'El departamento es obligatorio'
+        ]
+    ];
 
-        if (!$this->validate($rules, $messages)) {
-            return redirect()->back()
-                             ->withInput()
-                             ->with('errors', $this->validator->getErrors());
-        }
-
-        // Validación manual para evitar duplicados
-        if ($this->pacienteModel->dniExists($this->request->getPost('dni'), $id)) {
-            $this->session->setFlashdata('error', 'El DNI ya está en uso');
-            return redirect()->to("pacientes/edit/$id")->withInput();
-        }
-
-        if ($this->pacienteModel->emailExists($this->request->getPost('email'), $id)) {
-            $this->session->setFlashdata('error', 'El email ya está en uso');
-            return redirect()->to("pacientes/edit/$id")->withInput();
-        }
-
-        $data = [
-            'nombre'            => $this->request->getPost('nombre'),
-            'fecha_nacimiento'  => $this->request->getPost('fecha_nacimiento'),
-            'historial_medico'  => $this->request->getPost('historial_medico'),
-            'obra_social'       => $this->request->getPost('obra_social'),
-            'dni'               => $this->request->getPost('dni'),
-            'email'             => $this->request->getPost('email'),
-            'telefono'          => $this->request->getPost('telefono'),
-            'departamento'      => $this->request->getPost('departamento'),
-            'direccion'         => $this->request->getPost('direccion')
-        ];
-
-        if ($this->pacienteModel->update($id, $data)) {
-            $this->session->setFlashdata('mensaje', 'Paciente actualizado exitosamente');
-            return redirect()->to('pacientes');
-        } else {
-            $this->session->setFlashdata('error', 'No se pudo actualizar el paciente');
-            return redirect()->back()->withInput();
-        }
+    if (!$this->validate($rules, $messages)) {
+        return redirect()->back()
+                         ->withInput()
+                         ->with('errors', $this->validator->getErrors());
     }
+
+    // Validación personalizada para evitar duplicados de DNI y Email en otros registros
+    $errores = [];
+
+    if ($this->pacienteModel->dniExists($this->request->getPost('dni'), $id)) {
+        $errores['dni'] = 'Este DNI ya está registrado por otro paciente.';
+    }
+
+    if ($this->pacienteModel->emailExists($this->request->getPost('email'), $id)) {
+        $errores['email'] = 'Este correo ya está registrado por otro paciente.';
+    }
+
+    if (!empty($errores)) {
+        return redirect()->to("pacientes/edit/$id")
+                         ->withInput()
+                         ->with('errors', $errores);
+    }
+
+    $data = [
+        'nombre'            => $this->request->getPost('nombre'),
+        'fecha_nacimiento'  => $this->request->getPost('fecha_nacimiento'),
+        'historial_medico'  => $this->request->getPost('historial_medico'),
+        'obra_social'       => $this->request->getPost('obra_social'),
+        'dni'               => $this->request->getPost('dni'),
+        'email'             => $this->request->getPost('email'),
+        'telefono'          => $this->request->getPost('telefono'),
+        'departamento'      => $this->request->getPost('departamento'),
+        'direccion'         => $this->request->getPost('direccion')
+    ];
+
+    if ($this->pacienteModel->update($id, $data)) {
+        $this->session->setFlashdata('mensaje', 'Paciente actualizado exitosamente');
+        return redirect()->to('pacientes');
+    } else {
+        $this->session->setFlashdata('error', 'No se pudo actualizar el paciente');
+        return redirect()->back()->withInput();
+    }
+}
 
     public function view($id)
     {

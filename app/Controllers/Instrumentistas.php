@@ -56,7 +56,7 @@ class Instrumentistas extends Controller
     public function add()
     {
         $validation = \Config\Services::validation();
-        
+
         $validation->setRules([
             'nombre' => 'required|max_length[100]',
             'dni' => 'required|max_length[20]|is_unique[instrumentistas.dni]',
@@ -65,6 +65,42 @@ class Instrumentistas extends Controller
             'email' => 'required|valid_email|max_length[100]|is_unique[instrumentistas.email]',
             'fecha_ingreso' => 'permit_empty|valid_date',
             'disponibilidad' => 'required|in_list[disponible,no_disponible,en_cirugia]'
+        ], [
+            // Mensajes en español para validación, podes agregar más si querés
+ 'nombre' => [
+                'required' => 'El nombre es obligatorio',
+                'max_length' => 'El nombre no puede exceder los 100 caracteres',
+            ],
+            'dni' => [
+                'required' => 'El DNI es obligatorio',
+                'max_length' => 'El DNI no puede exceder los 20 caracteres',
+                'numeric' => 'El DNI debe contener solo números',
+                'is_unique' => 'El DNI ya esta registrado',
+            ],
+            'especialidad' => [
+                'required' => 'La especialidad es obligatoria',
+                'max_length' => 'La especialidad no puede exceder los 100 caracteres',
+            ],
+            'telefono' => [
+                'required' => 'El teléfono es obligatorio',
+                'max_length' => 'El teléfono no puede exceder los 20 caracteres',
+            ],
+            'email' => [
+                'required' => 'El email es obligatorio',
+                'valid_email' => 'Debe ser un email válido',
+                'max_length' => 'El email no puede exceder los 100 caracteres',
+                'is_unique' => 'El email ya esta registrado',
+            ],
+            'fecha_ingreso' => [
+                'valid_date' => 'Ingrese una fecha válida',
+            ],
+            'disponibilidad' => [
+                'required' => 'La disponibilidad es obligatoria',
+                'in_list' => 'La disponibilidad debe ser: disponible, no_disponible o en_cirugia',
+            ],
+
+
+            // Agrega mensajes para otros campos si querés
         ]);
 
         if (!$validation->withRequest($this->request)->run()) {
@@ -114,7 +150,7 @@ class Instrumentistas extends Controller
         }
 
         $validation = \Config\Services::validation();
-        
+
         $validation->setRules([
             'nombre' => 'required|max_length[100]',
             'dni' => "required|max_length[20]|is_unique[instrumentistas.dni,id,{$id}]",
@@ -123,6 +159,41 @@ class Instrumentistas extends Controller
             'email' => "required|valid_email|max_length[100]|is_unique[instrumentistas.email,id,{$id}]",
             'fecha_ingreso' => 'permit_empty|valid_date',
             'disponibilidad' => 'required|in_list[disponible,no_disponible,en_cirugia]'
+        ], [
+
+        'nombre' => [
+                'required' => 'El nombre es obligatorio',
+                'max_length' => 'El nombre no puede exceder los 100 caracteres',
+            ],
+            'dni' => [
+                'required' => 'El DNI es obligatorio',
+                'max_length' => 'El DNI no puede exceder los 20 caracteres',
+                'numeric' => 'El DNI debe contener solo números',
+                'is_unique' => 'El dni ya esta registrado',
+            ],
+            'especialidad' => [
+                'required' => 'La especialidad es obligatoria',
+                'max_length' => 'La especialidad no puede exceder los 100 caracteres',
+            ],
+            'telefono' => [
+                'required' => 'El teléfono es obligatorio',
+                'max_length' => 'El teléfono no puede exceder los 20 caracteres',
+            ],
+            'email' => [
+                'required' => 'El email es obligatorio',
+                'valid_email' => 'Debe ser un email válido',
+                'max_length' => 'El email no puede exceder los 100 caracteres',
+                'is_unique' => 'El email ya esta registrado',
+            ],
+            'fecha_ingreso' => [
+                'valid_date' => 'Ingrese una fecha válida',
+            ],
+            'disponibilidad' => [
+                'required' => 'La disponibilidad es obligatoria',
+                'in_list' => 'La disponibilidad debe ser: disponible, no_disponible o en_cirugia',
+            ],
+
+            
         ]);
 
         if (!$validation->withRequest($this->request)->run()) {
@@ -146,7 +217,6 @@ class Instrumentistas extends Controller
             return redirect()->to('instrumentistas/editar/' . $id);
         }
     }
-
     public function ver($id)
     {
         $instrumentista = $this->instrumentistasModel->getInstrumentista($id);

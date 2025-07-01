@@ -350,9 +350,8 @@
                                        class="form-control <?= (isset($validation) && $validation->hasError('nombre')) ? 'is-invalid' : '' ?>" 
                                        id="nombre" 
                                        name="nombre" 
-                                       value="<?= old('nombre', $enfermero['nombre']) ?>" 
-                                       placeholder="Ingrese el nombre completo"
-                                       required>
+                                       value="<?= old('nombre', isset($enfermero['nombre']) ? $enfermero['nombre'] : '') ?>" 
+                                       placeholder="Ingrese el nombre completo">
                                 <?php if (isset($validation) && $validation->hasError('nombre')): ?>
                                     <div class="invalid-feedback"><?= esc($validation->getError('nombre')) ?></div>
                                 <?php endif; ?>
@@ -366,9 +365,8 @@
                                        class="form-control <?= (isset($validation) && $validation->hasError('dni')) ? 'is-invalid' : '' ?>" 
                                        id="dni" 
                                        name="dni" 
-                                       value="<?= old('dni', $enfermero['dni']) ?>" 
-                                       placeholder="Ej: 12345678"
-                                       required>
+                                       value="<?= old('dni', isset($enfermero['dni']) ? $enfermero['dni'] : '') ?>" 
+                                       placeholder="Ej: 12345678">
                                 <?php if (isset($validation) && $validation->hasError('dni')): ?>
                                     <div class="invalid-feedback"><?= esc($validation->getError('dni')) ?></div>
                                 <?php endif; ?>
@@ -382,15 +380,26 @@
                                 </label>
                                 <select class="form-select <?= (isset($validation) && $validation->hasError('especialidad')) ? 'is-invalid' : '' ?>" 
                                         id="especialidad" 
-                                        name="especialidad" 
-                                        required>
+                                        name="especialidad">
                                     <option value="">Seleccionar especialidad</option>
-                                    <?php foreach ($especialidades as $key => $especialidad): ?>
-                                        <option value="<?= esc($especialidad) ?>" 
-                                                <?= (old('especialidad', $enfermero['especialidad']) == $especialidad) ? 'selected' : '' ?>>
-                                            <?= esc($especialidad) ?>
-                                        </option>
-                                    <?php endforeach; ?>
+                                    <?php if (isset($especialidades) && is_array($especialidades)): ?>
+                                        <?php foreach ($especialidades as $key => $especialidad): ?>
+                                            <option value="<?= esc($especialidad) ?>" 
+                                                    <?= (old('especialidad', isset($enfermero['especialidad']) ? $enfermero['especialidad'] : '') == $especialidad) ? 'selected' : '' ?>>
+                                                <?= esc($especialidad) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <!-- Especialidades por defecto si no se pasa el array -->
+                                        <option value="Enfermería General" <?= (old('especialidad', isset($enfermero['especialidad']) ? $enfermero['especialidad'] : '') == 'Enfermería General') ? 'selected' : '' ?>>Enfermería General</option>
+                                        <option value="Enfermería Quirúrgica" <?= (old('especialidad', isset($enfermero['especialidad']) ? $enfermero['especialidad'] : '') == 'Enfermería Quirúrgica') ? 'selected' : '' ?>>Enfermería Quirúrgica</option>
+                                        <option value="Cuidados Intensivos" <?= (old('especialidad', isset($enfermero['especialidad']) ? $enfermero['especialidad'] : '') == 'Cuidados Intensivos') ? 'selected' : '' ?>>Cuidados Intensivos</option>
+                                        <option value="Anestesia" <?= (old('especialidad', isset($enfermero['especialidad']) ? $enfermero['especialidad'] : '') == 'Anestesia') ? 'selected' : '' ?>>Anestesia</option>
+                                        <option value="Pediatría" <?= (old('especialidad', isset($enfermero['especialidad']) ? $enfermero['especialidad'] : '') == 'Pediatría') ? 'selected' : '' ?>>Pediatría</option>
+                                        <option value="Cardiología" <?= (old('especialidad', isset($enfermero['especialidad']) ? $enfermero['especialidad'] : '') == 'Cardiología') ? 'selected' : '' ?>>Cardiología</option>
+                                        <option value="Neurología" <?= (old('especialidad', isset($enfermero['especialidad']) ? $enfermero['especialidad'] : '') == 'Neurología') ? 'selected' : '' ?>>Neurología</option>
+                                        <option value="Ortopedia" <?= (old('especialidad', isset($enfermero['especialidad']) ? $enfermero['especialidad'] : '') == 'Ortopedia') ? 'selected' : '' ?>>Ortopedia</option>
+                                    <?php endif; ?>
                                 </select>
                                 <?php if (isset($validation) && $validation->hasError('especialidad')): ?>
                                     <div class="invalid-feedback"><?= esc($validation->getError('especialidad')) ?></div>
@@ -405,9 +414,8 @@
                                        class="form-control <?= (isset($validation) && $validation->hasError('telefono')) ? 'is-invalid' : '' ?>" 
                                        id="telefono" 
                                        name="telefono" 
-                                       value="<?= old('telefono', $enfermero['telefono']) ?>" 
-                                       placeholder="Ej: +54 9 11 1234-5678"
-                                       required>
+                                       value="<?= old('telefono', isset($enfermero['telefono']) ? $enfermero['telefono'] : '') ?>" 
+                                       placeholder="Ej: +54 9 11 1234-5678">
                                 <?php if (isset($validation) && $validation->hasError('telefono')): ?>
                                     <div class="invalid-feedback"><?= esc($validation->getError('telefono')) ?></div>
                                 <?php endif; ?>
@@ -423,9 +431,8 @@
                                        class="form-control <?= (isset($validation) && $validation->hasError('email')) ? 'is-invalid' : '' ?>" 
                                        id="email" 
                                        name="email" 
-                                       value="<?= old('email', $enfermero['email']) ?>" 
-                                       placeholder="enfermero@hospital.com"
-                                       required>
+                                       value="<?= old('email', isset($enfermero['email']) ? $enfermero['email'] : '') ?>" 
+                                       placeholder="enfermero@hospital.com">
                                 <?php if (isset($validation) && $validation->hasError('email')): ?>
                                     <div class="invalid-feedback"><?= esc($validation->getError('email')) ?></div>
                                 <?php endif; ?>
@@ -439,7 +446,7 @@
                                        class="form-control <?= (isset($validation) && $validation->hasError('fecha_ingreso')) ? 'is-invalid' : '' ?>" 
                                        id="fecha_ingreso" 
                                        name="fecha_ingreso" 
-                                       value="<?= old('fecha_ingreso', $enfermero['fecha_ingreso']) ?>">
+                                       value="<?= old('fecha_ingreso', isset($enfermero['fecha_ingreso']) ? $enfermero['fecha_ingreso'] : '') ?>">
                                 <?php if (isset($validation) && $validation->hasError('fecha_ingreso')): ?>
                                     <div class="invalid-feedback"><?= esc($validation->getError('fecha_ingreso')) ?></div>
                                 <?php endif; ?>
@@ -452,16 +459,15 @@
                             </label>
                             <select class="form-select <?= (isset($validation) && $validation->hasError('disponibilidad')) ? 'is-invalid' : '' ?>" 
                                     id="disponibilidad" 
-                                    name="disponibilidad" 
-                                    required>
+                                    name="disponibilidad">
                                 <option value="">Seleccionar estado</option>
-                                <option value="disponible" <?= (old('disponibilidad', $enfermero['disponibilidad']) == 'disponible') ? 'selected' : '' ?>>
+                                <option value="disponible" <?= (old('disponibilidad', isset($enfermero['disponibilidad']) ? $enfermero['disponibilidad'] : '') == 'disponible') ? 'selected' : '' ?>>
                                     Disponible
                                 </option>
-                                <option value="no_disponible" <?= (old('disponibilidad', $enfermero['disponibilidad']) == 'no_disponible') ? 'selected' : '' ?>>
+                                <option value="no_disponible" <?= (old('disponibilidad', isset($enfermero['disponibilidad']) ? $enfermero['disponibilidad'] : '') == 'no_disponible') ? 'selected' : '' ?>>
                                     No disponible
                                 </option>
-                                <option value="en_cirugia" <?= (old('disponibilidad', $enfermero['disponibilidad']) == 'en_cirugia') ? 'selected' : '' ?>>
+                                <option value="en_cirugia" <?= (old('disponibilidad', isset($enfermero['disponibilidad']) ? $enfermero['disponibilidad'] : '') == 'en_cirugia') ? 'selected' : '' ?>>
                                     En cirugía
                                 </option>
                             </select>

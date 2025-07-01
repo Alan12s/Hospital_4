@@ -28,45 +28,10 @@ class EnfermerosModel extends Model
     protected $createdField = 'created_at';
     protected $updatedField = 'updated_at';
 
-    // Validation
-    protected $validationRules = [
-        'nombre' => 'required|max_length[100]',
-        'dni' => 'required|max_length[20]',
-        'especialidad' => 'required|max_length[100]',
-        'telefono' => 'required|max_length[20]',
-        'email' => 'required|valid_email|max_length[100]',
-        'disponibilidad' => 'required|in_list[disponible,no_disponible,en_cirugia]'
-    ];
-
-    protected $validationMessages = [
-        'nombre' => [
-            'required' => 'El nombre es obligatorio',
-            'max_length' => 'El nombre no puede exceder los 100 caracteres'
-        ],
-        'dni' => [
-            'required' => 'El DNI es obligatorio',
-            'max_length' => 'El DNI no puede exceder los 20 caracteres'
-        ],
-        'especialidad' => [
-            'required' => 'La especialidad es obligatoria',
-            'max_length' => 'La especialidad no puede exceder los 100 caracteres'
-        ],
-        'telefono' => [
-            'required' => 'El teléfono es obligatorio',
-            'max_length' => 'El teléfono no puede exceder los 20 caracteres'
-        ],
-        'email' => [
-            'required' => 'El email es obligatorio',
-            'valid_email' => 'Debe ser un email válido',
-            'max_length' => 'El email no puede exceder los 100 caracteres'
-        ],
-        'disponibilidad' => [
-            'required' => 'La disponibilidad es obligatoria',
-            'in_list' => 'La disponibilidad debe ser: disponible, no_disponible o en_cirugia'
-        ]
-    ];
-
-    protected $skipValidation = false;
+    // Validation - Solo para INSERT, no para UPDATE
+    protected $validationRules = [];
+    protected $validationMessages = [];
+    protected $skipValidation = true; // Deshabilitamos validación automática
     protected $cleanValidationRules = true;
 
     // Callbacks
@@ -93,15 +58,77 @@ class EnfermerosModel extends Model
      */
     public function addEnfermero($data)
     {
-        return $this->insert($data);
+        // Activar validación solo para INSERT
+        $this->skipValidation = false;
+        $this->validationRules = [
+            'nombre' => 'required|max_length[100]|regex_match[/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/]',
+            'dni' => 'required|max_length[20]|regex_match[/^[0-9]+$/]|is_unique[enfermeros.dni]',
+            'especialidad' => 'required|max_length[100]',
+            'telefono' => 'required|max_length[20]|regex_match[/^[0-9\s()+-]+$/]',
+            'email' => 'required|valid_email|max_length[100]',
+            'disponibilidad' => 'required|in_list[disponible,no_disponible,en_cirugia]'
+        ];
+        
+        $result = $this->insert($data);
+        
+        // Resetear validación
+        $this->skipValidation = true;
+        $this->validationRules = [];
+        
+        return $result;
     }
 
     /**
-     * Actualizar un enfermero
+     * Actualizar un enfermero - Método mejorado
      */
     public function updateEnfermero($id, $data)
     {
-        return $this->update($id, $data);
+        try {
+            // Log para debug
+            log_message('debug', 'EnfermerosModel::updateEnfermero - ID: ' . $id);
+            log_message('debug', 'EnfermerosModel::updateEnfermero - Data: ' . json_encode($data));
+            
+            // Verificar que el ID existe
+            $existe = $this->find($id);
+            if (!$existe) {
+                log_message('error', 'EnfermerosModel::updateEnfermero - Enfermero no encontrado con ID: ' . $id);
+                return false;
+            }
+            
+            // Verificar que hay datos para actualizar
+            if (empty($data)) {
+                log_message('error', 'EnfermerosModel::updateEnfermero - No hay datos para actualizar');
+                return false;
+            }
+            
+            // Filtrar solo campos permitidos
+            $allowedData = [];
+            foreach ($data as $key => $value) {
+                if (in_array($key, $this->allowedFields)) {
+                    $allowedData[$key] = $value;
+                }
+            }
+            
+            if (empty($allowedData)) {
+                log_message('error', 'EnfermerosModel::updateEnfermero - No hay campos válidos para actualizar');
+                return false;
+            }
+            
+            // Desactivar validación automática para UPDATE
+            $this->skipValidation = true;
+            
+            // Realizar la actualización
+            $result = $this->update($id, $allowedData);
+            
+            log_message('debug', 'EnfermerosModel::updateEnfermero - Resultado: ' . ($result ? 'exitoso' : 'fallido'));
+            log_message('debug', 'EnfermerosModel::updateEnfermero - Affected rows: ' . $this->db->affectedRows());
+            
+            return $result;
+            
+        } catch (\Exception $e) {
+            log_message('error', 'EnfermerosModel::updateEnfermero - Excepción: ' . $e->getMessage());
+            return false;
+        }
     }
 
     /**
@@ -114,11 +141,12 @@ class EnfermerosModel extends Model
         
         // Verificar en todas las columnas donde puede estar asignado un enfermero
         $builder->groupStart()
-                ->where('id_enfermero', $idEnfermero)
-                ->orWhere('id_instrumentador_principal', $idEnfermero)
-                ->orWhere('id_instrumentador_circulante', $idEnfermero)
-                ->orWhere('id_tecnico_anestesista', $idEnfermero)
-                ->groupEnd();
+        // ->where('id_enfermero', $idEnfermero) // Esta línea está de más y causa el error
+        ->orWhere('id_instrumentador_principal', $idEnfermero)
+        ->orWhere('id_instrumentador_circulante', $idEnfermero)
+        ->orWhere('id_tecnico_anestesista', $idEnfermero)
+        ->groupEnd();
+
         
         $query = $builder->get();
         return $query->getNumRows() > 0;
@@ -214,4 +242,13 @@ class EnfermerosModel extends Model
         
         return $builder->get()->getResultArray();
     }
+    // Método para contar enfermeros disponibles
+public function countDisponibles()
+{
+    return $this->where('disponibilidad', 'disponible')->countAllResults();
+}
+public function countAll()
+{
+    return $this->builder()->countAllResults();
+}
 }

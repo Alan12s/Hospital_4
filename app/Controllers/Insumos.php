@@ -26,8 +26,16 @@ class Insumos extends Controller
 
     public function index()
     {
+        $insumos = $this->insumosModel->getAllInsumos();
+        
+        // Verificar uso para cada insumo
+        $insumosConUso = array_map(function($insumo) {
+            $insumo['en_uso'] = $this->insumosModel->estaEnUso($insumo['id_insumo']);
+            return $insumo;
+        }, $insumos);
+
         $data = [
-            'insumos' => $this->insumosModel->getAllInsumos(),
+            'insumos' => $insumosConUso,
             'title' => 'Gestión de Insumos'
         ];
 
@@ -37,7 +45,8 @@ class Insumos extends Controller
     public function crear()
     {
         $data = [
-            'title' => 'Agregar Insumo'
+            'title' => 'Agregar Insumo',
+            'validation' => \Config\Services::validation()
         ];
 
         return view('insumos/crear', $data);
@@ -48,37 +57,59 @@ class Insumos extends Controller
         $validation = \Config\Services::validation();
         
         $validation->setRules([
+            'codigo' => 'permit_empty|max_length[100]',
             'nombre' => 'required|max_length[70]',
-            'tipo' => 'required|max_length[50]',
             'categoria' => 'required|in_list[descartable,instrumental]',
-            'cantidad' => 'required|numeric',
-            'ubicacion' => 'required|max_length[100]'
+            'tipo' => 'required|max_length[50]',
+            'cantidad' => 'required|numeric|greater_than_equal_to[0]',
+            'ubicacion' => 'required|max_length[100]',
+            'lote' => 'permit_empty|max_length[100]',
+            'tiene_vencimiento' => 'permit_empty|in_list[0,1]',
+            'fecha_vencimiento' => 'permit_empty|valid_date'
         ]);
 
         if (!$validation->withRequest($this->request)->run()) {
-            // Si la validación falla, volver a mostrar el formulario con errores
-            return $this->crear();
+            return redirect()->back()->withInput()->with('validation', $validation);
         }
 
+        // Obtener datos del formulario
         $data = [
+            'codigo' => $this->request->getPost('codigo'),
             'nombre' => $this->request->getPost('nombre'),
-            'tipo' => $this->request->getPost('tipo'),
             'categoria' => $this->request->getPost('categoria'),
-            'cantidad' => $this->request->getPost('cantidad'),
+            'tipo' => $this->request->getPost('tipo'),
+            'cantidad' => (int)$this->request->getPost('cantidad'),
             'ubicacion' => $this->request->getPost('ubicacion'),
             'lote' => $this->request->getPost('lote'),
-            'tiene_vencimiento' => $this->request->getPost('tiene_vencimiento') ? 1 : 0,
-            'fecha_vencimiento' => $this->request->getPost('tiene_vencimiento') ? 
-                                 $this->request->getPost('fecha_vencimiento') : null
+            'tiene_vencimiento' => $this->request->getPost('tiene_vencimiento') ? 1 : 0
         ];
 
-        if ($this->insumosModel->addInsumo($data)) {
-            $this->session->setFlashdata('success', 'Insumo agregado correctamente');
+        // Solo agregar fecha_vencimiento si tiene_vencimiento está marcado
+        if ($data['tiene_vencimiento'] && $this->request->getPost('fecha_vencimiento')) {
+            $data['fecha_vencimiento'] = $this->request->getPost('fecha_vencimiento');
         } else {
-            $this->session->setFlashdata('error', 'Error al agregar el insumo');
+            $data['fecha_vencimiento'] = null;
         }
 
-        return redirect()->to('insumos');
+        // Validación adicional: si tiene vencimiento, debe tener fecha
+        if ($data['tiene_vencimiento'] && empty($data['fecha_vencimiento'])) {
+            $this->session->setFlashdata('error', 'Si el insumo tiene vencimiento, debe especificar la fecha de vencimiento');
+            return redirect()->back()->withInput();
+        }
+
+        try {
+            if ($this->insumosModel->addInsumo($data)) {
+                $this->session->setFlashdata('success', 'Insumo agregado correctamente');
+                return redirect()->to('insumos');
+            } else {
+                $this->session->setFlashdata('error', 'Error al agregar el insumo');
+                return redirect()->back()->withInput();
+            }
+        } catch (\Exception $e) {
+            log_message('error', 'Error al crear insumo: ' . $e->getMessage());
+            $this->session->setFlashdata('error', 'Error interno al agregar el insumo: ' . $e->getMessage());
+            return redirect()->back()->withInput();
+        }
     }
 
     public function edit($id)
@@ -89,9 +120,16 @@ class Insumos extends Controller
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
         }
 
+        // Debug: Verificar qué datos estamos recibiendo
+        log_message('debug', 'Datos del insumo en edit: ' . json_encode($insumo));
+
+        // Asegurar que todos los campos necesarios existan con valores por defecto
+        $insumo = $this->asegurarCamposInsumo($insumo);
+
         $data = [
             'insumo' => $insumo,
-            'title' => 'Editar Insumo'
+            'title' => 'Editar Insumo',
+            'validation' => \Config\Services::validation()
         ];
 
         return view('insumos/editar', $data);
@@ -102,46 +140,61 @@ class Insumos extends Controller
         $validation = \Config\Services::validation();
         
         $validation->setRules([
+            'codigo' => 'permit_empty|max_length[100]',
             'nombre' => 'required|max_length[70]',
-            'tipo' => 'required|max_length[50]',
             'categoria' => 'required|in_list[descartable,instrumental]',
-            'cantidad' => 'required|numeric',
-            'ubicacion' => 'required|max_length[100]'
+            'tipo' => 'required|max_length[50]',
+            'cantidad' => 'required|numeric|greater_than_equal_to[0]',
+            'ubicacion' => 'required|max_length[100]',
+            'lote' => 'permit_empty|max_length[100]',
+            'tiene_vencimiento' => 'permit_empty|in_list[0,1]',
+            'fecha_vencimiento' => 'permit_empty|valid_date'
         ]);
 
         if (!$validation->withRequest($this->request)->run()) {
-            // Si la validación falla, volver a mostrar el formulario de edición
-            $data = [
-                'insumo' => $this->insumosModel->getInsumo($id),
-                'title' => 'Editar Insumo'
-            ];
-            return view('insumos/editar', $data);
+            return redirect()->back()->withInput()->with('validation', $validation);
         }
 
+        // Obtener datos del formulario
         $data = [
+            'codigo' => $this->request->getPost('codigo'),
             'nombre' => $this->request->getPost('nombre'),
-            'tipo' => $this->request->getPost('tipo'),
             'categoria' => $this->request->getPost('categoria'),
-            'cantidad' => $this->request->getPost('cantidad'),
+            'tipo' => $this->request->getPost('tipo'),
+            'cantidad' => (int)$this->request->getPost('cantidad'),
             'ubicacion' => $this->request->getPost('ubicacion'),
             'lote' => $this->request->getPost('lote'),
-            'tiene_vencimiento' => $this->request->getPost('tiene_vencimiento') ? 1 : 0,
-            'fecha_vencimiento' => $this->request->getPost('tiene_vencimiento') ? 
-                                 $this->request->getPost('fecha_vencimiento') : null
+            'tiene_vencimiento' => $this->request->getPost('tiene_vencimiento') ? 1 : 0
         ];
 
-        if ($this->insumosModel->updateInsumo($id, $data)) {
-            $this->session->setFlashdata('success', 'Insumo actualizado correctamente');
+        // Solo agregar fecha_vencimiento si tiene_vencimiento está marcado
+        if ($data['tiene_vencimiento'] && $this->request->getPost('fecha_vencimiento')) {
+            $data['fecha_vencimiento'] = $this->request->getPost('fecha_vencimiento');
         } else {
-            $this->session->setFlashdata('error', 'Error al actualizar el insumo');
+            $data['fecha_vencimiento'] = null;
         }
 
-        return redirect()->to('insumos');
+        // Validación adicional: si tiene vencimiento, debe tener fecha
+        if ($data['tiene_vencimiento'] && empty($data['fecha_vencimiento'])) {
+            $this->session->setFlashdata('error', 'Si el insumo tiene vencimiento, debe especificar la fecha de vencimiento');
+            return redirect()->back()->withInput();
+        }
+
+        try {
+            if ($this->insumosModel->updateInsumo($id, $data)) {
+                $this->session->setFlashdata('success', 'Insumo actualizado correctamente');
+                return redirect()->to('insumos');
+            } else {
+                $this->session->setFlashdata('error', 'Error al actualizar el insumo');
+                return redirect()->back()->withInput();
+            }
+        } catch (\Exception $e) {
+            log_message('error', 'Error al actualizar insumo: ' . $e->getMessage());
+            $this->session->setFlashdata('error', 'Error interno al actualizar el insumo: ' . $e->getMessage());
+            return redirect()->back()->withInput();
+        }
     }
 
-    /**
-     * Método para eliminar insumo
-     */
     public function delete($id)
     {
         // Verificar que el insumo existe
@@ -155,11 +208,16 @@ class Insumos extends Controller
         if ($this->insumosModel->estaEnUso($id)) {
             $this->session->setFlashdata('error', 'No se puede eliminar el insumo porque está siendo utilizado en turnos quirúrgicos');
         } else {
-            // Intentar eliminar el insumo
-            if ($this->insumosModel->deleteInsumo($id)) {
-                $this->session->setFlashdata('success', 'Insumo eliminado correctamente.');
-            } else {
-                $this->session->setFlashdata('error', 'Error al eliminar el insumo.');
+            try {
+                // Intentar eliminar el insumo
+                if ($this->insumosModel->deleteInsumo($id)) {
+                    $this->session->setFlashdata('success', 'Insumo eliminado correctamente.');
+                } else {
+                    $this->session->setFlashdata('error', 'Error al eliminar el insumo.');
+                }
+            } catch (\Exception $e) {
+                log_message('error', 'Error al eliminar insumo: ' . $e->getMessage());
+                $this->session->setFlashdata('error', 'Error interno al eliminar el insumo.');
             }
         }
 
@@ -167,9 +225,6 @@ class Insumos extends Controller
         return redirect()->to('insumos');
     }
 
-    /**
-     * Método alternativo para eliminar (si usas la ruta 'eliminar')
-     */
     public function eliminar($id)
     {
         return $this->delete($id);
@@ -183,6 +238,9 @@ class Insumos extends Controller
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
         }
 
+        // Asegurar que todos los campos necesarios existan con valores por defecto
+        $insumo = $this->asegurarCamposInsumo($insumo);
+
         $data = [
             'insumo' => $insumo,
             'title' => $insumo['nombre']
@@ -195,11 +253,138 @@ class Insumos extends Controller
     {
         $term = $this->request->getGet('term');
         
+        if (empty($term)) {
+            return redirect()->to('insumos');
+        }
+        
+        $insumos = $this->insumosModel->searchInsumos($term);
+        
+        // Verificar uso para cada insumo
+        $insumosConUso = array_map(function($insumo) {
+            $insumo['en_uso'] = $this->insumosModel->estaEnUso($insumo['id_insumo']);
+            return $insumo;
+        }, $insumos);
+
         $data = [
-            'insumos' => $this->insumosModel->searchInsumos($term),
-            'title' => 'Resultado de búsqueda: ' . $term
+            'insumos' => $insumosConUso,
+            'title' => 'Resultado de búsqueda: ' . $term,
+            'search_term' => $term
         ];
 
         return view('insumos/index', $data);
     }
+
+    /**
+     * Obtener información del insumo vía AJAX
+     */
+    public function getInsumoInfo($id)
+    {
+        $insumo = $this->insumosModel->getInsumo($id);
+        
+        if ($insumo) {
+            return $this->response->setJSON([
+                'success' => true,
+                'data' => $insumo
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Insumo no encontrado'
+            ]);
+        }
+    }
+
+    /**
+     * Obtener estadísticas de insumos
+     */
+    public function estadisticas()
+    {
+        $totalInsumos = $this->insumosModel->countAll();
+        $bajoStock = $this->insumosModel->countBajoStock(10);
+        $stockCritico = $this->insumosModel->countBajoStockCritico(5);
+        $proximosVencer = count($this->insumosModel->getInsumosProximosVencer(30));
+        $vencidos = count($this->insumosModel->getInsumosVencidos());
+
+        $data = [
+            'total_insumos' => $totalInsumos,
+            'bajo_stock' => $bajoStock,
+            'stock_critico' => $stockCritico,
+            'proximos_vencer' => $proximosVencer,
+            'vencidos' => $vencidos,
+            'estadisticas_tipo' => $this->insumosModel->getEstadisticasPorTipo(),
+            'estadisticas_categoria' => $this->insumosModel->getEstadisticasPorCategoria(), // AGREGADO
+            'title' => 'Estadísticas de Insumos'
+        ];
+
+        return view('insumos/estadisticas', $data);
+    }
+
+    /**
+     * AGREGADO: Obtener insumos por categoría
+     */
+    public function categoria($categoria)
+    {
+        if (!in_array($categoria, ['descartable', 'instrumental'])) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
+
+        $insumos = $this->insumosModel->getInsumosPorCategoria($categoria);
+        
+        // Verificar uso para cada insumo
+        $insumosConUso = array_map(function($insumo) {
+            $insumo['en_uso'] = $this->insumosModel->estaEnUso($insumo['id_insumo']);
+            return $insumo;
+        }, $insumos);
+
+        $data = [
+            'insumos' => $insumosConUso,
+            'title' => 'Insumos - Categoría: ' . ucfirst($categoria),
+            'categoria_filtro' => $categoria
+        ];
+
+        return view('insumos/index', $data);
+    }
+
+    /**
+     * Método privado para asegurar que todos los campos necesarios existan
+     */
+    private function asegurarCamposInsumo($insumo)
+    {
+        // Campos con valores por defecto basados en la estructura de la BD
+        $camposDefecto = [
+            'id_insumo' => 0,
+            'codigo' => '',
+            'nombre' => '',
+            'categoria' => 'descartable', // Campo categoria con valor por defecto
+            'tipo' => '',
+            'cantidad' => 0,
+            'lote' => '',
+            'fecha_vencimiento' => null,
+            'tiene_vencimiento' => 0,
+            'ubicacion' => ''
+        ];
+
+        // Fusionar con valores por defecto solo si el campo no existe
+        foreach ($camposDefecto as $campo => $valorDefecto) {
+            if (!isset($insumo[$campo]) || $insumo[$campo] === null) {
+                $insumo[$campo] = $valorDefecto;
+            }
+        }
+
+        // Asegurar que tiene_vencimiento sea 0 o 1
+        $insumo['tiene_vencimiento'] = (int)$insumo['tiene_vencimiento'];
+
+        // REMOVIDO: La lógica de inferir categoría ya que ahora es un campo obligatorio
+        // Si no tiene categoria definida, usar valor por defecto
+        if (empty($insumo['categoria'])) {
+            $insumo['categoria'] = 'descartable';
+        }
+
+        return $insumo;
+    }
+
+    /**
+     * REMOVIDO: Método inferirCategoriaPorTipo ya no es necesario
+     * La categoría ahora es un campo independiente del tipo
+     */
 }

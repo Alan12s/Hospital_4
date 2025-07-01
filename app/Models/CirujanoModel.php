@@ -127,4 +127,9 @@ class CirujanoModel extends Model
             return false;
         }
     }
+    // Método para contar cirujanos
+public function countCirujanos()
+{
+    return $this->countAll();
+}
 }
