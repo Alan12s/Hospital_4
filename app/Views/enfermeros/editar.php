@@ -331,8 +331,29 @@
                                 <strong>Por favor, corrija los siguientes errores:</strong>
                             </div>
                             <ul class="mb-0">
-                                <?php foreach ($validation->getErrors() as $error): ?>
-                                    <li><?= esc($error) ?></li>
+                                <?php 
+                                // Array de traducciones de mensajes de error
+                                $mensajesEspanol = [
+                                    'The nombre field is required.' => 'El campo nombre es obligatorio.',
+                                    'The dni field is required.' => 'El campo DNI es obligatorio.',
+                                    'The dni field must contain a unique value.' => 'El DNI debe ser único.',
+                                    'The especialidad field is required.' => 'El campo especialidad es obligatorio.',
+                                    'The telefono field is required.' => 'El campo teléfono es obligatorio.',
+                                    'The email field is required.' => 'El campo email es obligatorio.',
+                                    'The email field must contain a valid email address.' => 'El email debe tener un formato válido.',
+                                    'The email field must contain a unique value.' => 'El email debe ser único.',
+                                    'The disponibilidad field is required.' => 'El campo disponibilidad es obligatorio.',
+                                    'The fecha_ingreso field must be a valid date.' => 'La fecha de ingreso debe ser una fecha válida.',
+                                    'The nombre field may only contain alphabetic characters.' => 'El nombre solo puede contener letras.',
+                                    'The dni field may only contain numeric characters.' => 'El DNI solo puede contener números.',
+                                    'The telefono field may only contain numeric characters.' => 'El teléfono solo puede contener números.',
+                                ];
+                                
+                                foreach ($validation->getErrors() as $error): 
+                                    // Traducir el mensaje si existe en el array, sino mostrar el original
+                                    $mensajeTraducido = isset($mensajesEspanol[$error]) ? $mensajesEspanol[$error] : $error;
+                                ?>
+                                    <li><?= esc($mensajeTraducido) ?></li>
                                 <?php endforeach; ?>
                             </ul>
                         </div>
@@ -342,6 +363,8 @@
                         <?= csrf_field() ?>
 
                         <div class="row mb-3">
+                            <!-- CAMPO NOMBRE - Necesita mensaje de error personalizado en el controlador -->
+                            <!-- Mensaje sugerido: "El nombre debe contener solo letras y espacios" -->
                             <div class="col-md-6">
                                 <label for="nombre" class="form-label">
                                     <i class='bx bx-user me-1'></i>Nombre Completo
@@ -351,24 +374,39 @@
                                        id="nombre" 
                                        name="nombre" 
                                        value="<?= old('nombre', isset($enfermero['nombre']) ? $enfermero['nombre'] : '') ?>" 
-                                       placeholder="Ingrese el nombre completo">
+                                       placeholder="Ingrese el nombre completo"
+                                       pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$" 
+                                       title="Solo letras y espacios. No se permiten números ni símbolos.">
                                 <?php if (isset($validation) && $validation->hasError('nombre')): ?>
                                     <div class="invalid-feedback"><?= esc($validation->getError('nombre')) ?></div>
                                 <?php endif; ?>
                             </div>
 
+                            <!-- Mensaje sugerido: "El DNI debe contener solo números" -->
                             <div class="col-md-6">
                                 <label for="dni" class="form-label">
-                                    <i class='bx bx-id-card me-1'></i>DNI
+                                    <i class='bx bx-id-card me-1'></i>DNI <span class="text-danger">*</span>
                                 </label>
                                 <input type="text" 
                                        class="form-control <?= (isset($validation) && $validation->hasError('dni')) ? 'is-invalid' : '' ?>" 
                                        id="dni" 
                                        name="dni" 
-                                       value="<?= old('dni', isset($enfermero['dni']) ? $enfermero['dni'] : '') ?>" 
-                                       placeholder="Ej: 12345678">
+                                       value="<?= old('dni') ?>" 
+                                       placeholder="Ej: 12345678"
+                                       pattern="^[0-9]+$"
+                                       title="Solo se permiten números"
+                                       required>
                                 <?php if (isset($validation) && $validation->hasError('dni')): ?>
-                                    <div class="invalid-feedback"><?= esc($validation->getError('dni')) ?></div>
+                                    <?php 
+                                    $errorDni = $validation->getError('dni');
+                                    $mensajesEspanol = [
+                                        'The dni field is required.' => 'El campo DNI es obligatorio.',
+                                        'The dni field must contain a unique value.' => 'El DNI debe ser único.',
+                                        'The dni field may only contain numeric characters.' => 'El DNI solo puede contener números.',
+                                    ];
+                                    $mensajeTraducido = isset($mensajesEspanol[$errorDni]) ? $mensajesEspanol[$errorDni] : $errorDni;
+                                    ?>
+                                    <div class="invalid-feedback"><?= esc($mensajeTraducido) ?></div>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -406,6 +444,8 @@
                                 <?php endif; ?>
                             </div>
 
+                            <!-- CAMPO TELÉFONO - Necesita mensaje de error personalizado en el controlador -->
+                            <!-- Mensaje sugerido: "El teléfono debe contener solo números, espacios, guiones, paréntesis y el símbolo +" -->
                             <div class="col-md-6">
                                 <label for="telefono" class="form-label">
                                     <i class='bx bx-phone me-1'></i>Teléfono
@@ -415,7 +455,9 @@
                                        id="telefono" 
                                        name="telefono" 
                                        value="<?= old('telefono', isset($enfermero['telefono']) ? $enfermero['telefono'] : '') ?>" 
-                                       placeholder="Ej: +54 9 11 1234-5678">
+                                       placeholder="Ej: +54 9 11 1234-5678"
+                                       pattern="^[\+]?[0-9\s\-\(\)]+$"
+                                       title="Solo números, espacios, guiones, paréntesis y símbolo +">
                                 <?php if (isset($validation) && $validation->hasError('telefono')): ?>
                                     <div class="invalid-feedback"><?= esc($validation->getError('telefono')) ?></div>
                                 <?php endif; ?>
@@ -425,16 +467,26 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="email" class="form-label">
-                                    <i class='bx bx-envelope me-1'></i>Email
+                                    <i class='bx bx-envelope me-1'></i>Email <span class="text-danger">*</span>
                                 </label>
                                 <input type="email" 
                                        class="form-control <?= (isset($validation) && $validation->hasError('email')) ? 'is-invalid' : '' ?>" 
                                        id="email" 
                                        name="email" 
-                                       value="<?= old('email', isset($enfermero['email']) ? $enfermero['email'] : '') ?>" 
-                                       placeholder="enfermero@hospital.com">
+                                       value="<?= old('email') ?>" 
+                                       placeholder="enfermero@hospital.com"
+                                       required>
                                 <?php if (isset($validation) && $validation->hasError('email')): ?>
-                                    <div class="invalid-feedback"><?= esc($validation->getError('email')) ?></div>
+                                    <?php 
+                                    $errorEmail = $validation->getError('email');
+                                    $mensajesEspanol = [
+                                        'The email field is required.' => 'El campo email es obligatorio.',
+                                        'The email field must contain a valid email address.' => 'El email debe tener un formato válido.',
+                                        'The email field must contain a unique value.' => 'El email debe ser único.',
+                                    ];
+                                    $mensajeTraducido = isset($mensajesEspanol[$errorEmail]) ? $mensajesEspanol[$errorEmail] : $errorEmail;
+                                    ?>
+                                    <div class="invalid-feedback"><?= esc($mensajeTraducido) ?></div>
                                 <?php endif; ?>
                             </div>
 

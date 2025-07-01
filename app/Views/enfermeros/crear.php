@@ -323,7 +323,7 @@
                     <h5><i class='bx bx-user-plus me-2'></i>Nuevo Enfermero</h5>
                 </div>
                 <div class="card-body">
-                    <!-- Mostrar todos los errores de validación -->
+                    <!-- Mostrar todos los errores de validación en español -->
                     <?php if (isset($validation) && $validation->getErrors()): ?>
                         <div class="alert alert-danger">
                             <div class="d-flex align-items-center mb-2">
@@ -331,8 +331,29 @@
                                 <strong>Por favor, corrija los siguientes errores:</strong>
                             </div>
                             <ul class="mb-0">
-                                <?php foreach ($validation->getErrors() as $error): ?>
-                                    <li><?= esc($error) ?></li>
+                                <?php 
+                                // Array de traducciones de mensajes de error
+                                $mensajesEspanol = [
+                                    'The nombre field is required.' => 'El campo nombre es obligatorio.',
+                                    'The dni field is required.' => 'El campo DNI es obligatorio.',
+                                    'The dni field must contain a unique value.' => 'El DNI debe ser único.',
+                                    'The especialidad field is required.' => 'El campo especialidad es obligatorio.',
+                                    'The telefono field is required.' => 'El campo teléfono es obligatorio.',
+                                    'The email field is required.' => 'El campo email es obligatorio.',
+                                    'The email field must contain a valid email address.' => 'El email debe tener un formato válido.',
+                                    'The email field must contain a unique value.' => 'El email debe ser único.',
+                                    'The disponibilidad field is required.' => 'El campo disponibilidad es obligatorio.',
+                                    'The fecha_ingreso field must be a valid date.' => 'La fecha de ingreso debe ser una fecha válida.',
+                                    'The nombre field may only contain alphabetic characters.' => 'El nombre solo puede contener letras.',
+                                    'The dni field may only contain numeric characters.' => 'El DNI solo puede contener números.',
+                                    'The telefono field may only contain numeric characters.' => 'El teléfono solo puede contener números.',
+                                ];
+                                
+                                foreach ($validation->getErrors() as $error): 
+                                    // Traducir el mensaje si existe en el array, sino mostrar el original
+                                    $mensajeTraducido = isset($mensajesEspanol[$error]) ? $mensajesEspanol[$error] : $error;
+                                ?>
+                                    <li><?= esc($mensajeTraducido) ?></li>
                                 <?php endforeach; ?>
                             </ul>
                         </div>
@@ -344,7 +365,7 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="nombre" class="form-label">
-                                    <i class='bx bx-user me-1'></i>Nombre Completo
+                                    <i class='bx bx-user me-1'></i>Nombre Completo <span class="text-danger">*</span>
                                 </label>
                                 <input type="text" 
                                        class="form-control <?= (isset($validation) && $validation->hasError('nombre')) ? 'is-invalid' : '' ?>" 
@@ -356,13 +377,21 @@
                                        title="Solo letras y espacios. No se permiten números ni símbolos." 
                                        required>
                                 <?php if (isset($validation) && $validation->hasError('nombre')): ?>
-                                    <div class="invalid-feedback"><?= esc($validation->getError('nombre')) ?></div>
+                                    <?php 
+                                    $errorNombre = $validation->getError('nombre');
+                                    $mensajesEspanol = [
+                                        'The nombre field is required.' => 'El campo nombre es obligatorio.',
+                                        'The nombre field may only contain alphabetic characters.' => 'El nombre solo puede contener letras.',
+                                    ];
+                                    $mensajeTraducido = isset($mensajesEspanol[$errorNombre]) ? $mensajesEspanol[$errorNombre] : $errorNombre;
+                                    ?>
+                                    <div class="invalid-feedback"><?= esc($mensajeTraducido) ?></div>
                                 <?php endif; ?>
                             </div>
 
                             <div class="col-md-6">
                                 <label for="dni" class="form-label">
-                                    <i class='bx bx-id-card me-1'></i>DNI
+                                    <i class='bx bx-id-card me-1'></i>DNI <span class="text-danger">*</span>
                                 </label>
                                 <input type="text" 
                                        class="form-control <?= (isset($validation) && $validation->hasError('dni')) ? 'is-invalid' : '' ?>" 
@@ -374,7 +403,16 @@
                                        title="Solo se permiten números"
                                        required>
                                 <?php if (isset($validation) && $validation->hasError('dni')): ?>
-                                    <div class="invalid-feedback"><?= esc($validation->getError('dni')) ?></div>
+                                    <?php 
+                                    $errorDni = $validation->getError('dni');
+                                    $mensajesEspanol = [
+                                        'The dni field is required.' => 'El campo DNI es obligatorio.',
+                                        'The dni field must contain a unique value.' => 'El DNI debe ser único.',
+                                        'The dni field may only contain numeric characters.' => 'El DNI solo puede contener números.',
+                                    ];
+                                    $mensajeTraducido = isset($mensajesEspanol[$errorDni]) ? $mensajesEspanol[$errorDni] : $errorDni;
+                                    ?>
+                                    <div class="invalid-feedback"><?= esc($mensajeTraducido) ?></div>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -382,7 +420,7 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="especialidad" class="form-label">
-                                    <i class='bx bx-briefcase-alt me-1'></i>Especialidad
+                                    <i class='bx bx-briefcase-alt me-1'></i>Especialidad <span class="text-danger">*</span>
                                 </label>
                                 <select class="form-select <?= (isset($validation) && $validation->hasError('especialidad')) ? 'is-invalid' : '' ?>" 
                                         id="especialidad" 
@@ -397,13 +435,20 @@
                                     <?php endforeach; ?>
                                 </select>
                                 <?php if (isset($validation) && $validation->hasError('especialidad')): ?>
-                                    <div class="invalid-feedback"><?= esc($validation->getError('especialidad')) ?></div>
+                                    <?php 
+                                    $errorEspecialidad = $validation->getError('especialidad');
+                                    $mensajesEspanol = [
+                                        'The especialidad field is required.' => 'El campo especialidad es obligatorio.',
+                                    ];
+                                    $mensajeTraducido = isset($mensajesEspanol[$errorEspecialidad]) ? $mensajesEspanol[$errorEspecialidad] : $errorEspecialidad;
+                                    ?>
+                                    <div class="invalid-feedback"><?= esc($mensajeTraducido) ?></div>
                                 <?php endif; ?>
                             </div>
 
                             <div class="col-md-6">
                                 <label for="telefono" class="form-label">
-                                    <i class='bx bx-phone me-1'></i>Teléfono
+                                    <i class='bx bx-phone me-1'></i>Teléfono <span class="text-danger">*</span>
                                 </label>
                                 <input type="text" 
                                        class="form-control <?= (isset($validation) && $validation->hasError('telefono')) ? 'is-invalid' : '' ?>" 
@@ -415,7 +460,15 @@
                                        title="Solo números, paréntesis, guiones y símbolo +"
                                        required>
                                 <?php if (isset($validation) && $validation->hasError('telefono')): ?>
-                                    <div class="invalid-feedback"><?= esc($validation->getError('telefono')) ?></div>
+                                    <?php 
+                                    $errorTelefono = $validation->getError('telefono');
+                                    $mensajesEspanol = [
+                                        'The telefono field is required.' => 'El campo teléfono es obligatorio.',
+                                        'The telefono field may only contain numeric characters.' => 'El teléfono solo puede contener números.',
+                                    ];
+                                    $mensajeTraducido = isset($mensajesEspanol[$errorTelefono]) ? $mensajesEspanol[$errorTelefono] : $errorTelefono;
+                                    ?>
+                                    <div class="invalid-feedback"><?= esc($mensajeTraducido) ?></div>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -423,7 +476,7 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="email" class="form-label">
-                                    <i class='bx bx-envelope me-1'></i>Email
+                                    <i class='bx bx-envelope me-1'></i>Email <span class="text-danger">*</span>
                                 </label>
                                 <input type="email" 
                                        class="form-control <?= (isset($validation) && $validation->hasError('email')) ? 'is-invalid' : '' ?>" 
@@ -433,7 +486,16 @@
                                        placeholder="enfermero@hospital.com"
                                        required>
                                 <?php if (isset($validation) && $validation->hasError('email')): ?>
-                                    <div class="invalid-feedback"><?= esc($validation->getError('email')) ?></div>
+                                    <?php 
+                                    $errorEmail = $validation->getError('email');
+                                    $mensajesEspanol = [
+                                        'The email field is required.' => 'El campo email es obligatorio.',
+                                        'The email field must contain a valid email address.' => 'El email debe tener un formato válido.',
+                                        'The email field must contain a unique value.' => 'El email debe ser único.',
+                                    ];
+                                    $mensajeTraducido = isset($mensajesEspanol[$errorEmail]) ? $mensajesEspanol[$errorEmail] : $errorEmail;
+                                    ?>
+                                    <div class="invalid-feedback"><?= esc($mensajeTraducido) ?></div>
                                 <?php endif; ?>
                             </div>
 
@@ -447,14 +509,21 @@
                                        name="fecha_ingreso" 
                                        value="<?= old('fecha_ingreso') ?>">
                                 <?php if (isset($validation) && $validation->hasError('fecha_ingreso')): ?>
-                                    <div class="invalid-feedback"><?= esc($validation->getError('fecha_ingreso')) ?></div>
+                                    <?php 
+                                    $errorFecha = $validation->getError('fecha_ingreso');
+                                    $mensajesEspanol = [
+                                        'The fecha_ingreso field must be a valid date.' => 'La fecha de ingreso debe ser una fecha válida.',
+                                    ];
+                                    $mensajeTraducido = isset($mensajesEspanol[$errorFecha]) ? $mensajesEspanol[$errorFecha] : $errorFecha;
+                                    ?>
+                                    <div class="invalid-feedback"><?= esc($mensajeTraducido) ?></div>
                                 <?php endif; ?>
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label for="disponibilidad" class="form-label">
-                                <i class='bx bx-check-circle me-1'></i>Disponibilidad
+                                <i class='bx bx-check-circle me-1'></i>Disponibilidad <span class="text-danger">*</span>
                             </label>
                             <select class="form-select <?= (isset($validation) && $validation->hasError('disponibilidad')) ? 'is-invalid' : '' ?>" 
                                     id="disponibilidad" 
@@ -472,7 +541,14 @@
                                 </option>
                             </select>
                             <?php if (isset($validation) && $validation->hasError('disponibilidad')): ?>
-                                <div class="invalid-feedback"><?= esc($validation->getError('disponibilidad')) ?></div>
+                                <?php 
+                                $errorDisponibilidad = $validation->getError('disponibilidad');
+                                $mensajesEspanol = [
+                                    'The disponibilidad field is required.' => 'El campo disponibilidad es obligatorio.',
+                                ];
+                                $mensajeTraducido = isset($mensajesEspanol[$errorDisponibilidad]) ? $mensajesEspanol[$errorDisponibilidad] : $errorDisponibilidad;
+                                ?>
+                                <div class="invalid-feedback"><?= esc($mensajeTraducido) ?></div>
                             <?php endif; ?>
                         </div>
 
