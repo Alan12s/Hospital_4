@@ -14,6 +14,7 @@ class AnestesistasModel extends Model
     protected $protectFields = true;
     protected $allowedFields = [
         'nombre',
+        'dni',
         'especialidad',
         'telefono',
         'email',
@@ -29,6 +30,7 @@ class AnestesistasModel extends Model
     // Validation
     protected $validationRules = [
         'nombre' => 'required|max_length[100]',
+        'dni' => 'required|numeric|min_length[7]|max_length[8]',
         'especialidad' => 'required|max_length[100]',
         'telefono' => 'required|max_length[20]',
         'email' => 'required|valid_email|max_length[100]',
@@ -39,6 +41,12 @@ class AnestesistasModel extends Model
         'nombre' => [
             'required' => 'El nombre es obligatorio',
             'max_length' => 'El nombre no puede exceder los 100 caracteres'
+        ],
+        'dni' => [
+            'required' => 'El DNI es obligatorio',
+            'numeric' => 'El DNI solo puede contener números',
+            'min_length' => 'El DNI debe tener al menos 7 dígitos',
+            'max_length' => 'El DNI no puede exceder los 8 dígitos'
         ],
         'especialidad' => [
             'required' => 'La especialidad es obligatoria',
@@ -80,6 +88,7 @@ class AnestesistasModel extends Model
     {
         return $this->find($id);
     }
+    
 
     /**
      * Agregar un nuevo anestesista
@@ -184,4 +193,9 @@ class AnestesistasModel extends Model
             'en_cirugia' => $this->countPorDisponibilidad('en_cirugia')
         ];
     }
+    // Método para contar anestesistas
+public function countAll()
+{
+    return $this->builder()->countAllResults();
+}
 }

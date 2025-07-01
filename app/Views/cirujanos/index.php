@@ -387,7 +387,7 @@
             <!-- Page Header -->
             <div class="dashboard-header animate-fade-in">
                 <h1>
-                    <i class='bx bx-user-md'></i><?= esc($titulo) ?>
+                    <i class='bx bx-user'></i><?= esc($titulo) ?>
                 </h1>
                 <div class="d-flex gap-2">
                     <a href="<?= site_url('cirujanos/crear') ?>" class="btn btn-primary">

@@ -106,6 +106,8 @@
             align-items: center;
             gap: 0.5rem;
             transition: all 0.3s ease;
+            border-radius: var(--border-radius-sm);
+            padding: 0.75rem 1.5rem;
         }
 
         .btn-primary:hover {
@@ -123,6 +125,8 @@
             align-items: center;
             gap: 0.5rem;
             transition: all 0.3s ease;
+            border-radius: var(--border-radius-sm);
+            padding: 0.75rem 1.5rem;
         }
 
         .btn-success:hover {
@@ -221,7 +225,7 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            border-radius: 8px;
+            border-radius: var(--border-radius-sm);
             margin: 0 2px;
             transition: all 0.2s ease;
             font-size: 0.9rem;
@@ -291,6 +295,21 @@
             font-size: 0.9rem;
             border: none;
             box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.25rem;
+        }
+
+        .alert-success {
+            background-color: rgba(34, 197, 94, 0.1);
+            color: var(--success-color);
+            border-left: 4px solid var(--success-color);
+        }
+
+        .alert-danger {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+            border-left: 4px solid var(--danger-color);
         }
 
         /* ============= BADGE STYLES ============= */
@@ -299,6 +318,7 @@
             padding: 0.35rem 0.65rem;
             font-size: 0.75rem;
             letter-spacing: 0.5px;
+            border-radius: var(--border-radius-sm);
         }
 
         .bg-disponible {
@@ -402,25 +422,21 @@
             <!-- Flash Messages -->
             <?php if (session()->getFlashdata('success')): ?>
                 <div class="alert alert-success alert-dismissible fade show glass-card">
-                    <div class="d-flex align-items-center">
-                        <i class='bx bx-check-circle me-2'></i>
-                        <?= esc(session()->getFlashdata('success')) ?>
-                    </div>
+                    <i class='bx bx-check-circle me-2'></i>
+                    <div><?= esc(session()->getFlashdata('success')) ?></div>
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             <?php endif; ?>
 
             <?php if (session()->getFlashdata('error')): ?>
                 <div class="alert alert-danger alert-dismissible fade show glass-card">
-                    <div class="d-flex align-items-center">
-                        <i class='bx bx-error-circle me-2'></i>
-                        <?= esc(session()->getFlashdata('error')) ?>
-                    </div>
+                    <i class='bx bx-error-circle me-2'></i>
+                    <div><?= esc(session()->getFlashdata('error')) ?></div>
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             <?php endif; ?>
 
-            <!-- Nurses Table -->
+            <!-- Enfermeros Table -->
             <div class="glass-card animate-fade-in" style="animation-delay: 0.1s">
                 <div class="card-header">
                     <h5><i class='bx bx-table me-2'></i>Listado de Enfermeros</h5>
@@ -491,7 +507,7 @@
                                                         onclick="configurarModalEliminar({
                                                             idElemento: '<?= $enfermero['id'] ?>',
                                                             nombreElemento: '<?= esc($enfermero['nombre']) ?>',
-                                                            actionUrl: '<?= site_url('enfermeros/delete/'.$enfermero['id']) ?>',
+                                                            actionUrl: '<?= site_url('enfermeros/eliminar/'.$enfermero['id']) ?>',
                                                             titulo: 'Eliminar Enfermero',
                                                             mensajeAdicional: 'Se eliminarán todos los registros asociados.',
                                                             icono: 'bx-user-x'

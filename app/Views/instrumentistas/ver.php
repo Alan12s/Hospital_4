@@ -444,45 +444,29 @@
                         <button type="button"
                             class="btn btn-danger"
                             data-bs-toggle="modal"
-                            data-bs-target="#modalEliminarInstrumentista"
-                            data-id="<?= esc($instrumentista['id']) ?>"
-                            data-nombre="<?= esc($instrumentista['nombre']) ?>">
+                            data-bs-target="#modalEliminar"
+                            onclick="configurarModalEliminar({
+                                idElemento: '<?= $instrumentista['id'] ?>',
+                                nombreElemento: '<?= esc($instrumentista['nombre']) ?>',
+                                actionUrl: '<?= site_url('instrumentistas/eliminar/'.$instrumentista['id']) ?>',
+                                titulo: 'Eliminar Instrumentista',
+                                mensajeAdicional: '',
+                                icono: 'bx-user-x'
+                            })">
                             <i class='bx bx-trash'></i> Eliminar Instrumentista
                         </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Modal Eliminar Instrumentista -->
-            <div class="modal fade" id="modalEliminarInstrumentista" tabindex="-1" aria-labelledby="modalEliminarInstrumentistaLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalEliminarInstrumentistaLabel">
-                                <i class='bx bx-error-circle me-2'></i>Confirmar Eliminación
-                            </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <p>¿Está seguro que desea eliminar al instrumentista <strong><span id="nombreInstrumentistaModal"></span></strong>?</p>
-                            <p class="fw-bold text-danger">Esta acción no se puede deshacer.</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                <i class='bx bx-x me-1'></i> Cancelar
-                            </button>
-                            <a href="#" id="btnConfirmarEliminar" class="btn btn-danger">
-                                <i class='bx bx-trash me-1'></i> Eliminar
-                            </a>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Incluir modal de eliminación reutilizable -->
+    <?= $this->include('includes/modal_eliminar') ?>
+
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Auto-hide alerts after 5 seconds
@@ -512,20 +496,6 @@
                     this.style.boxShadow = 'var(--shadow-xl)';
                 });
             });
-
-            // Modal de eliminación
-            const modalEliminar = document.getElementById('modalEliminarInstrumentista');
-            if (modalEliminar) {
-                modalEliminar.addEventListener('show.bs.modal', function(event) {
-                    const button = event.relatedTarget;
-                    const id = button.getAttribute('data-id') || button.getAttribute('data-bs-id');
-                    const nombre = button.getAttribute('data-nombre') || button.getAttribute('data-bs-nombre');
-                    
-                    document.getElementById('nombreInstrumentistaModal').textContent = nombre;
-                    const btnEliminar = document.getElementById('btnConfirmarEliminar');
-                    btnEliminar.href = '<?= site_url("instrumentistas/eliminar") ?>/' + id;
-                });
-            }
         });
     </script>
     <?= $this->include('includes/footer') ?>

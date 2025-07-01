@@ -340,16 +340,40 @@
                                     <i class='bx bx-user me-1'></i>Nombre Completo
                                 </label>
                                 <input type="text" 
-                                       class="form-control <?= (isset($validation) && $validation->hasError('nombre')) ? 'is-invalid' : '' ?>" 
-                                       id="nombre" 
-                                       name="nombre" 
-                                       value="<?= old('nombre', $anestesista['nombre']) ?>" 
-                                       placeholder="Ingrese el nombre completo"
-                                       required>
+                                    class="form-control <?= (isset($validation) && $validation->hasError('nombre')) ? 'is-invalid' : '' ?>" 
+                                    id="nombre" 
+                                    name="nombre" 
+                                    value="<?= old('nombre', $anestesista['nombre']) ?>" 
+                                    placeholder="Ingrese el nombre completo"
+                                    required>
                                 <?php if (isset($validation) && $validation->hasError('nombre')): ?>
                                     <div class="invalid-feedback"><?= esc($validation->getError('nombre')) ?></div>
                                 <?php endif; ?>
                             </div>
+
+                                <div class="col-md-6">
+    <label for="dni" class="form-label">
+        <i class='bx bx-id-card me-1'></i>DNI
+    </label>
+    <input type="text" 
+           class="form-control <?= (isset($validation) && $validation->hasError('dni')) ? 'is-invalid' : '' ?>" 
+           id="dni" 
+           name="dni"
+           value="<?= old('dni', $anestesista['dni']) ?>"
+           placeholder="Ingrese el DNI (sin puntos)"
+           maxlength="8"
+           pattern="[0-9]{7,8}"
+           inputmode="numeric"
+           title="Ingrese un DNI válido de 7 u 8 dígitos"
+           oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+           required>
+    <?php if (isset($validation) && $validation->hasError('dni')): ?>
+        <div class="invalid-feedback"><?= esc($validation->getError('dni')) ?></div>
+    <?php endif; ?>
+    <div class="form-text">
+        <small class="text-muted">Formato: 12345678 (7 u 8 dígitos sin puntos)</small>
+    </div>
+</div>
 
                             <div class="col-md-6">
                                 <label for="especialidad" class="form-label">

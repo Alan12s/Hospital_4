@@ -358,22 +358,22 @@
                                 <?php endif; ?>
                             </div>
 
-                            <div class="col-md-6">
-                                <label for="dni" class="form-label">
-                                    <i class='bx bx-id-card me-1'></i>DNI
-                                </label>
-                                <input type="text" 
-                                       class="form-control <?= (isset($validation) && $validation->hasError('dni')) ? 'is-invalid' : '' ?>" 
-                                       id="dni" 
-                                       name="dni" 
-                                       value="<?= old('dni') ?>" 
-                                       placeholder="Ej: 12345678"
-                                       required>
-                                <?php if (isset($validation) && $validation->hasError('dni')): ?>
-                                    <div class="invalid-feedback"><?= esc($validation->getError('dni')) ?></div>
-                                <?php endif; ?>
-                            </div>
-                        </div>
+<div class="col-md-6">
+    <label for="dni" class="form-label">
+        <i class='bx bx-id-card me-1'></i>DNI
+    </label>
+    <input type="text" 
+           class="form-control <?= (isset($validation) && $validation->hasError('dni')) ? 'is-invalid' : '' ?>" 
+           id="dni" 
+           name="dni" 
+           value="<?= old('dni', $instrumentista['dni'] ?? '') ?>" 
+           placeholder="Ej: 12345678"
+           required>
+    <?php if (isset($validation) && $validation->hasError('dni')): ?>
+        <div class="invalid-feedback"><?= esc($validation->getError('dni')) ?></div>
+    <?php endif; ?>
+</div>
+
 
                         <div class="row mb-3">
                             <div class="col-md-6">
@@ -403,24 +403,6 @@
                                     <option value="Instrumentista en Cirugía Odontológica" <?= (old('especialidad') == 'Instrumentista en Cirugía Odontológica') ? 'selected' : '' ?>>
                                         Instrumentista en Cirugía Odontológica
                                     </option>
-                                    <option value="Instrumentista en Cirugía Cardiovascular" <?= (old('especialidad') == 'Instrumentista en Cirugía Cardiovascular') ? 'selected' : '' ?>>
-                                        Instrumentista en Cirugía Cardiovascular
-                                    </option>
-                                    <option value="Instrumentista en Neurocirugía" <?= (old('especialidad') == 'Instrumentista en Neurocirugía') ? 'selected' : '' ?>>
-                                        Instrumentista en Neurocirugía
-                                    </option>
-                                    <option value="Instrumentista en Cirugía Plástica" <?= (old('especialidad') == 'Instrumentista en Cirugía Plástica') ? 'selected' : '' ?>>
-                                        Instrumentista en Cirugía Plástica
-                                    </option>
-                                    <option value="Instrumentista en Cirugía Pediátrica" <?= (old('especialidad') == 'Instrumentista en Cirugía Pediátrica') ? 'selected' : '' ?>>
-                                        Instrumentista en Cirugía Pediátrica
-                                    </option>
-                                    <option value="Instrumentista en Cirugía Laparoscópica" <?= (old('especialidad') == 'Instrumentista en Cirugía Laparoscópica') ? 'selected' : '' ?>>
-                                        Instrumentista en Cirugía Laparoscópica
-                                    </option>
-                                    <option value="Instrumentista en Cirugía Oncológica" <?= (old('especialidad') == 'Instrumentista en Cirugía Oncológica') ? 'selected' : '' ?>>
-                                        Instrumentista en Cirugía Oncológica
-                                    </option>
                                 </select>
                                 <?php if (isset($validation) && $validation->hasError('especialidad')): ?>
                                     <div class="invalid-feedback"><?= esc($validation->getError('especialidad')) ?></div>
@@ -431,7 +413,7 @@
                                 <label for="telefono" class="form-label">
                                     <i class='bx bx-phone me-1'></i>Teléfono
                                 </label>
-                                <input type="text" 
+                                <input type="tel" 
                                        class="form-control <?= (isset($validation) && $validation->hasError('telefono')) ? 'is-invalid' : '' ?>" 
                                        id="telefono" 
                                        name="telefono" 
@@ -534,6 +516,10 @@
             });
         });
 
+
+
+
+
         // Función para animaciones de hover en las cards
         const cards = document.querySelectorAll('.glass-card');
         cards.forEach(card => {
@@ -547,7 +533,61 @@
                 this.style.boxShadow = 'var(--shadow-xl)';
             });
         });
-    </script>
+</script>
+
+
+
+
+<script>
+    // Validación DNI solo números
+    const dniInput = document.getElementById('dni');
+    if (dniInput) {
+        dniInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+    }
+
+    // Validación teléfono solo números
+    const telefonoInput = document.getElementById('telefono');
+    if (telefonoInput) {
+        telefonoInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+    }
+
+
+    // Validación nombre solo letras y espacios
+    const nombreInput = document.getElementById('nombre');
+    if (nombreInput) {
+        nombreInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+        });
+    }
+
+
+
+
+
+
+
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <?= $this->include('includes/footer') ?>
 </body>
 </html>

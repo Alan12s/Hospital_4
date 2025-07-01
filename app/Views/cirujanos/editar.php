@@ -261,70 +261,6 @@
             border-top: 1px solid var(--gray-200);
         }
 
-        /* ============= DETAIL VIEW STYLES ============= */
-        .detail-row {
-            padding: 1rem 0;
-            border-bottom: 1px solid var(--gray-200);
-        }
-
-        .detail-row:last-child {
-            border-bottom: none;
-        }
-
-        .detail-label {
-            font-weight: 600;
-            color: var(--gray-700);
-        }
-
-        .detail-value {
-            color: var(--gray-800);
-        }
-
-        .badge {
-            font-size: 0.8rem;
-            font-weight: 600;
-            padding: 0.5rem 0.75rem;
-            border-radius: var(--border-radius-sm);
-        }
-
-        /* ============= TABLE STYLES ============= */
-        .table-responsive {
-            border-radius: var(--border-radius);
-            overflow: hidden;
-        }
-
-        .table {
-            margin-bottom: 0;
-        }
-
-        .table thead th {
-            background-color: var(--primary-color);
-            color: white;
-            font-weight: 600;
-            border-bottom: none;
-        }
-
-        .table-hover tbody tr:hover {
-            background-color: rgba(106, 27, 154, 0.05);
-        }
-
-        /* ============= ANIMATIONS ============= */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .animate-fade-in {
-            animation: fadeIn 0.6s ease-out forwards;
-            opacity: 0;
-        }
-
         /* ============= RESPONSIVE ============= */
         @media (max-width: 768px) {
             body {
@@ -359,15 +295,6 @@
             .card-body {
                 padding: 1.5rem;
             }
-            
-            .detail-row {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-            
-            .detail-label, .detail-value {
-                width: 100%;
-            }
         }
 
         @media (max-width: 576px) {
@@ -384,10 +311,6 @@
             
             .card-body {
                 padding: 1rem;
-            }
-            
-            .table-responsive {
-                border-radius: 0;
             }
         }
     </style>
@@ -556,6 +479,7 @@
                                     <option value="en_cirugia" <?= (old('disponibilidad', $cirujano->disponibilidad) == 'en_cirugia') ? 'selected' : '' ?>>
                                         En cirugía
                                     </option>
+                                   
                                 </select>
                                 <?php if (isset($validation) && $validation->hasError('disponibilidad')): ?>
                                     <div class="invalid-feedback"><?= esc($validation->getError('disponibilidad')) ?></div>

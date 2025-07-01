@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= esc($titulo) ?> - Sistema Quirúrgico</title>
     
@@ -13,7 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* Estilos iguales a los de editar.php */
+        /* ============= VARIABLES CSS ============= */
         :root {
             --primary-color: #6a1b9a;
             --primary-light: #9c4dcc;
@@ -97,21 +97,27 @@
             color: var(--accent-color);
         }
 
+        .page-subtitle {
+            color: var(--gray-200);
+            font-size: 0.95rem;
+            margin-top: 0.5rem;
+        }
+
         .btn-secondary {
-            background-color: var(--gray-600);
-            border-color: var(--gray-700);
+            background-color: var(--gray-500);
+            border-color: var(--gray-600);
             font-weight: 600;
             letter-spacing: 0.5px;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 0.5rem;
             transition: all 0.3s ease;
+            padding: 0.5rem 1.25rem;
             border-radius: var(--border-radius-sm);
-            padding: 0.75rem 1.5rem;
         }
 
         .btn-secondary:hover {
-            background-color: var(--gray-700);
+            background-color: var(--gray-600);
             transform: translateY(-2px);
             box-shadow: var(--shadow-md);
         }
@@ -155,46 +161,126 @@
             font-size: 1.2rem;
         }
 
-        .card-body {
-            padding: 2rem;
-        }
-
         /* ============= TABLE STYLES ============= */
         .table-responsive {
-            border-radius: var(--border-radius);
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
             overflow: hidden;
         }
 
         .table {
             margin-bottom: 0;
+            font-size: 0.9rem;
+            width: 100%;
         }
 
         .table thead th {
-            background-color: var(--primary-color);
-            color: white;
+            background-color: rgba(106, 27, 154, 0.05);
+            border-bottom-width: 1px;
             font-weight: 600;
+            color: var(--gray-700);
+            padding: 0.75rem 1rem;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .table tbody tr {
+            transition: all 0.2s ease;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .table tbody tr:last-child {
             border-bottom: none;
         }
 
-        .table-hover tbody tr:hover {
-            background-color: rgba(106, 27, 154, 0.05);
+        .table tbody tr:hover {
+            background-color: rgba(106, 27, 154, 0.03);
         }
 
-        .table td, .table th {
+        .table td {
             vertical-align: middle;
-            padding: 1rem;
+            padding: 0.75rem 1rem;
+            white-space: nowrap;
+            color: var(--gray-700);
         }
 
+        /* ============= BUTTON STYLES ============= */
+        .btn-action {
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            margin: 0 2px;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            border: none;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-view {
+            background-color: rgba(13, 110, 253, 0.1);
+            color: #0d6efd;
+        }
+
+        .btn-view:hover {
+            background-color: rgba(13, 110, 253, 0.2);
+            color: #0d6efd;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-edit {
+            background-color: rgba(106, 27, 154, 0.1);
+            color: var(--primary-color);
+        }
+
+        .btn-edit:hover {
+            background-color: rgba(106, 27, 154, 0.2);
+            color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* ============= EMPTY STATE ============= */
+        .empty-state {
+            padding: 2rem;
+            text-align: center;
+            color: var(--gray-500);
+        }
+
+        .empty-state i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--gray-400);
+            opacity: 0.7;
+        }
+
+        .empty-state p {
+            margin-bottom: 0;
+            font-size: 0.95rem;
+        }
+
+        /* ============= BADGE STYLES ============= */
         .badge {
-            font-size: 0.8rem;
-            font-weight: 600;
-            padding: 0.5rem 0.75rem;
-            border-radius: var(--border-radius-sm);
+            font-weight: 500;
+            padding: 0.35rem 0.65rem;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
         }
 
-        .btn-sm {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.875rem;
+        .bg-disponible {
+            background-color: var(--success-color) !important;
+        }
+
+        .bg-en_cirugia {
+            background-color: var(--warning-color) !important;
+        }
+
+        .bg-no_disponible {
+            background-color: var(--danger-color) !important;
         }
 
         /* ============= ANIMATIONS ============= */
@@ -215,6 +301,12 @@
         }
 
         /* ============= RESPONSIVE ============= */
+        @media (max-width: 992px) {
+            .table td, .table th {
+                padding: 0.65rem 0.75rem;
+            }
+        }
+
         @media (max-width: 768px) {
             body {
                 margin-left: 0;
@@ -236,45 +328,14 @@
                 font-size: 1.5rem;
             }
             
-            .table-responsive {
-                border-radius: 0;
-            }
-            
-            .table thead {
-                display: none;
-            }
-            
-            .table, .table tbody, .table tr, .table td {
-                display: block;
+            .btn-secondary {
                 width: 100%;
+                justify-content: center;
             }
             
-            .table tr {
-                margin-bottom: 1rem;
-                border: 1px solid var(--gray-200);
-                border-radius: var(--border-radius-sm);
-                padding: 1rem;
-            }
-            
-            .table td {
-                padding: 0.5rem;
-                border-bottom: 1px solid var(--gray-200);
-            }
-            
-            .table td:last-child {
-                border-bottom: none;
-            }
-            
-            .table td::before {
-                content: attr(data-label);
-                font-weight: 600;
-                display: inline-block;
-                width: 120px;
-                color: var(--gray-700);
-            }
-            
-            .btn-group {
-                justify-content: flex-end;
+            .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
             }
         }
 
@@ -290,8 +351,15 @@
                 padding: 1rem;
             }
             
-            .card-body {
-                padding: 1rem;
+            .table td, .table th {
+                padding: 0.5rem;
+                font-size: 0.8rem;
+            }
+            
+            .btn-action {
+                width: 28px;
+                height: 28px;
+                font-size: 0.8rem;
             }
         }
     </style>
@@ -305,11 +373,14 @@
         <div class="main-content">
             <!-- Page Header -->
             <div class="dashboard-header animate-fade-in">
-                <h1>
-                    <i class='bx bx-check-circle'></i><?= esc($titulo) ?>
-                </h1>
+                <div>
+                    <h1>
+                        <i class='bx bx-check-circle'></i><?= esc($titulo) ?>
+                    </h1>
+                    <p class="page-subtitle">Cirujanos actualmente disponibles para asignación</p>
+                </div>
                 <a href="<?= site_url('cirujanos') ?>" class="btn btn-secondary">
-                    <i class='bx bx-arrow-left'></i> Volver a Cirujanos
+                    <i class='bx bx-arrow-back'></i> Volver
                 </a>
             </div>
 
@@ -334,17 +405,18 @@
                 </div>
             <?php endif; ?>
 
-            <!-- List Card -->
+            <!-- Surgeons Table -->
             <div class="glass-card animate-fade-in" style="animation-delay: 0.1s">
                 <div class="card-header">
-                    <h5><i class='bx bx-list-check me-2'></i>Cirujanos Disponibles</h5>
+                    <h5><i class='bx bx-list-check me-2'></i>Listado de Cirujanos Disponibles</h5>
+                    <span class="badge bg-success"><?= count($cirujanos) ?> disponibles</span>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover">
+                        <table class="table table-hover mb-0">
                             <thead>
                                 <tr>
-                                    <th>Nombre</th>
+                                    <th>Nombre Completo</th>
                                     <th>DNI</th>
                                     <th>Teléfono</th>
                                     <th>Email</th>
@@ -354,25 +426,32 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php if (!empty($cirujanos)): ?>
+                                <?php if (empty($cirujanos)): ?>
+                                    <tr>
+                                        <td colspan="7" class="empty-state">
+                                            <i class='bx bx-user-x'></i>
+                                            <p>No hay cirujanos disponibles actualmente</p>
+                                        </td>
+                                    </tr>
+                                <?php else: ?>
                                     <?php foreach($cirujanos as $cirujano): ?>
                                     <tr>
-                                        <td data-label="Nombre"><?= esc($cirujano->nombre) ?></td>
-                                        <td data-label="DNI"><?= esc($cirujano->dni) ?></td>
-                                        <td data-label="Teléfono"><?= esc($cirujano->telefono) ?></td>
-                                        <td data-label="Email"><?= esc($cirujano->email) ?></td>
-                                        <td data-label="Especialidad"><?= esc($cirujano->especialidad ?? 'Sin especialidad') ?></td>
-                                        <td data-label="Estado">
+                                        <td><?= esc($cirujano->nombre) ?></td>
+                                        <td><?= esc($cirujano->dni) ?></td>
+                                        <td><?= esc($cirujano->telefono) ?></td>
+                                        <td><?= esc($cirujano->email) ?></td>
+                                        <td><?= esc($cirujano->especialidad ?? 'Sin especialidad') ?></td>
+                                        <td>
                                             <?php
                                                 switch ($cirujano->disponibilidad) {
                                                     case 'disponible':
-                                                        echo '<span class="badge bg-success">Disponible</span>';
+                                                        echo '<span class="badge bg-disponible">Disponible</span>';
                                                         break;
                                                     case 'no_disponible':
-                                                        echo '<span class="badge bg-secondary">No disponible</span>';
+                                                        echo '<span class="badge bg-no_disponible">No disponible</span>';
                                                         break;
                                                     case 'en_cirugia':
-                                                        echo '<span class="badge bg-warning text-dark">En cirugía</span>';
+                                                        echo '<span class="badge bg-en_cirugia">En cirugía</span>';
                                                         break;
                                                     default:
                                                         echo '<span class="badge bg-light text-dark">Desconocido</span>';
@@ -380,21 +459,17 @@
                                             ?>
                                         </td>
                                         <td class="text-end">
-                                            <div class="btn-group btn-group-sm">
-                                                <a href="<?= site_url('cirujanos/ver/'.$cirujano->id) ?>" class="btn btn-secondary" title="Ver">
+                                            <div class="d-flex justify-content-end">
+                                                <a href="<?= site_url('cirujanos/ver/'.$cirujano->id) ?>" class="btn-action btn-view" title="Ver detalles">
                                                     <i class='bx bx-show'></i>
                                                 </a>
-                                                <a href="<?= site_url('cirujanos/editar/'.$cirujano->id) ?>" class="btn btn-primary" title="Editar">
+                                                <a href="<?= site_url('cirujanos/editar/'.$cirujano->id) ?>" class="btn-action btn-edit" title="Editar">
                                                     <i class='bx bx-edit'></i>
                                                 </a>
                                             </div>
                                         </td>
                                     </tr>
                                     <?php endforeach; ?>
-                                <?php else: ?>
-                                    <tr>
-                                        <td colspan="7" class="text-center text-muted">No hay cirujanos disponibles.</td>
-                                    </tr>
                                 <?php endif; ?>
                             </tbody>
                         </table>
@@ -449,5 +524,6 @@
         });
     </script>
     <?= $this->include('includes/footer') ?>
+
 </body>
 </html>

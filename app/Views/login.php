@@ -12,88 +12,79 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-<link href="<?= base_url('assets/css/login.css') ?>" rel="stylesheet">
+    <link href="<?= base_url('assets/css/login.css') ?>" rel="stylesheet">
 
-<style>
-.logo-container {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 20px;
-}
+    <style>
+        .logo-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
 
-.custom-logo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+        .custom-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
 
-.hospital-logo-svg {
-    animation: logoFloat 3s ease-in-out infinite;
-    transition: all 0.3s ease;
-    filter: drop-shadow(0 8px 20px rgba(21, 101, 192, 0.3));
-}
+        .hospital-logo {
+            width: 160px; /* Tamaño aumentado de 120px a 160px */
+            height: 160px;
+            object-fit: contain;
+            animation: logoFloat 4s ease-in-out infinite;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 5px 15px rgba(106, 27, 154, 0.5));
+        }
 
-.hospital-logo-svg:hover {
-    transform: scale(1.05);
-    filter: drop-shadow(0 12px 30px rgba(21, 101, 192, 0.4));
-}
+        .hospital-logo:hover {
+            animation: logoFloat 4s ease-in-out infinite, logoPulse 0.8s ease forwards;
+            filter: drop-shadow(0 8px 20px rgba(106, 27, 154, 0.7));
+        }
 
-.hospital-logo {
-    width: 120px;
-    height: 120px;
-}
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
 
-.hospital-logo:hover {
-    transform: scale(1.05);
-    box-shadow: 0 12px 30px rgba(106, 27, 154, 0.4);
-}
+        @keyframes logoPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
 
-@keyframes logoFloat {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-5px); }
-}
+        .login-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
 
-.logo-and-icon {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
+        .login-subtitle {
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+        }
 
-.hospital-icon {
-    font-size: 2.5rem;
-    color: #6a1b9a;
-    text-shadow: 0 0 20px rgba(106, 27, 154, 0.5);
-}
+        @media (max-width: 768px) {
+            .hospital-logo {
+                width: 140px;
+                height: 140px;
+            }
+            
+            .login-title {
+                font-size: 1.6rem;
+            }
+        }
 
-@media (max-width: 576px) {
-    .logo-container {
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    .logo-and-icon {
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    .hospital-logo {
-        width: 100px;
-        height: 100px;
-    }
-    
-    .hospital-logo-svg {
-        width: 100px;
-        height: 100px;
-    }
-    
-    .hospital-icon {
-        font-size: 2rem;
-    }
-}
-</style>
+        @media (max-width: 576px) {
+            .hospital-logo {
+                width: 120px;
+                height: 120px;
+            }
+        }
+    </style>
 </head>
 <body class="d-flex align-items-center justify-content-center min-vh-100">
     
@@ -122,47 +113,18 @@
 
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-12 col-sm-8 col-md-6 col-lg-4">
+            <div class="col-12 col-sm-8 col-md-6 col-lg-4"> <!-- Tamaño original del contenedor -->
                 <div class="login-container rounded-4 p-4 p-md-5">
                     
                     <!-- Header -->
                     <div class="text-center mb-4">
                         <div class="logo-container">
-                            <div class="logo-and-icon">
-                                <div class="custom-logo">
-                                    <svg width="120" height="120" viewBox="0 0 120 120" class="hospital-logo-svg">
-                                        <defs>
-                                            <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
-                                                <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#1565c0" flood-opacity="0.3"/>
-                                            </filter>
-                                        </defs>
-                                        
-                                        <!-- Borde celeste sin fondo -->
-                                        <rect x="3" y="3" width="114" height="114" rx="18" ry="18" 
-                                              fill="transparent" filter="url(#shadow)" 
-                                              stroke="#00bcd4" stroke-width="6"/>
-                                        
-                                        <!-- Letra H grande en azul -->
-                                        <text x="18" y="80" font-family="Arial, sans-serif" font-size="54" font-weight="900" fill="#1a237e">H</text>
-                                        
-                                        <!-- Cruz roja más grande -->
-                                        <g transform="translate(50, 35)">
-                                            <rect x="0" y="8" width="20" height="8" fill="#e53935" rx="2"/>
-                                            <rect x="6" y="0" width="8" height="24" fill="#e53935" rx="2"/>
-                                        </g>
-                                        
-                                        <!-- Letra C más pequeña arriba -->
-                                        <text x="78" y="58" font-family="Arial, sans-serif" font-size="26" font-weight="900" fill="#1a237e">C</text>
-                                        
-                                        <!-- Letra A más pequeña abajo -->
-                                        <text x="78" y="85" font-family="Arial, sans-serif" font-size="26" font-weight="900" fill="#1a237e">A</text>
-                                        
-                                    </svg>
-                                </div>
+                            <div class="custom-logo">
+                                <img src="<?= base_url('assets/images/logos.png') ?>" alt="Hospital Logo" class="hospital-logo">
                             </div>
                         </div>
-                        <h2 class="fw-bold text-white mb-2">Sistema Quirúrgico</h2>
-                        <p class="text-muted mb-0">Acceso al panel de control</p>
+                        <h2 class="login-title">Hospital Dr. César Aguilar</h2>
+                        <p class="login-subtitle text-muted">Sistema Quirúrgico</p>
                     </div>
 
                     <!-- Alertas -->
@@ -258,7 +220,7 @@
                     <!-- Footer -->
                     <div class="text-center mt-4 pt-3 border-top" style="border-color: rgba(255,255,255,0.1) !important;">
                         <small class="text-muted">
-                            © <?= date('Y') ?> Sistema Quirúrgico
+                            © <?= date('Y') ?> Hospital Dr. César Aguilar
                         </small>
                     </div>
 
@@ -292,7 +254,7 @@
             const particlesContainer = document.getElementById('particles');
             
             setInterval(() => {
-                if (Math.random() > 0.7) { // 30% chance every interval
+                if (Math.random() > 0.7) {
                     const icon = document.createElement('i');
                     icon.className = `bx ${icons[Math.floor(Math.random() * icons.length)]} bg-medical-icon`;
                     icon.style.left = Math.random() * 90 + '%';
@@ -300,7 +262,6 @@
                     icon.style.animationDuration = (10 + Math.random() * 5) + 's';
                     particlesContainer.appendChild(icon);
                     
-                    // Remove icon after animation
                     setTimeout(() => {
                         if (icon.parentNode) {
                             icon.parentNode.removeChild(icon);

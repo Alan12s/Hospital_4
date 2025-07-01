@@ -484,6 +484,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+    // Reemplaza el script del final de tu index.php con este:
+
         document.addEventListener('DOMContentLoaded', function() {
             // Auto-hide alerts after 5 seconds
             const alertas = document.querySelectorAll('.alert');
@@ -513,6 +515,55 @@
                 this.style.boxShadow = 'var(--shadow-xl)';
             });
         });
+
+        // Función para configurar el modal de eliminación
+        function configurarModalEliminar(config) {
+            console.log('Configurando modal con:', config);
+            
+            // Verificar que todos los elementos existen
+            const modalTitulo = document.getElementById('modalEliminarTitulo');
+            const nombreElemento = document.getElementById('nombreElemento');
+            const mensajeAdicional = document.getElementById('mensajeAdicional');
+            const formEliminar = document.getElementById('formEliminar');
+            const idElemento = document.getElementById('idElemento');
+            
+            // Configurar contenido del modal
+            if (modalTitulo) {
+                modalTitulo.textContent = config.titulo || 'Confirmar Eliminación';
+            }
+            
+            if (nombreElemento) {
+                nombreElemento.textContent = config.nombreElemento || 'este elemento';
+            }
+            
+            if (mensajeAdicional && config.mensajeAdicional) {
+                mensajeAdicional.textContent = config.mensajeAdicional;
+            }
+            
+            // Configurar iconos si se proporcionan
+            if (config.icono) {
+                const iconoHeader = document.getElementById('iconoModalHeader');
+                const iconoMain = document.getElementById('iconoModalMain');
+                
+                if (iconoHeader) {
+                    iconoHeader.className = `bx ${config.icono} me-2 delete-icon-header`;
+                }
+                if (iconoMain) {
+                    iconoMain.className = `bx ${config.icono}`;
+                }
+            }
+            
+            // Configurar la acción del formulario - ESTO ES CRUCIAL
+            if (formEliminar && config.actionUrl) {
+                formEliminar.action = config.actionUrl;
+                console.log('Acción del formulario configurada:', config.actionUrl);
+            }
+            
+            // Configurar ID del elemento
+            if (idElemento && config.idElemento) {
+                idElemento.value = config.idElemento;
+            }
+        }
     </script>
     <?= $this->include('includes/footer') ?>
 </body>

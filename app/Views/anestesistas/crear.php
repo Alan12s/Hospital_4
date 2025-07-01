@@ -347,17 +347,44 @@
                                     <i class='bx bx-user me-1'></i>Nombre Completo
                                 </label>
                                 <input type="text" 
-                                       class="form-control <?= (isset($validation) && $validation->hasError('nombre')) ? 'is-invalid' : '' ?>" 
-                                       id="nombre" 
-                                       name="nombre" 
-                                       value="<?= old('nombre') ?>" 
-                                       placeholder="Ingrese el nombre completo"
-                                       required>
+                                    class="form-control <?= (isset($validation) && $validation->hasError('nombre')) ? 'is-invalid' : '' ?>" 
+                                    id="nombre" 
+                                    name="nombre" 
+                                    value="<?= old('nombre') ?>" 
+                                    placeholder="Ingrese el nombre completo"
+                                    oninput="validarSoloLetras(this)"
+                                    required>
                                 <?php if (isset($validation) && $validation->hasError('nombre')): ?>
                                     <div class="invalid-feedback"><?= esc($validation->getError('nombre')) ?></div>
                                 <?php endif; ?>
                             </div>
 
+                            <div class="col-md-6">
+                                <label for="dni" class="form-label">
+                                    <i class='bx bx-id-card me-1'></i>DNI
+                                </label>
+                                <input type="text" 
+                                       class="form-control <?= (isset($validation) && $validation->hasError('dni')) ? 'is-invalid' : '' ?>" 
+                                       id="dni" 
+                                       name="dni" 
+                                       value="<?= old('dni') ?>" 
+                                       placeholder="Ingrese el DNI (sin puntos)"
+                                       maxlength="8"
+                                       pattern="[0-9]{7,8}"
+                                       inputmode="numeric"
+                                       title="Ingrese un DNI válido de 7 u 8 dígitos"
+                                       oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                       required>
+                                <?php if (isset($validation) && $validation->hasError('dni')): ?>
+                                    <div class="invalid-feedback"><?= esc($validation->getError('dni')) ?></div>
+                                <?php endif; ?>
+                                <div class="form-text">
+                                    <small class="text-muted">Formato: 12345678 (7 u 8 dígitos sin puntos)</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="especialidad" class="form-label">
                                     <i class='bx bx-briefcase-alt me-1'></i>Especialidad
@@ -366,7 +393,7 @@
                                         id="especialidad" 
                                         name="especialidad" 
                                         required>
-                                    <option value="">Seleccione una especialidad...</option>
+                                    <option value="">Seleccionar especialidad</option>
                                     <option value="Anestesiología General" <?= set_select('especialidad', 'Anestesiología General') ?>>Anestesiología General</option>
                                     <option value="Anestesiología en Dolor Crónico" <?= set_select('especialidad', 'Anestesiología en Dolor Crónico') ?>>Anestesiología en Dolor Crónico</option>
                                     <option value="Anestesiología Pediátrica" <?= set_select('especialidad', 'Anestesiología Pediátrica') ?>>Anestesiología Pediátrica</option>
@@ -377,9 +404,7 @@
                                     <div class="invalid-feedback"><?= esc($validation->getError('especialidad')) ?></div>
                                 <?php endif; ?>
                             </div>
-                        </div>
 
-                        <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="telefono" class="form-label">
                                     <i class='bx bx-phone me-1'></i>Teléfono
@@ -395,7 +420,9 @@
                                     <div class="invalid-feedback"><?= esc($validation->getError('telefono')) ?></div>
                                 <?php endif; ?>
                             </div>
+                        </div>
 
+                        <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="email" class="form-label">
                                     <i class='bx bx-envelope me-1'></i>Email
@@ -411,30 +438,30 @@
                                     <div class="invalid-feedback"><?= esc($validation->getError('email')) ?></div>
                                 <?php endif; ?>
                             </div>
-                        </div>
 
-                        <div class="mb-3">
-                            <label for="disponibilidad" class="form-label">
-                                <i class='bx bx-check-circle me-1'></i>Disponibilidad
-                            </label>
-                            <select class="form-select <?= (isset($validation) && $validation->hasError('disponibilidad')) ? 'is-invalid' : '' ?>" 
-                                    id="disponibilidad" 
-                                    name="disponibilidad" 
-                                    required>
-                                <option value="">Seleccionar estado</option>
-                                <option value="disponible" <?= (old('disponibilidad') == 'disponible') ? 'selected' : '' ?>>
-                                    Disponible
-                                </option>
-                                <option value="no_disponible" <?= (old('disponibilidad') == 'no_disponible') ? 'selected' : '' ?>>
-                                    No disponible
-                                </option>
-                                <option value="en_cirugia" <?= (old('disponibilidad') == 'en_cirugia') ? 'selected' : '' ?>>
-                                    En cirugía
-                                </option>
-                            </select>
-                            <?php if (isset($validation) && $validation->hasError('disponibilidad')): ?>
-                                <div class="invalid-feedback"><?= esc($validation->getError('disponibilidad')) ?></div>
-                            <?php endif; ?>
+                            <div class="col-md-6">
+                                <label for="disponibilidad" class="form-label">
+                                    <i class='bx bx-check-circle me-1'></i>Disponibilidad
+                                </label>
+                                <select class="form-select <?= (isset($validation) && $validation->hasError('disponibilidad')) ? 'is-invalid' : '' ?>" 
+                                        id="disponibilidad" 
+                                        name="disponibilidad" 
+                                        required>
+                                    <option value="">Seleccionar estado</option>
+                                    <option value="disponible" <?= (old('disponibilidad') == 'disponible') ? 'selected' : '' ?>>
+                                        Disponible
+                                    </option>
+                                    <option value="no_disponible" <?= (old('disponibilidad') == 'no_disponible') ? 'selected' : '' ?>>
+                                        No disponible
+                                    </option>
+                                    <option value="en_cirugia" <?= (old('disponibilidad') == 'en_cirugia') ? 'selected' : '' ?>>
+                                        En cirugía
+                                    </option>
+                                </select>
+                                <?php if (isset($validation) && $validation->hasError('disponibilidad')): ?>
+                                    <div class="invalid-feedback"><?= esc($validation->getError('disponibilidad')) ?></div>
+                                <?php endif; ?>
+                            </div>
                         </div>
 
                         <div class="d-flex justify-content-end gap-2 mt-4">
@@ -484,6 +511,11 @@
                 this.style.boxShadow = 'var(--shadow-xl)';
             });
         });
+
+        // Función para validar solo letras en el campo nombre
+        function validarSoloLetras(input) {
+            input.value = input.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+        }
     </script>
     <?= $this->include('includes/footer') ?>
 </body>

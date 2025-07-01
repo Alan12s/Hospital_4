@@ -448,43 +448,26 @@
                         </a>
                         <button type="button"
                            class="btn btn-danger"
+                           onclick="configurarModalEliminar({
+                               idElemento: '<?= $anestesista['id'] ?>',
+                               nombreElemento: '<?= esc($anestesista['nombre']) ?>',
+                               actionUrl: '<?= site_url('anestesistas/eliminar/'.$anestesista['id']) ?>',
+                               titulo: 'Eliminar Anestesista',
+                               mensajeAdicional: 'Se eliminarán todos los registros asociados.',
+                               icono: 'bx-user-x'
+                           })"
                            data-bs-toggle="modal"
-                           data-bs-target="#modalEliminarAnestesista"
-                           data-id="<?= esc($anestesista['id']) ?>"
-                           data-nombre="<?= esc($anestesista['nombre']) ?>">
+                           data-bs-target="#modalEliminar">
                             <i class='bx bx-trash'></i> Eliminar Anestesista
                         </button>
                     </div>
                 </div>
             </div>
-
-            <!-- Modal Eliminar Anestesista -->
-            <div class="modal fade" id="modalEliminarAnestesista" tabindex="-1" aria-labelledby="modalEliminarAnestesistaLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalEliminarAnestesistaLabel">
-                                <i class='bx bx-error-circle me-2'></i>Confirmar Eliminación
-                            </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <p>¿Está seguro que desea eliminar al anestesista <strong><span id="nombreAnestesistaModal"></span></strong>?</p>
-                            <p class="fw-bold text-danger">Esta acción no se puede deshacer.</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                <i class='bx bx-x me-1'></i> Cancelar
-                            </button>
-                            <a href="#" id="btnConfirmarEliminar" class="btn btn-danger">
-                                <i class='bx bx-trash me-1'></i> Eliminar
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
+
+    <!-- Incluir modal de eliminación reutilizable -->
+    <?= $this->include('includes/modal_eliminar') ?>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -517,20 +500,6 @@
                     this.style.boxShadow = 'var(--shadow-xl)';
                 });
             });
-
-            // Modal de eliminación
-            const modalEliminar = document.getElementById('modalEliminarAnestesista');
-            if (modalEliminar) {
-                modalEliminar.addEventListener('show.bs.modal', function(event) {
-                    const button = event.relatedTarget;
-                    const id = button.getAttribute('data-id') || button.getAttribute('data-bs-id');
-                    const nombre = button.getAttribute('data-nombre') || button.getAttribute('data-bs-nombre');
-                    
-                    document.getElementById('nombreAnestesistaModal').textContent = nombre;
-                    const btnEliminar = document.getElementById('btnConfirmarEliminar');
-                    btnEliminar.href = '<?= site_url("anestesistas/eliminar") ?>/' + id;
-                });
-            }
         });
     </script>
     <?= $this->include('includes/footer') ?>

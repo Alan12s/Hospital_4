@@ -14,9 +14,9 @@ class Anestesistas extends Controller
     {
         $this->anestesistasModel = new AnestesistasModel();
         $this->session = \Config\Services::session();
-        
+
         helper(['form', 'url']);
-        
+
         if (!$this->session->get('logged_in')) {
             return redirect()->to('login');
         }
@@ -26,7 +26,7 @@ class Anestesistas extends Controller
     {
         $data = [
             'anestesistas' => $this->anestesistasModel->getAllAnestesistas(),
-            'title' => 'Gestión de Anestesistas'
+            'titulo' => 'Gestión de Anestesistas'
         ];
 
         return view('anestesistas/index', $data);
@@ -56,12 +56,43 @@ class Anestesistas extends Controller
     public function add()
     {
         $validation = \Config\Services::validation();
-        
+
         $validation->setRules([
-            'nombre' => 'required|max_length[100]',
+            'nombre' => [
+                'rules' => 'required|max_length[100]|alpha_space',
+                'errors' => [
+                    'required' => 'El nombre es obligatorio',
+                    'max_length' => 'El nombre no puede exceder los 100 caracteres',
+                    'alpha_space' => 'El nombre solo puede contener letras y espacios, sin números, guiones o caracteres especiales'
+                ]
+            ],
+            'dni' => [
+                'rules' => 'required|numeric|min_length[7]|max_length[8]',
+                'errors' => [
+                    'required' => 'El DNI es obligatorio',
+                    'min_length' => 'El DNI debe tener al menos 7 dígitos',
+                    'max_length' => 'El DNI no puede exceder los 8 dígitos',
+                    'numeric' => 'El DNI solo puede contener números'
+                ]
+            ],
+            'telefono' => [
+                'rules' => 'required|max_length[20]|numeric',
+                'errors' => [
+                    'required' => 'El teléfono es obligatorio',
+                    'max_length' => 'El teléfono no puede exceder los 20 caracteres',
+                    'numeric' => 'El teléfono solo puede contener números'
+                ]
+            ],
             'especialidad' => 'required|max_length[100]',
-            'telefono' => 'required|max_length[20]',
-            'email' => 'required|valid_email|max_length[100]|is_unique[anestesistas.email]',
+            'email' => [
+                'rules' => 'required|valid_email|max_length[100]|is_unique[anestesistas.email]',
+                'errors' => [
+                    'required' => 'El correo electrónico es obligatorio',
+                    'valid_email' => 'Debe ser un correo electrónico válido',
+                    'max_length' => 'El correo no puede exceder los 100 caracteres',
+                    'is_unique' => 'Este correo electrónico ya está registrado'
+                ]
+            ],
             'disponibilidad' => 'required|in_list[disponible,no_disponible,en_cirugia]'
         ]);
 
@@ -111,12 +142,43 @@ class Anestesistas extends Controller
         }
 
         $validation = \Config\Services::validation();
-        
+
         $validation->setRules([
-            'nombre' => 'required|max_length[100]',
+            'nombre' => [
+                'rules' => 'required|max_length[100]|alpha_space',
+                'errors' => [
+                    'required' => 'El nombre es obligatorio',
+                    'max_length' => 'El nombre no puede exceder los 100 caracteres',
+                    'alpha_space' => 'El nombre solo puede contener letras y espacios, sin números, guiones o caracteres especiales'
+                ]
+            ],
+            'dni' => [
+                'rules' => 'required|numeric|min_length[7]|max_length[8]',
+                'errors' => [
+                    'required' => 'El DNI es obligatorio',
+                    'min_length' => 'El DNI debe tener al menos 7 dígitos',
+                    'max_length' => 'El DNI no puede exceder los 8 dígitos',
+                    'numeric' => 'El DNI solo puede contener números'
+                ]
+            ],
+            'telefono' => [
+                'rules' => 'required|max_length[20]|numeric',
+                'errors' => [
+                    'required' => 'El teléfono es obligatorio',
+                    'max_length' => 'El teléfono no puede exceder los 20 caracteres',
+                    'numeric'  => 'El teléfono solo puede contener números'
+                ]
+            ],
             'especialidad' => 'required|max_length[100]',
-            'telefono' => 'required|max_length[20]',
-            'email' => "required|valid_email|max_length[100]|is_unique[anestesistas.email,id,{$id}]",
+            'email' => [
+                'rules' => "required|valid_email|max_length[100]|is_unique[anestesistas.email,id,{$id}]",
+                'errors' => [
+                    'required' => 'El correo electrónico es obligatorio',
+                    'valid_email' => 'Debe ser un correo electrónico válido',
+                    'max_length' => 'El correo no puede exceder los 100 caracteres',
+                    'is_unique' => 'Este correo electrónico ya está registrado'
+                ]
+            ],
             'disponibilidad' => 'required|in_list[disponible,no_disponible,en_cirugia]'
         ]);
 
@@ -141,22 +203,23 @@ class Anestesistas extends Controller
         }
     }
 
-  public function ver($id) {
-    $anestesistaModel = new \App\Models\AnestesistasModel(); // Asegúrate de usar el namespace correcto
-    
-    $anestesista = $anestesistaModel->find($id);
+    public function ver($id) 
+    {
+        $anestesistaModel = new \App\Models\AnestesistasModel();
 
-    if (empty($anestesista)) {
-        throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        $anestesista = $anestesistaModel->find($id);
+
+        if (empty($anestesista)) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
+
+        $data = [
+            'titulo' => 'Detalles del Anestesista',
+            'anestesista' => $anestesista
+        ];
+
+        return view('anestesistas/ver', $data);
     }
-
-    $data = [
-        'titulo' => 'Detalles del Anestesista',
-        'anestesista' => $anestesista // Usamos la variable ya obtenida
-    ];
-
-    return view('anestesistas/ver', $data);
-}
 
     public function eliminar($id)
     {
@@ -183,7 +246,7 @@ class Anestesistas extends Controller
     public function search()
     {
         $term = $this->request->getGet('term');
-        
+
         $data = [
             'anestesistas' => $this->anestesistasModel->searchAnestesistas($term),
             'title' => 'Resultado de búsqueda: ' . $term
@@ -198,9 +261,6 @@ class Anestesistas extends Controller
         return $this->response->setJSON($anestesistas);
     }
 
-    /**
-     * Obtener array de especialidades disponibles para anestesistas
-     */
     private function getEspecialidades()
     {
         return [

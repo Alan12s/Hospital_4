@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title) ?> - Sistema Quirúrgico</title>
+    <title><?= esc($titulo) ?> - Sistema Quirúrgico</title>
     
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -106,6 +106,8 @@
             align-items: center;
             gap: 0.5rem;
             transition: all 0.3s ease;
+            border-radius: var(--border-radius-sm);
+            padding: 0.75rem 1.5rem;
         }
 
         .btn-primary:hover {
@@ -123,6 +125,8 @@
             align-items: center;
             gap: 0.5rem;
             transition: all 0.3s ease;
+            border-radius: var(--border-radius-sm);
+            padding: 0.75rem 1.5rem;
         }
 
         .btn-success:hover {
@@ -221,7 +225,7 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            border-radius: 8px;
+            border-radius: var(--border-radius-sm);
             margin: 0 2px;
             transition: all 0.2s ease;
             font-size: 0.9rem;
@@ -291,6 +295,21 @@
             font-size: 0.9rem;
             border: none;
             box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.25rem;
+        }
+
+        .alert-success {
+            background-color: rgba(34, 197, 94, 0.1);
+            color: var(--success-color);
+            border-left: 4px solid var(--success-color);
+        }
+
+        .alert-danger {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+            border-left: 4px solid var(--danger-color);
         }
 
         /* ============= BADGE STYLES ============= */
@@ -299,6 +318,7 @@
             padding: 0.35rem 0.65rem;
             font-size: 0.75rem;
             letter-spacing: 0.5px;
+            border-radius: var(--border-radius-sm);
         }
 
         .bg-disponible {
@@ -376,7 +396,6 @@
             }
         }
     </style>
-    </style>
 </head>
 <body>
     <div class="wrapper">
@@ -388,7 +407,7 @@
             <!-- Page Header -->
             <div class="dashboard-header animate-fade-in">
                 <h1>
-                    <i class='bx bx-plus-medical'></i><?= esc($title) ?>
+                    <i class='bx bx-plus-medical'></i><?= esc($titulo) ?>
                 </h1>
                 <div class="d-flex gap-2">
                     <a href="<?= site_url('anestesistas/crear') ?>" class="btn btn-primary">
@@ -403,20 +422,16 @@
             <!-- Flash Messages -->
             <?php if (session()->getFlashdata('success')): ?>
                 <div class="alert alert-success alert-dismissible fade show glass-card">
-                    <div class="d-flex align-items-center">
-                        <i class='bx bx-check-circle me-2'></i>
-                        <?= esc(session()->getFlashdata('success')) ?>
-                    </div>
+                    <i class='bx bx-check-circle me-2'></i>
+                    <div><?= esc(session()->getFlashdata('success')) ?></div>
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             <?php endif; ?>
 
             <?php if (session()->getFlashdata('error')): ?>
                 <div class="alert alert-danger alert-dismissible fade show glass-card">
-                    <div class="d-flex align-items-center">
-                        <i class='bx bx-error-circle me-2'></i>
-                        <?= esc(session()->getFlashdata('error')) ?>
-                    </div>
+                    <i class='bx bx-error-circle me-2'></i>
+                    <div><?= esc(session()->getFlashdata('error')) ?></div>
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             <?php endif; ?>
@@ -433,6 +448,7 @@
                             <thead>
                                 <tr>
                                     <th>Nombre Completo</th>
+                                    <th>DNI</th>
                                     <th>Especialidad</th>
                                     <th>Disponibilidad</th>
                                     <th>Contacto</th>
@@ -442,7 +458,7 @@
                             <tbody>
                                 <?php if (empty($anestesistas)): ?>
                                     <tr>
-                                        <td colspan="5" class="empty-state">
+                                        <td colspan="6" class="empty-state">
                                             <i class='bx bx-user-x'></i>
                                             <p>No hay anestesistas registrados</p>
                                         </td>
@@ -463,6 +479,7 @@
                                                     </div>
                                                 </div>
                                             </td>
+                                            <td><?= esc($anestesista['dni']) ?></td>
                                             <td><?= esc($anestesista['especialidad']) ?></td>
                                             <td>
                                                 <span class="badge bg-<?= $anestesista['disponibilidad'] ?>">
@@ -472,6 +489,7 @@
                                             <td>
                                                 <div class="d-flex flex-column">
                                                     <small><?= esc($anestesista['telefono']) ?></small>
+                                                    <small class="text-muted"><?= esc($anestesista['direccion'] ?? 'Sin dirección') ?></small>
                                                 </div>
                                             </td>
                                             <td class="text-end">

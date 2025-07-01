@@ -369,44 +369,45 @@
                                        value="<?= old('nombre') ?>" 
                                        placeholder="Ingrese el nombre completo"
                                        required>
-                                <?php if (isset($validation) && $validation->hasError('nombre')): ?>
-                                    <div class="invalid-feedback"><?= esc($validation->getError('nombre')) ?></div>
-                                <?php endif; ?>
+                                       <?php if (session('errors.nombre')): ?>
+                                        <div class="text-danger"><?= esc(session('errors.nombre')) ?></div>
+                                        <?php endif; ?>
+                                    
                             </div>
+<div class="col-md-6">
+    <label for="dni" class="form-label required-field">
+        <i class='bx bx-id-card me-1'></i>DNI
+    </label>
+    <input type="text" 
+           class="form-control <?= (session('errors') && isset(session('errors')['dni'])) ? 'is-invalid' : '' ?>" 
+           id="dni" 
+           name="dni" 
+           value="<?= old('dni') ?>" 
+           placeholder="Ej: 12345678"
+           required>
+    <?php if (session('errors') && isset(session('errors')['dni'])): ?>
+        <div class="invalid-feedback"><?= esc(session('errors')['dni']) ?></div>
+    <?php endif; ?>
+</div>
 
-                            <div class="col-md-6">
-                                <label for="dni" class="form-label required-field">
-                                    <i class='bx bx-id-card me-1'></i>DNI
-                                </label>
-                                <input type="text" 
-                                       class="form-control <?= (isset($validation) && $validation->hasError('dni')) ? 'is-invalid' : '' ?>" 
-                                       id="dni" 
-                                       name="dni" 
-                                       value="<?= old('dni') ?>" 
-                                       placeholder="Ej: 12345678"
-                                       required>
-                                <?php if (isset($validation) && $validation->hasError('dni')): ?>
-                                    <div class="invalid-feedback"><?= esc($validation->getError('dni')) ?></div>
-                                <?php endif; ?>
-                            </div>
-                        </div>
+                                        
 
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="email" class="form-label required-field">
-                                    <i class='bx bx-envelope me-1'></i>Email
-                                </label>
-                                <input type="email" 
-                                       class="form-control <?= (isset($validation) && $validation->hasError('email')) ? 'is-invalid' : '' ?>" 
-                                       id="email" 
-                                       name="email" 
-                                       value="<?= old('email') ?>" 
-                                       placeholder="paciente@ejemplo.com"
-                                       required>
-                                <?php if (isset($validation) && $validation->hasError('email')): ?>
-                                    <div class="invalid-feedback"><?= esc($validation->getError('email')) ?></div>
-                                <?php endif; ?>
-                            </div>
+<div class="col-md-6">
+    <label for="email" class="form-label required-field">
+        <i class='bx bx-envelope me-1'></i>Email
+    </label>
+    <input type="email" 
+           class="form-control <?= (session('errors') && isset(session('errors')['email'])) ? 'is-invalid' : '' ?>" 
+           id="email" 
+           name="email" 
+           value="<?= old('email') ?>" 
+           placeholder="Ej: correo@ejemplo.com"
+           required>
+    <?php if (session('errors') && isset(session('errors')['email'])): ?>
+        <div class="invalid-feedback"><?= esc(session('errors')['email']) ?></div>
+    <?php endif; ?>
+</div>
+
 
                             <div class="col-md-6">
                                 <label for="telefono" class="form-label required-field">
@@ -555,6 +556,9 @@
                     this.value = this.value.replace(/[^0-9]/g, '');
                 });
             }
+
+
+
 
             // Validación teléfono solo números
             const telefonoInput = document.getElementById('telefono');

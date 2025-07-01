@@ -184,15 +184,21 @@ class Pacientes extends Controller
                              ->with('errors', $this->validator->getErrors());
         }
 
-        // Validación manual para evitar duplicados
+        // Validación personalizada para evitar duplicados de DNI y Email en otros registros
+        $errores = [];
+
         if ($this->pacienteModel->dniExists($this->request->getPost('dni'), $id)) {
-            $this->session->setFlashdata('error', 'El DNI ya está en uso');
-            return redirect()->to("pacientes/edit/$id")->withInput();
+            $errores['dni'] = 'Este DNI ya está registrado por otro paciente.';
         }
 
         if ($this->pacienteModel->emailExists($this->request->getPost('email'), $id)) {
-            $this->session->setFlashdata('error', 'El email ya está en uso');
-            return redirect()->to("pacientes/edit/$id")->withInput();
+            $errores['email'] = 'Este correo ya está registrado por otro paciente.';
+        }
+
+        if (!empty($errores)) {
+            return redirect()->to("pacientes/edit/$id")
+                             ->withInput()
+                             ->with('errors', $errores);
         }
 
         $data = [
@@ -238,6 +244,12 @@ class Pacientes extends Controller
 
         if (empty($paciente)) {
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
+
+        // Verificar si el paciente tiene turnos asignados (no cancelados)
+        if ($this->pacienteModel->hasTurnosAsignados($id)) {
+            $this->session->setFlashdata('error', 'No se puede eliminar el paciente porque tiene turnos quirúrgicos activos o programados');
+            return redirect()->to('pacientes');
         }
 
         if ($this->pacienteModel->delete($id)) {

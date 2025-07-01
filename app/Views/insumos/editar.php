@@ -3,243 +3,611 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo $title; ?> - Gestión Quirúrgica</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="<?php echo base_url('assets/css/styles.css'); ?>">
+    <title><?= esc($title) ?> - Sistema Quirúrgico</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #6a1b9a;
+            --primary-light: #9c4dcc;
+            --primary-dark: #38006b;
+            --secondary-color: #10b981;
+            --accent-color: #f59e0b;
+            --danger-color: #ef4444;
+            --warning-color: #f97316;
+            --success-color: #22c55e;
+            --info-color: #06b6d4;
+            --dark-color: #1f2937;
+            --light-color: #f8fafc;
+            --white: #ffffff;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --border-radius: 12px;
+            --border-radius-sm: 8px;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--gray-800);
+            min-height: 100vh;
+            overflow-x: hidden;
+            margin-left: 220px;
+        }
+
+        .wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            min-height: 100vh;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width: calc(100% - 220px);
+            position: relative;
+        }
+
+        .dashboard-header {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dashboard-header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--white);
+            margin-bottom: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .dashboard-header h1 i {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-dark);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            border-radius: var(--border-radius-sm);
+            padding: 0.75rem 1.5rem;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background-color: var(--gray-600);
+            border-color: var(--gray-700);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            border-radius: var(--border-radius-sm);
+            padding: 0.75rem 1.5rem;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--gray-700);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-xl);
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            box-shadow: 0 15px 30px -5px rgba(0,0,0,0.15);
+        }
+
+        .card-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-bottom: none;
+            border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-header h5 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-header h5 i {
+            font-size: 1.2rem;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-label.required-field:after {
+            content: '*';
+            color: var(--danger-color);
+            margin-left: 0.25rem;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid var(--gray-200);
+            border-radius: var(--border-radius-sm);
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            background-color: var(--white);
+            color: var(--gray-800);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(106, 27, 154, 0.25);
+            outline: none;
+        }
+
+        .form-control.is-invalid {
+            border-color: var(--danger-color);
+        }
+
+        .invalid-feedback {
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+            color: var(--danger-color);
+        }
+
+        .alert {
+            border-radius: var(--border-radius-sm);
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            border: none;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.25rem;
+        }
+
+        .alert-danger {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+            border-left: 4px solid var(--danger-color);
+        }
+
+        .alert-success {
+            background-color: rgba(34, 197, 94, 0.1);
+            color: var(--success-color);
+            border-left: 4px solid var(--success-color);
+        }
+
+        .alert-danger ul {
+            margin-bottom: 0;
+            padding-left: 1rem;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .form-check-input {
+            width: 1.2em;
+            height: 1.2em;
+            margin-top: 0.15em;
+            border: 2px solid var(--gray-300);
+        }
+
+        .form-check-input:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-dark);
+        }
+
+        .form-check-input:focus {
+            box-shadow: 0 0 0 0.25rem rgba(106, 27, 154, 0.25);
+        }
+
+        .form-check-label {
+            margin-left: 0.5rem;
+            color: var(--gray-700);
+            font-weight: 500;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                margin-left: 0;
+            }
+            
+            .main-content {
+                width: 100%;
+                padding: 1rem;
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+                padding: 1.25rem;
+            }
+            
+            .dashboard-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .card-body {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .main-content {
+                padding: 0.75rem;
+            }
+            
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+                padding: 1rem;
+            }
+            
+            .card-body {
+                padding: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="app-container">
+    <div class="wrapper">
         <!-- Sidebar -->
-        <?= view('includes/sidebar') ?>
-
+        <?= $this->include('includes/sidebar') ?>
+        
+        <!-- Main Content -->
         <div class="main-content">
-            <div class="main-wrapper">
-                <div class="welcome-section">
-                    <h1 class="page-title"><?php echo $title; ?></h1>
+            <!-- Page Header -->
+            <div class="dashboard-header animate-fade-in">
+                <h1>
+                    <i class='bx bx-package'></i><?= esc($title) ?>
+                </h1>
+                <a href="<?= site_url('insumos') ?>" class="btn btn-secondary">
+                    <i class='bx bx-arrow-left'></i> Volver a Insumos
+                </a>
+            </div>
 
-                    <?php if(session()->getFlashdata('errors')): ?>
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <?php foreach(session()->getFlashdata('errors') as $error): ?>
-                                <div><?= $error ?></div>
-                            <?php endforeach; ?>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+            <!-- Flash Messages -->
+            <?php if (session()->getFlashdata('error')): ?>
+                <div class="alert alert-danger alert-dismissible fade show glass-card animate-fade-in">
+                    <i class='bx bx-error-circle'></i>
+                    <div>
+                        <?= esc(session()->getFlashdata('error')) ?>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                </div>
+            <?php endif; ?>
+
+            <!-- Form Card -->
+            <div class="glass-card animate-fade-in" style="animation-delay: 0.1s">
+                <div class="card-header">
+                    <h5><i class='bx bx-edit me-2'></i>Formulario de Insumo</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Validation Errors -->
+                    <?php if (isset($validation) && $validation->getErrors()): ?>
+                        <div class="alert alert-danger">
+                            <i class='bx bx-error-circle'></i>
+                            <div>
+                                <strong>Por favor corrige los siguientes errores:</strong>
+                                <ul class="mb-0 mt-2">
+                                    <?php foreach ($validation->getErrors() as $error): ?>
+                                        <li><?= esc($error) ?></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
                         </div>
                     <?php endif; ?>
 
-                    <div class="data-card">
-                        <div class="data-card-header">
-                            <h5 class="mb-0">Editar Insumo</h5>
+                    <?= form_open('insumos/update/' . $insumo['id_insumo']) ?>
+                        <?= csrf_field() ?>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="codigo" class="form-label">
+                                    <i class='bx bx-qr me-1'></i>Código
+                                </label>
+                                <input type="text" 
+                                       class="form-control <?= (isset($validation) && $validation->hasError('codigo')) ? 'is-invalid' : '' ?>" 
+                                       id="codigo" 
+                                       name="codigo" 
+                                       value="<?= old('codigo', $insumo['codigo']) ?>" 
+                                       placeholder="Ingrese el código del insumo">
+                                <?php if (isset($validation) && $validation->hasError('codigo')): ?>
+                                    <div class="invalid-feedback"><?= esc($validation->getError('codigo')) ?></div>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="nombre" class="form-label required-field">
+                                    <i class='bx bx-package me-1'></i>Nombre del Insumo
+                                </label>
+                                <input type="text" 
+                                       class="form-control <?= (isset($validation) && $validation->hasError('nombre')) ? 'is-invalid' : '' ?>" 
+                                       id="nombre" 
+                                       name="nombre" 
+                                       value="<?= old('nombre', $insumo['nombre']) ?>" 
+                                       placeholder="Ingrese el nombre del insumo"
+                                       required>
+                                <?php if (isset($validation) && $validation->hasError('nombre')): ?>
+                                    <div class="invalid-feedback"><?= esc($validation->getError('nombre')) ?></div>
+                                <?php endif; ?>
+                            </div>
                         </div>
-                        <div class="data-card-body">
-                            <?= form_open('insumos/update/'.$insumo['id_insumo']); ?>
-                                <div class="row mb-3">
-                                    <div class="col-md-6">
-                                        <label for="nombre" class="form-label">Nombre del Insumo <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control <?php echo (session()->getFlashdata('errors')['nombre'] ?? false) ? 'is-invalid' : ''; ?>" id="nombre" name="nombre" value="<?php echo old('nombre', $insumo['nombre']); ?>" required>
-                                        <?php if(session()->getFlashdata('errors')['nombre'] ?? false): ?>
-                                            <div class="invalid-feedback"><?php echo session()->getFlashdata('errors')['nombre']; ?></div>
-                                        <?php endif; ?>
-                                    </div>
-                                    <div class="col-md-6">
-<<<<<<< HEAD
-                                        <label for="tipo" class="form-label">Tipo <span class="text-danger">*</span></label>
-                                        <select class="form-select <?php echo (session()->getFlashdata('errors')['tipo'] ?? false) ? 'is-invalid' : ''; ?>" id="tipo" name="tipo" required>
-                                            <option value="">Seleccionar Tipo</option>
-                                            <option value="Consumible" <?php echo (old('tipo', $insumo['tipo']) == 'Consumible') ? 'selected' : ''; ?>>Consumible</option>
-                                            <option value="Material quirúrgico" <?php echo (old('tipo', $insumo['tipo']) == 'Material quirúrgico') ? 'selected' : ''; ?>>Material quirúrgico</option>
-                                            <option value="Protección personal" <?php echo (old('tipo', $insumo['tipo']) == 'Protección personal') ? 'selected' : ''; ?>>Protección personal</option>
-                                            <option value="Instrumental" <?php echo (old('tipo', $insumo['tipo']) == 'Instrumental') ? 'selected' : ''; ?>>Instrumental</option>
-                                            <option value="Medicamento" <?php echo (old('tipo', $insumo['tipo']) == 'Medicamento') ? 'selected' : ''; ?>>Medicamento</option>
-                                        </select>
-=======
-                                        <label for="categoria" class="form-label">Categoría <span class="text-danger">*</span></label>
-                                        <select class="form-select <?php echo (session()->getFlashdata('errors')['categoria'] ?? false) ? 'is-invalid' : ''; ?>" id="categoria" name="categoria" required>
-                                            <option value="">Seleccionar Categoría</option>
-                                            <option value="descartable" <?php echo (old('categoria', $insumo['categoria']) == 'descartable') ? 'selected' : ''; ?>>Descartable</option>
-                                            <option value="instrumental" <?php echo (old('categoria', $insumo['categoria']) == 'instrumental') ? 'selected' : ''; ?>>Instrumental</option>
-                                        </select>
-                                        <?php if(session()->getFlashdata('errors')['categoria'] ?? false): ?>
-                                            <div class="invalid-feedback"><?php echo session()->getFlashdata('errors')['categoria']; ?></div>
-                                        <?php endif; ?>
-                                    </div>
-                                </div>
 
-                                <div class="row mb-3">
-                                    <div class="col-md-12">
-                                        <label for="tipo" class="form-label">Tipo <span class="text-danger">*</span></label>
-                                        <select class="form-select <?php echo (session()->getFlashdata('errors')['tipo'] ?? false) ? 'is-invalid' : ''; ?>" id="tipo" name="tipo" required>
-                                            <option value="">Seleccionar Tipo</option>
-                                            <!-- Opciones para Descartables -->
-                                            <optgroup label="Descartables" id="descartables-group" style="display: none;">
-                                                <option value="Guantes">Guantes</option>
-                                                <option value="Jeringas">Jeringas</option>
-                                                <option value="Gasas">Gasas</option>
-                                                <option value="Compresas">Compresas</option>
-                                                <option value="Mascarillas">Mascarillas</option>
-                                                <option value="Batas">Batas</option>
-                                                <option value="Gorros">Gorros</option>
-                                                <option value="Cubrezapatos">Cubrezapatos</option>
-                                                <option value="Campos quirúrgicos">Campos quirúrgicos</option>
-                                                <option value="Suturas">Suturas</option>
-                                            </optgroup>
-                                            <!-- Opciones para Instrumentales -->
-                                            <optgroup label="Instrumentales" id="instrumentales-group" style="display: none;">
-                                                <option value="Bisturí">Bisturí</option>
-                                                <option value="Tijeras">Tijeras</option>
-                                                <option value="Pinzas">Pinzas</option>
-                                                <option value="Hemostatos">Hemostatos</option>
-                                                <option value="Retractores">Retractores</option>
-                                                <option value="Separadores">Separadores</option>
-                                                <option value="Sondas">Sondas</option>
-                                                <option value="Especulums">Especulums</option>
-                                                <option value="Fórceps">Fórceps</option>
-                                                <option value="Instrumental de medición">Instrumental de medición</option>
-                                            </optgroup>
-                                        </select>
->>>>>>> 733de39b8424adf4032156dc94a40b6ef5062118
-                                        <?php if(session()->getFlashdata('errors')['tipo'] ?? false): ?>
-                                            <div class="invalid-feedback"><?php echo session()->getFlashdata('errors')['tipo']; ?></div>
-                                        <?php endif; ?>
-                                    </div>
-                                </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="categoria" class="form-label required-field">
+                                    <i class='bx bx-category me-1'></i>Categoría
+                                </label>
+                                <select class="form-select <?= (isset($validation) && $validation->hasError('categoria')) ? 'is-invalid' : '' ?>" 
+                                        id="categoria" 
+                                        name="categoria" 
+                                        required>
+                                    <option value="">Seleccionar categoría</option>
+                                    <option value="descartable" <?= (old('categoria', $insumo['categoria']) == 'descartable') ? 'selected' : '' ?>>Descartable</option>
+                                    <option value="instrumental" <?= (old('categoria', $insumo['categoria']) == 'instrumental') ? 'selected' : '' ?>>Instrumental</option>
+                                </select>
+                                <?php if (isset($validation) && $validation->hasError('categoria')): ?>
+                                    <div class="invalid-feedback"><?= esc($validation->getError('categoria')) ?></div>
+                                <?php endif; ?>
+                            </div>
 
-                                <div class="row mb-3">
-                                    <div class="col-md-6">
-                                        <label for="cantidad" class="form-label">Cantidad <span class="text-danger">*</span></label>
-                                        <input type="number" class="form-control <?php echo (session()->getFlashdata('errors')['cantidad'] ?? false) ? 'is-invalid' : ''; ?>" id="cantidad" name="cantidad" value="<?php echo old('cantidad', $insumo['cantidad']); ?>" required>
-                                        <?php if(session()->getFlashdata('errors')['cantidad'] ?? false): ?>
-                                            <div class="invalid-feedback"><?php echo session()->getFlashdata('errors')['cantidad']; ?></div>
-                                        <?php endif; ?>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="ubicacion" class="form-label">Ubicación <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control <?php echo (session()->getFlashdata('errors')['ubicacion'] ?? false) ? 'is-invalid' : ''; ?>" id="ubicacion" name="ubicacion" value="<?php echo old('ubicacion', $insumo['ubicacion']); ?>" required>
-                                        <?php if(session()->getFlashdata('errors')['ubicacion'] ?? false): ?>
-                                            <div class="invalid-feedback"><?php echo session()->getFlashdata('errors')['ubicacion']; ?></div>
-                                        <?php endif; ?>
-                                    </div>
-                                </div>
-
-                                <div class="row mb-3">
-                                    <div class="col-md-6">
-                                        <label for="lote" class="form-label">Lote</label>
-                                        <input type="text" class="form-control" id="lote" name="lote" value="<?php echo old('lote', $insumo['lote']); ?>">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-check mt-4">
-                                            <input class="form-check-input" type="checkbox" id="tiene_vencimiento" name="tiene_vencimiento" value="1" <?php echo (old('tiene_vencimiento', $insumo['tiene_vencimiento']) == 1) ? 'checked' : ''; ?>>
-                                            <label class="form-check-label" for="tiene_vencimiento">
-                                                ¿Tiene fecha de vencimiento?
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row mb-3" id="fecha_vencimiento_container" style="display: <?php echo (old('tiene_vencimiento', $insumo['tiene_vencimiento']) == 1) ? 'block' : 'none'; ?>;">
-                                    <div class="col-md-6">
-                                        <label for="fecha_vencimiento" class="form-label">Fecha de Vencimiento</label>
-                                        <input type="date" class="form-control" id="fecha_vencimiento" name="fecha_vencimiento" value="<?php echo old('fecha_vencimiento', $insumo['fecha_vencimiento']); ?>">
-                                    </div>
-                                </div>
-
-                                <div class="d-flex justify-content-end">
-                                    <a href="<?php echo site_url('insumos'); ?>" class="btn btn-secondary me-2">Cancelar</a>
-                                    <button type="submit" class="btn btn-primary">Actualizar Insumo</button>
-                                </div>
-                            <?= form_close(); ?>
+                            <div class="col-md-6">
+                                <label for="tipo" class="form-label required-field">
+                                    <i class='bx bx-cube me-1'></i>Tipo
+                                </label>
+                                <select class="form-select <?= (isset($validation) && $validation->hasError('tipo')) ? 'is-invalid' : '' ?>" 
+                                        id="tipo" 
+                                        name="tipo" 
+                                        required>
+                                    <option value="">Seleccionar tipo</option>
+                                    <!-- Opciones generales de tipo -->
+                                    <option value="Consumible" <?= (old('tipo', $insumo['tipo']) == 'Consumible') ? 'selected' : '' ?>>Consumible</option>
+                                    <option value="Material quirúrgico" <?= (old('tipo', $insumo['tipo']) == 'Material quirúrgico') ? 'selected' : '' ?>>Material quirúrgico</option>
+                                    <option value="Protección personal" <?= (old('tipo', $insumo['tipo']) == 'Protección personal') ? 'selected' : '' ?>>Protección personal</option>
+                                    <option value="Instrumental" <?= (old('tipo', $insumo['tipo']) == 'Instrumental') ? 'selected' : '' ?>>Instrumental</option>
+                                    <option value="Dispositivo médico" <?= (old('tipo', $insumo['tipo']) == 'Dispositivo médico') ? 'selected' : '' ?>>Dispositivo médico</option>
+                                    <option value="Medicamento" <?= (old('tipo', $insumo['tipo']) == 'Medicamento') ? 'selected' : '' ?>>Medicamento</option>
+                                    <option value="Material de curación" <?= (old('tipo', $insumo['tipo']) == 'Material de curación') ? 'selected' : '' ?>>Material de curación</option>
+                                    <option value="Equipo quirúrgico" <?= (old('tipo', $insumo['tipo']) == 'Equipo quirúrgico') ? 'selected' : '' ?>>Equipo quirúrgico</option>
+                                    <option value="Sutura" <?= (old('tipo', $insumo['tipo']) == 'Sutura') ? 'selected' : '' ?>>Sutura</option>
+                                    <option value="Antiséptico" <?= (old('tipo', $insumo['tipo']) == 'Antiséptico') ? 'selected' : '' ?>>Antiséptico</option>
+                                </select>
+                                <?php if (isset($validation) && $validation->hasError('tipo')): ?>
+                                    <div class="invalid-feedback"><?= esc($validation->getError('tipo')) ?></div>
+                                <?php endif; ?>
+                            </div>
                         </div>
-                    </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="cantidad" class="form-label required-field">
+                                    <i class='bx bx-layer me-1'></i>Cantidad
+                                </label>
+                                <input type="number" 
+                                       class="form-control <?= (isset($validation) && $validation->hasError('cantidad')) ? 'is-invalid' : '' ?>" 
+                                       id="cantidad" 
+                                       name="cantidad" 
+                                       value="<?= old('cantidad', $insumo['cantidad']) ?>" 
+                                       placeholder="Ingrese la cantidad disponible"
+                                       min="0"
+                                       required>
+                                <?php if (isset($validation) && $validation->hasError('cantidad')): ?>
+                                    <div class="invalid-feedback"><?= esc($validation->getError('cantidad')) ?></div>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="ubicacion" class="form-label required-field">
+                                    <i class='bx bx-map me-1'></i>Ubicación
+                                </label>
+                                <input type="text" 
+                                       class="form-control <?= (isset($validation) && $validation->hasError('ubicacion')) ? 'is-invalid' : '' ?>" 
+                                       id="ubicacion" 
+                                       name="ubicacion" 
+                                       value="<?= old('ubicacion', $insumo['ubicacion']) ?>" 
+                                       placeholder="Ingrese la ubicación del insumo"
+                                       required>
+                                <?php if (isset($validation) && $validation->hasError('ubicacion')): ?>
+                                    <div class="invalid-feedback"><?= esc($validation->getError('ubicacion')) ?></div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="lote" class="form-label">
+                                    <i class='bx bx-barcode me-1'></i>Lote
+                                </label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="lote" 
+                                       name="lote" 
+                                       value="<?= old('lote', $insumo['lote']) ?>" 
+                                       placeholder="Ingrese el número de lote">
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-check mt-4">
+                                    <input class="form-check-input" 
+                                           type="checkbox" 
+                                           id="tiene_vencimiento" 
+                                           name="tiene_vencimiento" 
+                                           value="1" 
+                                           <?= (old('tiene_vencimiento', $insumo['tiene_vencimiento']) == 1 ? 'checked' : '') ?>>
+                                    <label class="form-check-label" for="tiene_vencimiento">
+                                        ¿Tiene fecha de vencimiento?
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3" id="fecha_vencimiento_container" style="display: <?= (old('tiene_vencimiento', $insumo['tiene_vencimiento']) == 1 ? 'block' : 'none') ?>;">
+                            <div class="col-md-6">
+                                <label for="fecha_vencimiento" class="form-label">
+                                    <i class='bx bx-calendar me-1'></i>Fecha de Vencimiento
+                                </label>
+                                <input type="date" 
+                                       class="form-control" 
+                                       id="fecha_vencimiento" 
+                                       name="fecha_vencimiento" 
+                                       value="<?= old('fecha_vencimiento', $insumo['fecha_vencimiento']) ?>">
+                            </div>
+                        </div>
+
+                        <div class="button-group">
+                            <a href="<?= site_url('insumos') ?>" class="btn btn-secondary">
+                                <i class='bx bx-x'></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class='bx bx-save'></i> Actualizar Insumo
+                            </button>
+                        </div>
+                    <?= form_close() ?>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const tieneVencimientoCheckbox = document.getElementById('tiene_vencimiento');
-        const fechaVencimientoContainer = document.getElementById('fecha_vencimiento_container');
-        const categoriaSelect = document.getElementById('categoria');
-        const tipoSelect = document.getElementById('tipo');
-        const descartablesGroup = document.getElementById('descartables-group');
-        const instrumentalesGroup = document.getElementById('instrumentales-group');
+        document.addEventListener('DOMContentLoaded', function() {
+            // Variables del formulario
+            const tieneVencimientoCheckbox = document.getElementById('tiene_vencimiento');
+            const fechaVencimientoContainer = document.getElementById('fecha_vencimiento_container');
 
-        // Mostrar/ocultar campo de fecha según checkbox
-        tieneVencimientoCheckbox.addEventListener('change', function() {
-            fechaVencimientoContainer.style.display = this.checked ? 'block' : 'none';
+            // Mostrar/ocultar campo de fecha según checkbox
+            tieneVencimientoCheckbox.addEventListener('change', function() {
+                fechaVencimientoContainer.style.display = this.checked ? 'block' : 'none';
+            });
+
+            // Auto-hide alerts after 5 seconds
+            const alertas = document.querySelectorAll('.alert');
+            alertas.forEach(alerta => {
+                setTimeout(() => {
+                    alerta.classList.remove('show');
+                }, 5000);
+            });
+
+            // Aplicar animaciones escalonadas
+            const elementosAnimados = document.querySelectorAll('.animate-fade-in');
+            elementosAnimados.forEach((elemento, index) => {
+                elemento.style.animationDelay = `${index * 0.1}s`;
+            });
+
+            // Función para animaciones de hover en las cards
+            const cards = document.querySelectorAll('.glass-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                    this.style.boxShadow = '0 15px 30px -5px rgba(0,0,0,0.15)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = 'var(--shadow-xl)';
+                });
+            });
         });
-
-        // Función para mostrar opciones de tipo según categoría
-        function updateTipoOptions() {
-            const categoria = categoriaSelect.value;
-            const tipoActual = tipoSelect.value;
-            
-            // Ocultar todos los grupos
-            descartablesGroup.style.display = 'none';
-            instrumentalesGroup.style.display = 'none';
-            
-            // Limpiar selección si no coincide con la nueva categoría
-            let mantenerSeleccion = false;
-            
-            if (categoria === 'descartable') {
-                descartablesGroup.style.display = 'block';
-                // Verificar si el tipo actual pertenece a descartables
-                const opcionesDescartables = descartablesGroup.querySelectorAll('option');
-                for (let option of opcionesDescartables) {
-                    if (option.value === tipoActual) {
-                        mantenerSeleccion = true;
-                        break;
-                    }
-                }
-            } else if (categoria === 'instrumental') {
-                instrumentalesGroup.style.display = 'block';
-                // Verificar si el tipo actual pertenece a instrumentales
-                const opcionesInstrumentales = instrumentalesGroup.querySelectorAll('option');
-                for (let option of opcionesInstrumentales) {
-                    if (option.value === tipoActual) {
-                        mantenerSeleccion = true;
-                        break;
-                    }
-                }
-            }
-            
-            // Si el tipo actual no pertenece a la nueva categoría, limpiar selección
-            if (!mantenerSeleccion) {
-                tipoSelect.value = '';
-            }
-        }
-
-        // Configurar el tipo inicial basado en la categoría actual
-        const tipoActual = '<?php echo old('tipo', $insumo['tipo']); ?>';
-        if (tipoActual) {
-            // Crear una opción temporal para el valor actual si no existe
-            let optionExists = false;
-            const allOptions = tipoSelect.querySelectorAll('option');
-            for (let option of allOptions) {
-                if (option.value === tipoActual) {
-                    optionExists = true;
-                    option.selected = true;
-                    break;
-                }
-            }
-            
-            if (!optionExists) {
-                // Agregar opción temporal para el valor actual
-                const tempOption = document.createElement('option');
-                tempOption.value = tipoActual;
-                tempOption.textContent = tipoActual;
-                tempOption.selected = true;
-                tipoSelect.appendChild(tempOption);
-            }
-        }
-
-        // Mostrar opciones iniciales
-        updateTipoOptions();
-
-        // Escuchar cambios en categoría
-        categoriaSelect.addEventListener('change', updateTipoOptions);
-    });
     </script>
+    <?= $this->include('includes/footer') ?>
 </body>
 </html>

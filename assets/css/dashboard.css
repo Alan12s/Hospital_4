@@ -983,3 +983,19 @@
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.6);
 }
+/* Estilos para la sección de insumos críticos */
+.surgery-item .surgery-status.danger {
+    background-color: var(--danger-color);
+}
+
+.surgery-item .surgery-status.warning {
+    background-color: var(--warning-color);
+}
+
+.surgery-item .surgery-status.success {
+    background-color: var(--success-color);
+}
+
+.surgery-item .surgery-status.info {
+    background-color: var(--info-color);
+}

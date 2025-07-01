@@ -346,13 +346,13 @@
                                 <label for="nombre" class="form-label">
                                     <i class='bx bx-user me-1'></i>Nombre Completo
                                 </label>
-                                <input type="text" 
-                                       class="form-control <?= (isset($validation) && $validation->hasError('nombre')) ? 'is-invalid' : '' ?>" 
-                                       id="nombre" 
-                                       name="nombre" 
-                                       value="<?= old('nombre', $instrumentista['nombre']) ?>" 
-                                       placeholder="Ingrese el nombre completo"
-                                       required>
+                                    <input type="text"
+       id="nombre"
+       name="nombre"
+       class="form-control <?= (isset($validation) && $validation->hasError('nombre')) ? 'is-invalid' : '' ?>"
+       value="<?= old('nombre', $instrumentista['nombre']) ?>"
+       placeholder="Ingrese el nombre completo"
+       required>
                                 <?php if (isset($validation) && $validation->hasError('nombre')): ?>
                                     <div class="invalid-feedback"><?= esc($validation->getError('nombre')) ?></div>
                                 <?php endif; ?>
@@ -401,7 +401,7 @@
                                 <label for="telefono" class="form-label">
                                     <i class='bx bx-phone me-1'></i>Teléfono
                                 </label>
-                                <input type="text" 
+                                <input type="tel" 
                                        class="form-control <?= (isset($validation) && $validation->hasError('telefono')) ? 'is-invalid' : '' ?>" 
                                        id="telefono" 
                                        name="telefono" 
@@ -487,6 +487,7 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Auto-hide alerts after 5 seconds
@@ -518,6 +519,52 @@
             });
         });
     </script>
+
+
+<script>
+    // Validación DNI solo números
+    const dniInput = document.getElementById('dni');
+    if (dniInput) {
+        dniInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+    }
+
+    // Validación teléfono solo números
+    const telefonoInput = document.getElementById('telefono');
+    if (telefonoInput) {
+        telefonoInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+    };
+</script>
+
+
+<script>
+    // Validación: evitar que se ingresen números en el campo "nombre"
+    const nombreInput = document.getElementById('nombre');
+    if (nombreInput) {
+        nombreInput.addEventListener('input', function () {
+            this.value = this.value.replace(/[0-9]/g, '');
+        });
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <?= $this->include('includes/footer') ?>
 </body>
 </html>

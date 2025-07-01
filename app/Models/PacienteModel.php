@@ -14,7 +14,6 @@ class PacienteModel extends Model
     protected $protectFields = true;
     protected $allowedFields = ['nombre','fecha_nacimiento','obra_social','historial_medico', 'dni','departamento', 'telefono', 'direccion', 'email'];
 
-    // Validación simplificada (quitamos is_unique porque validamos manualmente en controlador)
     protected $validationRules = [
         'nombre'    => 'required|max_length[100]',
         'historial_medico'  => 'required|max_length[400]',
@@ -78,13 +77,22 @@ class PacienteModel extends Model
         return $builder->countAllResults() > 0;
     }
 
+    public function hasTurnosAsignados($pacienteId)
+    {
+        $db = \Config\Database::connect();
+        return $db->table('turnos_quirurgicos')
+                 ->where('id_paciente', $pacienteId)
+                 ->where('estado !=', 'cancelado')
+                 ->countAllResults() > 0;
+    }
+
     public function deletePaciente($id)
     {
         return $this->delete($id);
     }
-    public function countPacientes()
-{
-    return $this->countAll();
-}
 
+    public function countPacientes()
+    {
+        return $this->countAll();
+    }
 }
