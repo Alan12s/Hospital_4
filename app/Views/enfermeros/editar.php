@@ -391,7 +391,8 @@
                                        class="form-control <?= (isset($validation) && $validation->hasError('dni')) ? 'is-invalid' : '' ?>" 
                                        id="dni" 
                                        name="dni" 
-                                       value="<?= old('dni') ?>" 
+                                      value="<?= old('dni', isset($enfermero['dni']) ? $enfermero['dni'] : '') ?>"
+
                                        placeholder="Ej: 12345678"
                                        pattern="^[0-9]+$"
                                        title="Solo se permiten números"
@@ -473,7 +474,7 @@
                                        class="form-control <?= (isset($validation) && $validation->hasError('email')) ? 'is-invalid' : '' ?>" 
                                        id="email" 
                                        name="email" 
-                                       value="<?= old('email') ?>" 
+                                       value="<?= old('email', isset($enfermero['email']) ? $enfermero['email'] : '') ?>" 
                                        placeholder="enfermero@hospital.com"
                                        required>
                                 <?php if (isset($validation) && $validation->hasError('email')): ?>
