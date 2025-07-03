@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 01-07-2025 a las 20:21:40
+-- Tiempo de generación: 02-07-2025 a las 17:00:13
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -42,8 +42,8 @@ CREATE TABLE `anestesistas` (
 --
 
 INSERT INTO `anestesistas` (`id`, `nombre`, `dni`, `especialidad`, `disponibilidad`, `telefono`, `email`) VALUES
-(8, 'Dr. Luis Miguel', '', 'Anestesiología General', 'disponible', '2645556709', 'luism@hospital.com'),
-(13, 'Alexandro Brizuela', '', 'Anestesiología Pediátrica', 'disponible', '2645657890', 'alexx@hospital.com'),
+(8, 'Dr Luis Miguel', '30567890', 'Anestesiología General', 'disponible', '2645556709', 'luism@hospital.com'),
+(13, 'Alexandro Brizuela', '45678907', 'Anestesiología Pediátrica', 'disponible', '2645657890', 'alexx@hospital.com'),
 (15, 'Dr. Ricardo Moreno', '28765432', 'Anestesiología en Cirugía Mayor', 'disponible', '2647654321', 'r.moreno@hospital.com'),
 (17, 'Dr. Joaquín Herrera', '33987654', 'Anestesiología Regional', 'disponible', '2649876543', 'j.herrera@hospital.com');
 
@@ -156,7 +156,7 @@ CREATE TABLE `instrumentistas` (
 
 INSERT INTO `instrumentistas` (`id`, `nombre`, `dni`, `especialidad`, `telefono`, `email`, `fecha_ingreso`, `disponibilidad`) VALUES
 (5, 'Diana Espinoza', '33567890', 'Instrumentista Quirúrgico General', '2642345678', 'd.espinoza@hospital.com', '2022-05-15', 'disponible'),
-(6, 'Carlos Mendoza', '30789012', 'Instrumentista en Cirugía Ortopédica', '2643456789', 'c.mendoza.inst@hospital.com', '2021-09-20', 'disponible'),
+(6, 'Carlos Mendoza', '30789012', 'Instrumentista en Cirugía General', '2643456789', 'c.mendoza.inst@hospital.com', '2021-09-20', 'disponible'),
 (7, 'Patricia Vega', '32890123', 'Instrumentista en Cirugía Urológica', '2644567890', 'p.vega@hospital.com', '2020-02-28', 'disponible'),
 (8, 'Fernando López', '34901234', 'Instrumentista Quirúrgico General', '2645678901', 'f.lopez@hospital.com', '2023-01-10', 'disponible');
 
@@ -184,8 +184,8 @@ CREATE TABLE `insumos` (
 --
 
 INSERT INTO `insumos` (`id_insumo`, `codigo`, `nombre`, `categoria`, `tipo`, `cantidad`, `lote`, `fecha_vencimiento`, `tiene_vencimiento`, `ubicacion`) VALUES
-(1, 'INS-001', 'Guantes quirúrgicos estériles', 'descartable', 'Consumible', 494, 'LOT-2025-01', '2028-09-30', 1, 'Almacén A, Estante 1'),
-(2, 'INS-002', 'Jeringas 10ml', 'descartable', 'Consumible', 293, 'LOT-2025-02', '2029-01-30', 1, 'Almacén A, Estante 2'),
+(1, 'INS-001', 'Guantes quirúrgicos estériles', 'descartable', 'Consumible', 493, 'LOT-2025-01', '2028-09-30', 1, 'Almacén A, Estante 1'),
+(2, 'INS-002', 'Jeringas 10ml', 'descartable', 'Consumible', 291, 'LOT-2025-02', '2029-01-30', 1, 'Almacén A, Estante 2'),
 (3, 'INS-003', 'Gasas estériles 10x10', 'descartable', 'Consumible', 199, 'LOT-2025-03', '2027-09-15', 1, 'Almacén B, Estante 1'),
 (6, 'INS-006', 'Bisturí #10', 'descartable', 'Instrumental', 50, 'LOT-2025-06', '2027-01-31', 1, 'Almacén C, Estante 2'),
 (7, 'INS-007', 'Catéter intravenoso 18G', 'descartable', 'Material quirúrgico', 249, 'LOT-2025-07', '2028-11-30', 1, 'Almacén D, Estante 1'),
@@ -204,6 +204,21 @@ INSERT INTO `insumos` (`id_insumo`, `codigo`, `nombre`, `categoria`, `tipo`, `ca
 (25, 'INS-023', 'Cánulas nasales de oxígeno', 'descartable', 'Material respiratorio', 120, 'LOT-2025-23', '2028-03-31', 1, 'Almacén C, Estante 2'),
 (26, 'INS-024', 'Pinzas Kocher desechables', 'descartable', 'Instrumental', 90, 'LOT-2025-24', '2029-08-15', 1, 'Almacén D, Estante 1'),
 (27, 'INS-025', 'Campos quirúrgicos estériles', 'descartable', 'Material quirúrgico', 250, 'LOT-2025-25', '2028-05-30', 1, 'Almacén A, Estante 1');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `insumos_cirugia`
+--
+
+CREATE TABLE `insumos_cirugia` (
+  `id` int(11) NOT NULL,
+  `id_turno` int(11) NOT NULL,
+  `id_insumo` int(11) NOT NULL,
+  `cantidad` int(11) NOT NULL DEFAULT 1,
+  `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp(),
+  `registrado_por` int(11) DEFAULT NULL COMMENT 'ID del usuario que registró el insumo'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -355,7 +370,10 @@ INSERT INTO `turnos_insumos` (`id`, `id_turno`, `id_insumo`, `cantidad`, `fecha_
 (38, 43, 1, 1, '2025-07-01 17:44:25'),
 (39, 43, 2, 1, '2025-07-01 17:44:25'),
 (40, 40, 7, 1, '2025-07-01 18:20:31'),
-(41, 40, 9, 1, '2025-07-01 18:20:31');
+(41, 40, 9, 1, '2025-07-01 18:20:31'),
+(42, 42, 2, 1, '2025-07-01 18:23:08'),
+(43, 44, 1, 1, '2025-07-02 00:20:21'),
+(44, 44, 2, 1, '2025-07-02 00:20:21');
 
 -- --------------------------------------------------------
 
@@ -394,7 +412,8 @@ INSERT INTO `turnos_quirurgicos` (`id`, `fecha`, `hora_inicio`, `hora_finalizaci
 (40, '2025-07-02', '11:00:00', '12:00:00', 60, 1, 28, 7, 1, 17, 6, 7, 3, 'General', NULL, 'Implantes dentales', 'programado', NULL, '2025-06-30 23:02:50', '2025-07-01 17:11:21'),
 (41, '2025-07-01', '12:20:00', '13:20:00', 60, 1, 26, 30, 16, 17, 5, 6, 19, 'Local', NULL, 'Cirugía de columna vertebral', 'programado', NULL, '2025-07-01 14:55:10', '2025-07-01 14:55:10'),
 (42, '2025-07-02', '11:00:00', '12:00:00', 60, 2, 29, 30, 20, 8, 6, 7, 19, 'Local', NULL, 'Cirugía gástrica (gastrectomía parcial o total)', 'programado', NULL, '2025-07-01 17:12:04', '2025-07-01 17:12:04'),
-(43, '2025-07-11', '12:00:00', '13:00:00', 60, 1, 27, 29, 17, 17, 6, 5, 19, 'Regional', NULL, 'Prostatectomía (extirpación total o parcial de la próstata)', 'programado', NULL, '2025-07-01 17:44:25', '2025-07-01 17:44:25');
+(43, '2025-07-11', '12:00:00', '13:00:00', 60, 1, 27, 29, 17, 17, 6, 5, 19, 'Regional', NULL, 'Prostatectomía (extirpación total o parcial de la próstata)', 'programado', NULL, '2025-07-01 17:44:25', '2025-07-01 17:44:25'),
+(44, '2025-07-16', '10:00:00', '11:00:00', 60, 1, 30, 28, 20, 8, 6, 7, 19, 'General', NULL, 'Artroscopias diagnósticas y terapéuticas', 'programado', NULL, '2025-07-02 00:19:09', '2025-07-02 00:19:09');
 
 -- --------------------------------------------------------
 
@@ -424,7 +443,7 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id`, `nombre`, `apellidos`, `email`, `username`, `fecha_registro`, `fecha_actualizacion`, `ultimo_acceso`, `rol`, `estado`, `password`, `remember_token`, `reset_token`, `reset_expires`) VALUES
-(1, 'Ramon', 'Areyuna', 'admin@hospital.com', 'admin', '2025-04-17 22:36:48', NULL, '2025-07-01 14:35:50', 'administrador', 1, '$2y$10$d68qdYU5o0GoL11xeayc7.seuNo7AF56cGxaoaMrEzoylfEVBFMTO', '047d35f49e26d7caa7bee79ecd1e636996b31437cf2c2c5755e90a594b639b19', 'e046c6d3cb97e1e62eead996f03128a78b37371c2ce825c137b56171a826a17f', '2025-04-19 22:37:33'),
+(1, 'Ramon', 'Areyuna', 'admin@hospital.com', 'admin', '2025-04-17 22:36:48', NULL, '2025-07-02 13:08:20', 'administrador', 1, '$2y$10$d68qdYU5o0GoL11xeayc7.seuNo7AF56cGxaoaMrEzoylfEVBFMTO', '047d35f49e26d7caa7bee79ecd1e636996b31437cf2c2c5755e90a594b639b19', 'e046c6d3cb97e1e62eead996f03128a78b37371c2ce825c137b56171a826a17f', '2025-04-19 22:37:33'),
 (2, 'Maria', 'Herrera', 'maria@hospital.com', 'enfermera', '2025-04-19 21:23:13', NULL, NULL, 'enfermero', 1, '$2y$10$PGiSgn509EfsxTbc5hV9dOyPQb7cy46onNvsimJTP2p4GywWylA.C', NULL, NULL, NULL),
 (5, 'Manuel', 'Gonzales', 'manuel@hospital.com', 'supervisor', '2025-04-19 21:29:55', NULL, '2025-06-27 21:25:23', 'supervisor', 1, '$2y$10$WakpL4f6cWWR0HfOn.Auc.jPNFy/mYKYSSem/vkvEZhkmaQ6IkZEC', NULL, NULL, NULL),
 (6, 'Pablo', 'Alboran', 'pablo@hospital.com', 'enfermero', '2025-05-03 17:23:48', NULL, '2025-06-27 21:53:40', 'enfermero', 1, '$2y$10$iqggD1A3D0qL8eDygSs.5uyFsfWuyGHg.onOQlKwfidp4ZxEn2pPm', NULL, NULL, NULL),
@@ -477,6 +496,15 @@ ALTER TABLE `instrumentistas`
 --
 ALTER TABLE `insumos`
   ADD PRIMARY KEY (`id_insumo`);
+
+--
+-- Indices de la tabla `insumos_cirugia`
+--
+ALTER TABLE `insumos_cirugia`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_turno` (`id_turno`),
+  ADD KEY `id_insumo` (`id_insumo`),
+  ADD KEY `registrado_por` (`registrado_por`);
 
 --
 -- Indices de la tabla `logs`
@@ -550,7 +578,7 @@ ALTER TABLE `anestesistas`
 -- AUTO_INCREMENT de la tabla `cirujanos`
 --
 ALTER TABLE `cirujanos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT de la tabla `enfermeros`
@@ -574,7 +602,13 @@ ALTER TABLE `instrumentistas`
 -- AUTO_INCREMENT de la tabla `insumos`
 --
 ALTER TABLE `insumos`
-  MODIFY `id_insumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id_insumo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+
+--
+-- AUTO_INCREMENT de la tabla `insumos_cirugia`
+--
+ALTER TABLE `insumos_cirugia`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `logs`
@@ -604,13 +638,13 @@ ALTER TABLE `quirofanos`
 -- AUTO_INCREMENT de la tabla `turnos_insumos`
 --
 ALTER TABLE `turnos_insumos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT de la tabla `turnos_quirurgicos`
 --
 ALTER TABLE `turnos_quirurgicos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
@@ -627,6 +661,14 @@ ALTER TABLE `usuarios`
 --
 ALTER TABLE `cirujanos`
   ADD CONSTRAINT `fk_cirujano_especialidad` FOREIGN KEY (`id_especialidad`) REFERENCES `especialidades` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `insumos_cirugia`
+--
+ALTER TABLE `insumos_cirugia`
+  ADD CONSTRAINT `fk_insumo_cirugia_insumo` FOREIGN KEY (`id_insumo`) REFERENCES `insumos` (`id_insumo`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_insumo_cirugia_turno` FOREIGN KEY (`id_turno`) REFERENCES `turnos_quirurgicos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_insumo_cirugia_usuario` FOREIGN KEY (`registrado_por`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `logs`

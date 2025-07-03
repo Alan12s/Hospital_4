@@ -457,28 +457,31 @@
                             </div>
                         </div>
 
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="departamento" class="form-label required-field">
-                                    <i class='bx bx-building me-1'></i>Departamento
-                                </label>
-                                <select class="form-select <?= session()->getFlashdata('errors')['departamento'] ?? false ? 'is-invalid' : '' ?>" 
-                                        id="departamento" 
-                                        name="departamento" 
-                                        required>
-                                    <option value="">Seleccione un departamento</option>
-                                    <option value="caucete" <?= old('departamento', $paciente->departamento) == 'caucete' ? 'selected' : '' ?>>Caucete</option>
-                                    <option value="25 de mayo" <?= old('departamento', $paciente->departamento) == '25 de mayo' ? 'selected' : '' ?>>25 de Mayo</option>
-                                    <option value="santa rosa" <?= old('departamento', $paciente->departamento) == 'santa rosa' ? 'selected' : '' ?>>Santa Rosa</option>
-                                    <option value="sarmiento" <?= old('departamento', $paciente->departamento) == 'sarmiento' ? 'selected' : '' ?>>Sarmiento</option>
-                                    <option value="san martin" <?= old('departamento', $paciente->departamento) == 'san martin' ? 'selected' : '' ?>>San Martín</option>
-                                    <option value="santa lucia" <?= old('departamento', $paciente->departamento) == 'santa lucia' ? 'selected' : '' ?>>Santa Lucía</option>
-                                    <option value="capital" <?= old('departamento', $paciente->departamento) == 'capital' ? 'selected' : '' ?>>Capital</option>
-                                </select>
-                                <?php if (session()->getFlashdata('errors')['departamento'] ?? false): ?>
-                                    <div class="invalid-feedback"><?= esc(session()->getFlashdata('errors')['departamento']) ?></div>
-                                <?php endif; ?>
-                            </div>
+<div class="row mb-3">
+    <div class="col-md-6">
+        <label for="departamento" class="form-label required-field">
+            <i class='bx bx-building me-1'></i>Departamento
+        </label>
+<select class="form-select <?= session()->getFlashdata('errors')['departamento'] ?? false ? 'is-invalid' : '' ?>" 
+        id="departamento" 
+        name="departamento" 
+        required>
+    <option value="">Seleccione un departamento</option>
+    <option value="caucete" <?= old('departamento', $paciente->departamento) == 'caucete' ? 'selected' : '' ?>>Caucete</option>
+    <option value="25 de mayo" <?= old('departamento', $paciente->departamento) == '25 de mayo' ? 'selected' : '' ?>>25 de Mayo</option>
+    <option value="santa rosa" <?= old('departamento', $paciente->departamento) == 'santa rosa' ? 'selected' : '' ?>>Santa Rosa</option>
+    <option value="sarmiento" <?= old('departamento', $paciente->departamento) == 'sarmiento' ? 'selected' : '' ?>>Sarmiento</option>
+    <option value="san martin" <?= old('departamento', $paciente->departamento) == 'san martin' ? 'selected' : '' ?>>San Martín</option>
+    <option value="santa lucia" <?= old('departamento', $paciente->departamento) == 'santa lucia' ? 'selected' : '' ?>>Santa Lucía</option>
+    <option value="capital" <?= old('departamento', $paciente->departamento) == 'capital' ? 'selected' : '' ?>>Capital</option>
+</select>
+
+        <?php if (session()->getFlashdata('errors')['departamento'] ?? false): ?>
+            <div class="invalid-feedback"><?= esc(session()->getFlashdata('errors')['departamento']) ?></div>
+        <?php endif; ?>
+    </div>
+</div>
+
 
                             <div class="col-md-6">
                                 <label for="direccion" class="form-label required-field">

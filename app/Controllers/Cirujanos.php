@@ -18,7 +18,9 @@ class Cirujanos extends BaseController
     {
         $data = [
             'titulo' => 'Gestión de Cirujanos',
-            'cirujanos' => $this->cirujanoModel->listarMedicos()
+            'cirujanos' => $this->cirujanoModel->listarMedicos(),
+            'success' => session('success'),
+            'error' => session('error')
         ];
 
         return view('cirujanos/index', $data);
@@ -112,7 +114,8 @@ class Cirujanos extends BaseController
         $data = [
             'titulo' => 'Crear Cirujano',
             'especialidades' => $this->cirujanoModel->getEspecialidades(),
-            'validation' => $this->validator
+            'validation' => $this->validator,
+            'error' => session('error')
         ];
 
         return view('cirujanos/crear', $data);
@@ -206,7 +209,9 @@ class Cirujanos extends BaseController
             'titulo' => 'Editar Cirujano',
             'cirujano' => $cirujano,
             'especialidades' => $this->cirujanoModel->getEspecialidades(),
-            'validation' => $this->validator
+            'validation' => $this->validator,
+            'error' => session('error'),
+            'success' => session('success')
         ];
 
         return view('cirujanos/editar', $data);

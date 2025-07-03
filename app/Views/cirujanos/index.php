@@ -400,11 +400,11 @@
             </div>
 
             <!-- Flash Messages -->
-            <?php if (session()->getFlashdata('mensaje')): ?>
+            <?php if (session()->getFlashdata('success')): ?>
                 <div class="alert alert-success alert-dismissible fade show glass-card">
                     <div class="d-flex align-items-center">
                         <i class='bx bx-check-circle me-2'></i>
-                        <?= esc(session()->getFlashdata('mensaje')) ?>
+                        <?= esc(session()->getFlashdata('success')) ?>
                     </div>
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>

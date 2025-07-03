@@ -409,7 +409,7 @@
 </div>
 
 
-                            <div class="col-md-6">
+                        <div class="col-md-6">
                                 <label for="telefono" class="form-label required-field">
                                     <i class='bx bx-phone me-1'></i>Teléfono
                                 </label>
@@ -420,8 +420,8 @@
                                        value="<?= old('telefono') ?>" 
                                        placeholder="Ej: 1122334455"
                                        required>
-                                <?php if (isset($validation) && $validation->hasError('telefono')): ?>
-                                    <div class="invalid-feedback"><?= esc($validation->getError('telefono')) ?></div>
+                                <?php if (session()->getFlashdata('errors')['telefono'] ?? false): ?>
+                                    <div class="invalid-feedback"><?= esc(session()->getFlashdata('errors')['telefono']) ?></div>
                                 <?php endif; ?>
                             </div>
                         </div>

@@ -31,8 +31,21 @@ class Insumos extends Controller
         // Verificar uso para cada insumo
         $insumosConUso = array_map(function($insumo) {
             $insumo['en_uso'] = $this->insumosModel->estaEnUso($insumo['id_insumo']);
+            // AGREGADO: Verificar si el insumo está vencido
+            $insumo['esta_vencido'] = $this->verificarVencimiento($insumo);
             return $insumo;
         }, $insumos);
+
+        // AGREGADO: Verificar si hay insumos vencidos y mostrar mensaje
+        $insumosVencidos = array_filter($insumosConUso, function($insumo) {
+            return $insumo['esta_vencido'];
+        });
+
+        if (!empty($insumosVencidos)) {
+            $nombreVencidos = array_column($insumosVencidos, 'nombre');
+            $mensaje = 'ATENCIÓN: Los siguientes insumos están vencidos: ' . implode(', ', $nombreVencidos);
+            $this->session->setFlashdata('warning', $mensaje);
+        }
 
         $data = [
             'insumos' => $insumosConUso,
@@ -97,6 +110,14 @@ class Insumos extends Controller
             return redirect()->back()->withInput();
         }
 
+        // AGREGADO: Validación para no permitir crear insumos con fecha vencida
+        if ($data['tiene_vencimiento'] && !empty($data['fecha_vencimiento'])) {
+            if ($this->esFechaVencida($data['fecha_vencimiento'])) {
+                $this->session->setFlashdata('error', 'No se puede crear un insumo con fecha de vencimiento ya vencida. La fecha debe ser posterior a hoy.');
+                return redirect()->back()->withInput();
+            }
+        }
+
         try {
             if ($this->insumosModel->addInsumo($data)) {
                 $this->session->setFlashdata('success', 'Insumo agregado correctamente');
@@ -125,6 +146,11 @@ class Insumos extends Controller
 
         // Asegurar que todos los campos necesarios existan con valores por defecto
         $insumo = $this->asegurarCamposInsumo($insumo);
+
+        // AGREGADO: Verificar si el insumo está vencido y mostrar advertencia
+        if ($this->verificarVencimiento($insumo)) {
+            $this->session->setFlashdata('warning', 'ATENCIÓN: Este insumo está vencido (Fecha de vencimiento: ' . $insumo['fecha_vencimiento'] . ')');
+        }
 
         $data = [
             'insumo' => $insumo,
@@ -178,6 +204,20 @@ class Insumos extends Controller
         if ($data['tiene_vencimiento'] && empty($data['fecha_vencimiento'])) {
             $this->session->setFlashdata('error', 'Si el insumo tiene vencimiento, debe especificar la fecha de vencimiento');
             return redirect()->back()->withInput();
+        }
+
+        // AGREGADO: Validación para no permitir actualizar con fecha vencida (solo para nuevas fechas)
+        if ($data['tiene_vencimiento'] && !empty($data['fecha_vencimiento'])) {
+            // Obtener la fecha actual del insumo para comparar
+            $insumoActual = $this->insumosModel->getInsumo($id);
+            
+            // Solo validar si se está cambiando la fecha de vencimiento
+            if ($insumoActual['fecha_vencimiento'] !== $data['fecha_vencimiento']) {
+                if ($this->esFechaVencida($data['fecha_vencimiento'])) {
+                    $this->session->setFlashdata('error', 'No se puede actualizar con una fecha de vencimiento ya vencida. La fecha debe ser posterior a hoy.');
+                    return redirect()->back()->withInput();
+                }
+            }
         }
 
         try {
@@ -241,6 +281,11 @@ class Insumos extends Controller
         // Asegurar que todos los campos necesarios existan con valores por defecto
         $insumo = $this->asegurarCamposInsumo($insumo);
 
+        // AGREGADO: Verificar si el insumo está vencido y mostrar advertencia
+        if ($this->verificarVencimiento($insumo)) {
+            $this->session->setFlashdata('warning', 'ATENCIÓN: Este insumo está vencido (Fecha de vencimiento: ' . $insumo['fecha_vencimiento'] . ')');
+        }
+
         $data = [
             'insumo' => $insumo,
             'title' => $insumo['nombre']
@@ -262,8 +307,21 @@ class Insumos extends Controller
         // Verificar uso para cada insumo
         $insumosConUso = array_map(function($insumo) {
             $insumo['en_uso'] = $this->insumosModel->estaEnUso($insumo['id_insumo']);
+            // AGREGADO: Verificar si el insumo está vencido
+            $insumo['esta_vencido'] = $this->verificarVencimiento($insumo);
             return $insumo;
         }, $insumos);
+
+        // AGREGADO: Verificar si hay insumos vencidos en la búsqueda y mostrar mensaje
+        $insumosVencidos = array_filter($insumosConUso, function($insumo) {
+            return $insumo['esta_vencido'];
+        });
+
+        if (!empty($insumosVencidos)) {
+            $nombreVencidos = array_column($insumosVencidos, 'nombre');
+            $mensaje = 'ATENCIÓN: En los resultados de búsqueda, los siguientes insumos están vencidos: ' . implode(', ', $nombreVencidos);
+            $this->session->setFlashdata('warning', $mensaje);
+        }
 
         $data = [
             'insumos' => $insumosConUso,
@@ -282,6 +340,9 @@ class Insumos extends Controller
         $insumo = $this->insumosModel->getInsumo($id);
         
         if ($insumo) {
+            // AGREGADO: Incluir información de vencimiento en la respuesta AJAX
+            $insumo['esta_vencido'] = $this->verificarVencimiento($insumo);
+            
             return $this->response->setJSON([
                 'success' => true,
                 'data' => $insumo
@@ -333,8 +394,21 @@ class Insumos extends Controller
         // Verificar uso para cada insumo
         $insumosConUso = array_map(function($insumo) {
             $insumo['en_uso'] = $this->insumosModel->estaEnUso($insumo['id_insumo']);
+            // AGREGADO: Verificar si el insumo está vencido
+            $insumo['esta_vencido'] = $this->verificarVencimiento($insumo);
             return $insumo;
         }, $insumos);
+
+        // AGREGADO: Verificar si hay insumos vencidos en la categoría y mostrar mensaje
+        $insumosVencidos = array_filter($insumosConUso, function($insumo) {
+            return $insumo['esta_vencido'];
+        });
+
+        if (!empty($insumosVencidos)) {
+            $nombreVencidos = array_column($insumosVencidos, 'nombre');
+            $mensaje = 'ATENCIÓN: En la categoría ' . ucfirst($categoria) . ', los siguientes insumos están vencidos: ' . implode(', ', $nombreVencidos);
+            $this->session->setFlashdata('warning', $mensaje);
+        }
 
         $data = [
             'insumos' => $insumosConUso,
@@ -343,6 +417,48 @@ class Insumos extends Controller
         ];
 
         return view('insumos/index', $data);
+    }
+
+    /**
+     * AGREGADO: Método para verificar si un insumo está vencido
+     * @param array $insumo - Array con los datos del insumo
+     * @return bool - true si está vencido, false si no
+     */
+    private function verificarVencimiento($insumo)
+    {
+        // Si no tiene vencimiento o no tiene fecha de vencimiento, no está vencido
+        if (!$insumo['tiene_vencimiento'] || empty($insumo['fecha_vencimiento'])) {
+            return false;
+        }
+
+        // Comparar la fecha de vencimiento con la fecha actual
+        $fechaVencimiento = new \DateTime($insumo['fecha_vencimiento']);
+        $fechaActual = new \DateTime();
+        
+        // Está vencido si la fecha de vencimiento es menor que la fecha actual
+        return $fechaVencimiento < $fechaActual;
+    }
+
+    /**
+     * AGREGADO: Método para verificar si una fecha ya está vencida (para validaciones)
+     * @param string $fecha - Fecha en formato Y-m-d
+     * @return bool - true si la fecha ya pasó, false si no
+     */
+    private function esFechaVencida($fecha)
+    {
+        if (empty($fecha)) {
+            return false;
+        }
+
+        $fechaVencimiento = new \DateTime($fecha);
+        $fechaActual = new \DateTime();
+        
+        // Resetear las horas para comparar solo fechas
+        $fechaVencimiento->setTime(0, 0, 0);
+        $fechaActual->setTime(0, 0, 0);
+        
+        // La fecha está vencida si es menor que la fecha actual
+        return $fechaVencimiento < $fechaActual;
     }
 
     /**

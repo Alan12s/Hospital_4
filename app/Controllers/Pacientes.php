@@ -39,7 +39,7 @@ class Pacientes extends Controller
         $rules = [
             'nombre'            => 'required|max_length[100]|regex_match[/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/]',
             'historial_medico'  => 'required|max_length[100]',
-            'dni'               => 'required|numeric|is_unique[pacientes.dni]',
+            'dni'               => 'required|numeric|max_length[20]|is_unique[pacientes.dni]',
             'email'             => 'required|valid_email|is_unique[pacientes.email]',
             'telefono'          => 'required|numeric|max_length[20]',
             'direccion'         => 'required|max_length[150]',
@@ -57,7 +57,8 @@ class Pacientes extends Controller
             'dni' => [
                 'required' => 'El DNI es obligatorio',
                 'numeric' => 'El DNI debe contener solo números.',
-                'is_unique' => 'Este DNI ya está registrado'
+                'is_unique' => 'Este DNI ya está registrado',
+                'max_length' => 'El DNI no puede exceder los 20 caracteres'
             ],
             'email' => [
                 'required' => 'El email es obligatorio',

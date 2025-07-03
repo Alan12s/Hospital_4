@@ -343,6 +343,16 @@
                 </div>
             <?php endif; ?>
 
+            <?php if (session()->getFlashdata('success')): ?>
+                <div class="alert alert-success alert-dismissible fade show glass-card animate-fade-in">
+                    <i class='bx bx-check-circle'></i>
+                    <div>
+                        <?= esc(session()->getFlashdata('success')) ?>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                </div>
+            <?php endif; ?>
+
             <!-- Form Card -->
             <div class="glass-card animate-fade-in" style="animation-delay: 0.1s">
                 <div class="card-header">
@@ -479,7 +489,6 @@
                                     <option value="en_cirugia" <?= (old('disponibilidad', $cirujano->disponibilidad) == 'en_cirugia') ? 'selected' : '' ?>>
                                         En cirugía
                                     </option>
-                                   
                                 </select>
                                 <?php if (isset($validation) && $validation->hasError('disponibilidad')): ?>
                                     <div class="invalid-feedback"><?= esc($validation->getError('disponibilidad')) ?></div>

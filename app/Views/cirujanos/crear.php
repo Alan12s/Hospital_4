@@ -314,6 +314,16 @@
                 </div>
             <?php endif; ?>
 
+            <?php if (session()->getFlashdata('success')): ?>
+                <div class="alert alert-success alert-dismissible fade show glass-card">
+                    <div class="d-flex align-items-center">
+                        <i class='bx bx-check-circle me-2'></i>
+                        <?= esc(session()->getFlashdata('success')) ?>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            <?php endif; ?>
+
             <!-- Form Card -->
             <div class="glass-card animate-fade-in" style="animation-delay: 0.1s">
                 <div class="card-header">

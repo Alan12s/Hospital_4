@@ -517,12 +517,12 @@
                             </div>
                         </div>
 
-                        <div class="button-group">
+                        <div class="d-flex justify-content-end gap-2 mt-4">
                             <a href="<?= site_url('insumos') ?>" class="btn btn-secondary">
-                                <i class='bx bx-x'></i> Cancelar
+                                <i class='bx bx-x me-1'></i> Cancelar
                             </a>
                             <button type="submit" class="btn btn-primary">
-                                <i class='bx bx-save'></i> Crear Insumo
+                                <i class='bx bx-save me-1'></i> Crear Insumo
                             </button>
                         </div>
                     <?= form_close() ?>
