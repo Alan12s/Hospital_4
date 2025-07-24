@@ -1,0 +1,21 @@
+# render.yaml - Crear este archivo en la raíz del proyecto
+services:
+  - type: web
+    name: hospital-4
+    env: php
+    plan: free
+    buildCommand: composer install --no-dev --optimize-autoloader
+    startCommand: php -S 0.0.0.0:$PORT -t public
+    envVars:
+      - key: CI_ENVIRONMENT
+        value: production
+      - key: DB_HOST
+        value: # Lo configurarás en Render dashboard
+      - key: DB_NAME
+        value: hospital_management
+      - key: DB_USER
+        value: # Lo configurarás en Render dashboard  
+      - key: DB_PASSWORD
+        value: # Lo configurarás en Render dashboard
+      - key: DB_PORT
+        value: 3306
